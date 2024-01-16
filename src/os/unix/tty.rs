@@ -1,16 +1,14 @@
 use super::to_io_result;
 use crate::Result;
 use libc::termios;
-use std::os::fd::{AsFd, AsRawFd, BorrowedFd};
+use std::os::fd::RawFd;
 use std::panic::{catch_unwind, panic_any, UnwindSafe};
 use std::{io, mem};
 
-pub(crate) fn run_in_raw_mode<F, T>(fd: impl AsFd, f: F) -> Result<T>
+pub(crate) fn run_in_raw_mode<F, T>(fd: RawFd, f: F) -> Result<T>
 where
     F: FnOnce() -> Result<T> + UnwindSafe,
 {
-    let fd = fd.as_fd();
-
     let old_terminal = get_terminal_attr(fd)?;
     let mut terminal = old_terminal;
     raw_terminal_attr(&mut terminal);
@@ -21,20 +19,20 @@ where
     panic_result.unwrap_or_else(|e| panic_any(e))
 }
 
-fn get_terminal_attr(fd: BorrowedFd) -> io::Result<termios> {
+fn get_terminal_attr(fd: RawFd) -> io::Result<termios> {
     unsafe {
         let mut termios = mem::zeroed();
-        to_io_result(libc::tcgetattr(fd.as_raw_fd(), &mut termios))?;
+        to_io_result(libc::tcgetattr(fd, &mut termios))?;
         Ok(termios)
     }
 }
 
-fn set_terminal_attr(fd: BorrowedFd, termios: &termios) -> io::Result<()> {
+fn set_terminal_attr(fd: RawFd, termios: &termios) -> io::Result<()> {
     // From the man page:
     // TCSADRAIN
     //     the change occurs after all output written to fd has been transmitted.
     //     This function should be used when changing parameters that affect output.
-    to_io_result(unsafe { libc::tcsetattr(fd.as_raw_fd(), libc::TCSADRAIN, termios) }).and(Ok(()))
+    to_io_result(unsafe { libc::tcsetattr(fd, libc::TCSADRAIN, termios) }).and(Ok(()))
 }
 
 fn raw_terminal_attr(termios: &mut termios) {
