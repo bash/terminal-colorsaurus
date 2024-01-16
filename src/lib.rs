@@ -29,7 +29,7 @@ pub fn background_color() -> Result<String> {
     let tty = tty()?;
     let mut tty_clone = tty.try_clone()?;
     let result = run_in_raw_mode(&tty, move || {
-        query(&mut tty_clone, "\x1b[c", Duration::from_millis(300))
+        query(&mut tty_clone, "\x1b[c", Duration::from_secs(1))
     })?;
     dbg!(result);
     Ok("".into())
