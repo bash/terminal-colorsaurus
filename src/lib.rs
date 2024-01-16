@@ -42,7 +42,6 @@ pub fn background_color() -> Result<Color> {
 }
 
 fn query_color(query: &str, terminal: TerminalKind) -> Result<Color> {
-    dbg!(&terminal);
     query_color_raw(query, terminal).and_then(parse_response)
 }
 
