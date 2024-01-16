@@ -48,7 +48,11 @@ fn query_color(query: &str, terminal: TerminalKind) -> Result<Color> {
 fn parse_response(response: String) -> Result<Color> {
     response
         .strip_prefix("\x1b]11;")
-        .and_then(|response| response.strip_suffix("\x07"))
+        .and_then(|response| {
+            response
+                .strip_suffix("\x07")
+                .or(response.strip_suffix("\x1b\\"))
+        })
         .and_then(|response| Color::parse_x11(&response))
         .ok_or_else(|| Error::Parse(response))
 }
