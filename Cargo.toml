@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 libc = "0.2.151"
 mio = { version = "0.8.10", features = ["os-poll", "os-ext"], default-features = false }
+thiserror = "1.0.56"

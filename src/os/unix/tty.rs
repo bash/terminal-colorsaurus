@@ -1,12 +1,13 @@
 use super::to_io_result;
+use crate::Result;
 use libc::termios;
 use std::os::fd::{AsFd, AsRawFd, BorrowedFd};
 use std::panic::{catch_unwind, panic_any, UnwindSafe};
 use std::{io, mem};
 
-pub(crate) fn run_in_raw_mode<F, T>(fd: impl AsFd, f: F) -> io::Result<T>
+pub(crate) fn run_in_raw_mode<F, T>(fd: impl AsFd, f: F) -> Result<T>
 where
-    F: FnOnce() -> io::Result<T> + UnwindSafe,
+    F: FnOnce() -> Result<T> + UnwindSafe,
 {
     let fd = fd.as_fd();
 

@@ -1,10 +1,10 @@
+use crate::{Error, Result};
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
-use std::io::{self};
 use std::os::fd::RawFd;
 use std::time::Duration;
 
-pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> io::Result<()> {
+pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> Result<()> {
     let mut poll = Poll::new()?;
     let mut events = Events::with_capacity(1024);
     let token = Token(0);
@@ -16,5 +16,5 @@ pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> io::Result<()> {
             return Ok(());
         }
     }
-    todo!("timeout")
+    Err(Error::Timeout(timeout))
 }

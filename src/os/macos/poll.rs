@@ -1,15 +1,15 @@
 use super::super::to_io_result;
+use crate::{Error, Result};
 use libc::{timespec, FD_ISSET};
-use std::io;
 use std::os::fd::RawFd;
 use std::time::Duration;
 use std::{mem, ptr};
 
 // macOS does not support polling /dev/tty using kqueue, so we have to
 // resort to pselect/select. See https://nathancraddock.com/blog/macos-dev-tty-polling/.
-pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> io::Result<()> {
+pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> Result<()> {
     let mut readfds = unsafe { std::mem::zeroed() };
-    let timeout = to_timespec(timeout);
+    let timespec = to_timespec(timeout);
     unsafe { libc::FD_SET(fd, &mut readfds) };
     to_io_result(unsafe {
         libc::pselect(
@@ -17,14 +17,14 @@ pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> io::Result<()> {
             &mut readfds,
             ptr::null_mut(),
             ptr::null_mut(),
-            &timeout,
+            &timespec,
             ptr::null(),
         )
     })?;
     if unsafe { FD_ISSET(fd, &readfds) } {
         Ok(())
     } else {
-        todo!("timeout")
+        Err(Error::Timeout(timeout))
     }
 }
 
