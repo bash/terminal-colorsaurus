@@ -1,32 +1,32 @@
 use std::env;
 
+#[derive(Debug)]
 pub(crate) enum TerminalKind {
     Supported,
     Unsupported,
-    Passthrough(Passthrough),
     Unknown,
-}
-
-pub(crate) enum Passthrough {
-    Tmux,
-    Screen,
 }
 
 impl TerminalKind {
     pub(crate) fn from_env() -> Self {
-        if let Some(term) = env::var_os("TERM") {
-            if term == "contour" || term == "foot" {
+        if let Ok(term) = env::var("TERM") {
+            // tmux next-3.4 (which for some reason ships on Fedora supports querying for the colors)
+            if term == "contour" || term == "foot" || term == "tmux" || term.starts_with("tmux-") {
                 return TerminalKind::Supported;
             } else if term == "linux" {
                 return TerminalKind::Unsupported;
-            } else if term == "tmux" {
-                return TerminalKind::Passthrough(Passthrough::Tmux);
-            } else if term == "screen" {
-                return TerminalKind::Passthrough(Passthrough::Screen);
+            } else if term == "xterm" || term.starts_with("xterm-") {
+                // A lot of terminals claim that they're xterm-some of which
+                // do not support querying for colors. Let's do some investigating:
+                return TerminalKind::from_env_for_xterm();
             }
         }
 
-        if let Some(term_program) = env::var_os("TERM_PROGRAM") {
+        TerminalKind::Unknown
+    }
+
+    fn from_env_for_xterm() -> Self {
+        if let Ok(term_program) = env::var("TERM_PROGRAM") {
             const SUPPORTED: &[&str] = &[
                 "Apple_Terminal",
                 "iTerm.app",
@@ -36,19 +36,19 @@ impl TerminalKind {
                 "mintty",
             ];
 
-            if SUPPORTED.iter().any(|x| x == &term_program) {
+            if SUPPORTED.contains(&term_program.as_str()) {
                 return TerminalKind::Supported;
             } else if term_program == "Jetbrains.Fleet" {
                 return TerminalKind::Unsupported;
             }
         }
 
-        if let Some(term_emulator) = env::var_os("TERMINAL_EMULATOR") {
+        if let Ok(term_emulator) = env::var("TERMINAL_EMULATOR") {
             if term_emulator == "JetBrains-JediTerm" {
                 return TerminalKind::Supported;
             }
         }
 
-        TerminalKind::Unknown
+        return TerminalKind::Unknown;
     }
 }
