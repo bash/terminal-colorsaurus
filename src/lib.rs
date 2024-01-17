@@ -72,7 +72,9 @@ pub enum Error {
     /// The terminal responded using an unsupported response format.
     #[error("failed to parse response {0:?}")]
     Parse(String),
-    /// The query timed out.
+    /// The query timed out. This can happen because \
+    /// either the terminal does not support querying for colors \
+    /// or the terminal has a lot of latency (e.g. when connected via SSH).
     #[error("operation did not complete within {0:?}")]
     Timeout(Duration),
     /// The terminal is known to be unsupported.
