@@ -10,20 +10,35 @@ use std::time::{Duration, Instant};
 const MIN_TIMEOUT: Duration = Duration::from_millis(100);
 
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
-    query_color("\x1b]10;?\x07", options, TerminalKind::from_env())
+    query_color(
+        "\x1b]10;?\x07",
+        "\x1b]10;",
+        options,
+        TerminalKind::from_env(),
+    )
 }
 
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
-    query_color("\x1b]11;?\x07", options, TerminalKind::from_env())
+    query_color(
+        "\x1b]11;?\x07",
+        "\x1b]11;",
+        options,
+        TerminalKind::from_env(),
+    )
 }
 
-fn query_color(query: &str, options: QueryOptions, terminal: TerminalKind) -> Result<Color> {
-    query_color_raw(query, options, terminal).and_then(parse_response)
+fn query_color(
+    query: &str,
+    response_prefix: &str,
+    options: QueryOptions,
+    terminal: TerminalKind,
+) -> Result<Color> {
+    query_color_raw(query, options, terminal).and_then(|r| parse_response(r, response_prefix))
 }
 
-fn parse_response(response: String) -> Result<Color> {
+fn parse_response(response: String, prefix: &str) -> Result<Color> {
     response
-        .strip_prefix("\x1b]11;")
+        .strip_prefix(prefix)
         .and_then(|response| {
             response
                 .strip_suffix('\x07')
