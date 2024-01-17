@@ -3,6 +3,7 @@ name = "term-color"
 version = "0.1.0"
 edition = "2021"
 license = "MIT or Apache-2.0"
+rust-version = "1.70.0"
 
 [dependencies]
 thiserror = "1.0.56"
