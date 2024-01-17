@@ -1,8 +1,7 @@
-use crate::os::{poll_read, run_in_raw_mode, tty};
+use crate::os::{poll_read, run_in_raw_mode, tty, Tty};
 use crate::terminal::TerminalKind;
 use crate::{Color, Error, Result};
 use std::cmp::{max, min};
-use std::fs::File;
 use std::io::{Read, Write as _};
 use std::os::fd::AsRawFd;
 use std::str::from_utf8;
@@ -55,13 +54,13 @@ fn query_color_raw(q: &str, terminal: TerminalKind) -> Result<String> {
     })
 }
 
-fn estimate_timeout(tty: &mut File) -> Result<Duration> {
+fn estimate_timeout(tty: &mut Tty) -> Result<Duration> {
     let (_, latency) = query(tty, "\x1b[c", MAX_TIMEOUT)?;
     let timeout = latency * 2; // We want to be in the same ballpark as the latency of our test query. Factor 2 is mostly arbitrary.
     Ok(min(max(timeout, MIN_TIMEOUT), MAX_TIMEOUT))
 }
 
-fn query(tty: &mut File, query: &str, timeout: Duration) -> Result<(String, Duration)> {
+fn query(tty: &mut Tty, query: &str, timeout: Duration) -> Result<(String, Duration)> {
     let mut buffer = vec![0; 100];
 
     write!(tty, "{}", query)?;

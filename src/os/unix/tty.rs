@@ -2,7 +2,6 @@ use std::fs::{File, OpenOptions};
 use std::io;
 use std::io::{stderr, stdin, stdout, StderrLock, StdinLock, StdoutLock};
 use std::mem::ManuallyDrop;
-use std::ops::{Deref, DerefMut};
 use std::os::fd::{AsRawFd, FromRawFd, RawFd};
 
 macro_rules! try_tty {
@@ -49,28 +48,36 @@ pub(crate) enum TtyLock {
     Stderr(StderrLock<'static>),
 }
 
-impl Deref for Tty {
-    type Target = File;
+impl io::Write for Tty {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        self.as_file_mut().write(buf)
+    }
 
-    fn deref(&self) -> &Self::Target {
-        match self {
-            Tty::Owned(file) => file,
-            Tty::Borrowed(_, file) => file,
-        }
+    fn flush(&mut self) -> io::Result<()> {
+        self.as_file_mut().flush()
     }
 }
 
-impl DerefMut for Tty {
-    fn deref_mut(&mut self) -> &mut Self::Target {
+impl io::Read for Tty {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        self.as_file_mut().read(buf)
+    }
+}
+
+impl Tty {
+    fn as_file_mut(&mut self) -> &mut File {
         match self {
-            Tty::Owned(file) => file,
-            Tty::Borrowed(_, file) => file,
+            Tty::Owned(f) => f,
+            Tty::Borrowed(_, f) => f,
         }
     }
 }
 
 impl AsRawFd for Tty {
     fn as_raw_fd(&self) -> RawFd {
-        self.deref().as_raw_fd()
+        match self {
+            Tty::Owned(f) => f.as_raw_fd(),
+            Tty::Borrowed(_, f) => f.as_raw_fd(),
+        }
     }
 }
