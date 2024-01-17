@@ -22,10 +22,11 @@
 //!
 //! ## Example: Test If the Terminal Uses a Dark Background
 //! ```no_run
-//! use term_color::background_color;
+//! use term_color::{background_color, QueryOptions};
 //!
+//! let bg = background_color(QueryOptions::default());
 //! // Perceived lightness is a value between 0 (black) and 100 (white)
-//! let is_light = background_color().map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
+//! let is_light = bg.map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
 //! ```
 //!
 //! ## Variable Timeout
@@ -79,14 +80,37 @@ pub enum Error {
     UnsupportedTerminal,
 }
 
+/// Options to be used with [`foreground_color`] and [`background_color`].
+#[derive(Debug)]
+#[non_exhaustive]
+pub struct QueryOptions {
+    /// The maximum time spent waiting for a response from the terminal \
+    /// even when we *know* that the terminal supports querying for colors. Defaults to 1 s.
+    ///
+    /// Note that this timeout might not always apply as we use a variable timeout
+    /// for the color query.
+    ///
+    ///  Consider leaving this on a high value as there might be a lot of latency \
+    /// between you and the terminal (e.g. when you're connected via SSH).
+    pub max_timeout: Duration,
+}
+
+impl Default for QueryOptions {
+    fn default() -> Self {
+        Self {
+            max_timeout: Duration::from_secs(1),
+        }
+    }
+}
+
 /// Queries the terminal for it's foreground color.
-pub fn foreground_color() -> Result<Color> {
-    imp::foreground_color()
+pub fn foreground_color(options: QueryOptions) -> Result<Color> {
+    imp::foreground_color(options)
 }
 
 /// Queries the terminal for it's background color.
-pub fn background_color() -> Result<Color> {
-    imp::background_color()
+pub fn background_color(options: QueryOptions) -> Result<Color> {
+    imp::background_color(options)
 }
 
 #[cfg(not(unix))]

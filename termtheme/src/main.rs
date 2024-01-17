@@ -1,7 +1,7 @@
-use term_color::background_color;
+use term_color::{background_color, QueryOptions};
 
 fn main() {
-    let theme = match background_color() {
+    let theme = match background_color(QueryOptions::default()) {
         Ok(color) if color.perceived_lightness() <= 50 => "dark",
         Ok(_) => "light",
         Err(e) => {
