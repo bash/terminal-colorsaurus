@@ -1,15 +1,20 @@
-use crate::terminal::TerminalKind;
-use crate::xterm::estimate_timeout;
-use os::{run_in_raw_mode, tty};
 use std::io;
-use std::os::fd::AsRawFd;
 use std::time::Duration;
 use thiserror::Error;
 
 mod color;
+#[cfg(unix)]
 mod os;
+#[cfg(unix)]
 mod terminal;
+#[cfg(unix)]
 mod xterm;
+
+#[cfg(unix)]
+use xterm as imp;
+
+#[cfg(not(unix))]
+use unsupported as imp;
 
 pub use color::*;
 
@@ -32,46 +37,23 @@ pub enum Error {
 
 /// Determines the terminal's foreground color.
 pub fn foreground_color() -> Result<Color> {
-    query_color("\x1b]10;?\x07", TerminalKind::from_env())
+    imp::foreground_color()
 }
 
 /// Determines the terminal's background color.
 pub fn background_color() -> Result<Color> {
-    query_color("\x1b]11;?\x07", TerminalKind::from_env())
+    imp::background_color()
 }
 
-fn query_color(query: &str, terminal: TerminalKind) -> Result<Color> {
-    query_color_raw(query, terminal).and_then(parse_response)
-}
+#[cfg(not(unix))]
+mod unsupported {
+    use crate::{Color, Error, Result};
 
-fn parse_response(response: String) -> Result<Color> {
-    response
-        .strip_prefix("\x1b]11;")
-        .and_then(|response| {
-            response
-                .strip_suffix('\x07')
-                .or(response.strip_suffix("\x1b\\"))
-        })
-        .and_then(Color::parse_x11)
-        .ok_or_else(|| Error::Parse(response))
-}
-
-fn query_color_raw(query: &str, terminal: TerminalKind) -> Result<String> {
-    if let TerminalKind::Unsupported = terminal {
-        return Err(Error::UnsupportedTerminal);
+    pub(crate) fn foreground_color() -> Result<Color> {
+        Err(Error::UnsupportedTerminal)
     }
 
-    let mut tty = tty()?;
-    run_in_raw_mode(tty.as_raw_fd(), move || match terminal {
-        TerminalKind::Unsupported => unreachable!(),
-        TerminalKind::Supported => Ok(xterm::query(&mut tty, query, xterm::MAX_TIMEOUT)?.0),
-        TerminalKind::Unknown => {
-            // We use a well-supported sequence such as CSI C to measure the latency.
-            // this is to avoid mixing up the case where the terminal is slow to respond
-            // (e.g. because we're connected via SSH and have a slow connection)
-            // with the case where the terminal does not support querying for colors.
-            let timeout = estimate_timeout(&mut tty)?;
-            Ok(xterm::query(&mut tty, query, timeout)?.0)
-        }
-    })
+    pub(crate) fn background_color() -> Result<Color> {
+        Err(Error::UnsupportedTerminal)
+    }
 }
