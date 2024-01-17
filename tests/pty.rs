@@ -1,34 +1,27 @@
 use libc::{grantpt, unlockpt, TIOCSCTTY};
 use std::ffi::{c_int, CStr, CString, OsStr};
 use std::fs::{File, OpenOptions};
-use std::io::Read;
-use std::os::fd::{AsFd, AsRawFd, BorrowedFd, FromRawFd, OwnedFd, RawFd};
+use std::io;
+use std::io::{Read, Write};
+use std::os::fd::{AsFd, AsRawFd, BorrowedFd, FromRawFd};
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::process::CommandExt;
-use std::process::{Command, Stdio};
-use std::str::from_utf8;
-use std::{io, ptr};
+use std::process::Command;
+
+const FG_EXE: &str = env!("CARGO_BIN_EXE_fg");
 
 #[test]
 fn pty() {
     let mut controller = openpty().unwrap();
-    to_io_result(unsafe { grantpt(controller.as_raw_fd()) }).unwrap();
-    to_io_result(unsafe { unlockpt(controller.as_raw_fd()) }).unwrap();
 
-    let pts = ptsname(controller.as_fd()).unwrap();
+    let pts = ptsname_r(controller.as_fd()).unwrap();
     let user = OpenOptions::new()
         .read(true)
         .write(true)
         .open(OsStr::from_bytes(pts.as_bytes()))
         .unwrap();
 
-    // let user =
-
-    let mut builder = Command::new("yes");
-    builder
-        .stdin(unsafe { Stdio::from_raw_fd(user.as_raw_fd()) })
-        .stdout(unsafe { Stdio::from_raw_fd(user.as_raw_fd()) })
-        .stderr(unsafe { Stdio::from_raw_fd(user.as_raw_fd()) });
+    let mut builder = Command::new(FG_EXE);
     unsafe {
         let controller = controller.as_raw_fd();
         let user = user.as_raw_fd();
@@ -40,18 +33,41 @@ fn pty() {
             Ok(())
         });
     }
+    builder
+        .env_clear()
+        .stdin(user.try_clone().unwrap())
+        .stdout(user.try_clone().unwrap())
+        .stderr(user);
 
     let mut child = builder.spawn().unwrap();
-    // child.wait().unwrap();
+    drop(builder);
+    // drop(user);
+    let mut buf = [0; 1];
 
-    let mut buf = vec![0; 100];
-    let bytes_read = controller.read(&mut buf).unwrap();
-    dbg!(bytes_read);
-    dbg!(from_utf8(&buf[..bytes_read]).unwrap());
+    while buf[0] != b'\x1b' {
+        controller.read(&mut buf).unwrap();
+    }
+    while buf[0] != b'c' {
+        controller.read(&mut buf).unwrap();
+    }
 
-    // dbg!(&controller);
-    // dbg!(&user);
-    panic!();
+    controller.write_all(b"\x1b[?1;2c").unwrap();
+    while buf[0] != b'\x1b' {
+        controller.read(&mut buf).unwrap();
+    }
+    while buf[0] != b'\x07' {
+        controller.read(&mut buf).unwrap();
+    }
+
+    controller
+        .write_all(b"\x1b]11;rgb:dcaa/dcab/dcaa\x07")
+        .unwrap();
+
+    let mut buf = String::new();
+    controller.read_to_string(&mut buf).unwrap();
+
+    assert_eq!("Color { red: 56490, green: 56491, blue: 56490 }\r\n", buf);
+    assert!(child.wait().unwrap().success());
 }
 
 fn openpty() -> io::Result<File> {
@@ -59,23 +75,10 @@ fn openpty() -> io::Result<File> {
     //   Open the device for both reading and writing.
     // O_NOCTTY:
     //   Do not make this device the controlling terminal for the process.
-    let fd = unsafe { libc::posix_openpt(libc::O_RDWR | libc::O_NOCTTY) };
-    if fd == -1 {
-        Err(io::Error::last_os_error())
-    } else {
-        Ok(unsafe { File::from_raw_fd(fd) })
-    }
-}
-
-fn ptsname(fd: BorrowedFd<'_>) -> io::Result<CString> {
-    // Yeah, yeah this means that I only support very small strings. But I don't care for my tests :)
-    let mut buf = vec![0; 256];
-    let code = unsafe { libc::ptsname_r(fd.as_raw_fd(), buf.as_mut_ptr().cast(), buf.len()) };
-    if code == 0 {
-        Ok(unsafe { CStr::from_ptr(buf.as_ptr()).to_owned() })
-    } else {
-        Err(io::Error::from_raw_os_error(code))
-    }
+    let fd = to_io_result(unsafe { libc::posix_openpt(libc::O_RDWR | libc::O_NOCTTY) })?;
+    to_io_result(unsafe { grantpt(fd) })?;
+    to_io_result(unsafe { unlockpt(fd) })?;
+    Ok(unsafe { File::from_raw_fd(fd) })
 }
 
 fn to_io_result(value: c_int) -> io::Result<c_int> {
@@ -98,4 +101,40 @@ fn set_controlling_terminal(fd: c_int) -> io::Result<()> {
     };
     to_io_result(res)?;
     Ok(())
+}
+
+#[cfg(not(target_os = "macos"))]
+fn ptsname_r(fd: BorrowedFd<'_>) -> io::Result<CString> {
+    // Yeah, yeah this means that I only support very small strings. But I don't care for my tests :)
+    let mut buf = vec![0; 256];
+    let code = unsafe { libc::ptsname_r(fd.as_raw_fd(), buf.as_mut_ptr().cast(), buf.len()) };
+    if code == 0 {
+        Ok(unsafe { CStr::from_ptr(buf.as_ptr()).to_owned() })
+    } else {
+        Err(io::Error::from_raw_os_error(code))
+    }
+}
+
+#[cfg(target_os = "macos")]
+// Based on: https://github.com/Mobivity/nix-ptsname_r-shim/blob/master/src/lib.rs
+fn ptsname_r(fd: BorrowedFd<'_>) -> io::Result<CString> {
+    // This is based on
+    // https://blog.tarq.io/ptsname-on-osx-with-rust/
+    // and its derivative
+    // https://github.com/philippkeller/rexpect/blob/a71dd02/src/process.rs#L67
+    use libc::{c_ulong, ioctl, TIOCPTYGNAME};
+    use std::os::unix::prelude::*;
+
+    // the buffer size on OSX is 128, defined by sys/ttycom.h
+    let buf: [i8; 128] = [0; 128];
+
+    unsafe {
+        match ioctl(fd.as_raw_fd(), TIOCPTYGNAME as c_ulong, &buf) {
+            0 => {
+                let res = CStr::from_ptr(buf.as_ptr()).to_owned();
+                Ok(res)
+            }
+            _ => Err(io::Error::last_os_error()),
+        }
+    }
 }
