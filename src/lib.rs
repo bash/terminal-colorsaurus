@@ -30,6 +30,10 @@
 //!
 //! ## Variable Timeout
 //! TODO
+//!
+//! ## Comparison with Other Libraries
+//! * termbg: TODO
+//! * dark-light: TODO
 
 use std::io;
 use std::time::Duration;
