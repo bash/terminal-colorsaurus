@@ -30,11 +30,19 @@
 //! ```
 //!
 //! ## Variable Timeout
-//! TODO
+//! Knowing whether or not a terminal supports querying for the
+//! foreground and background colors hard to reliably detect.
+//! Employing a fixed timeout is not the best options because the terminal might support the sequence
+//! but have a lot of latency (e.g. the user is connected over SSH).
+//!
+//! This library assumes that the terminal support the [widely supported][terminal-survey] `CSI c` sequence.
+//! Using this, it measures the latency. This measurement then informs the timeout enforced on the actual query.
 //!
 //! ## Comparison with Other Libraries
 //! * termbg: TODO
 //! * dark-light: TODO
+//!
+//! [terminal-survey]: https://github.com/bash/term-color/blob/main/doc/terminal-survey.md
 
 use std::io;
 use std::time::Duration;
