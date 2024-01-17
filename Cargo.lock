@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "libc"
-version = "0.2.151"
+version = "0.2.152"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "302d7ab3130588088d277783b1e2d2e10c9e9e4a16dd9050e6ec93fb3e7048f4"
+checksum = "13e3bf6590cbc649f4d1a3eefc9d5d6eb746f5200ffb04e5e142700b8faa56e7"
 
 [[package]]
 name = "mio"
@@ -49,7 +49,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "terminal-color"
+name = "term-color"
 version = "0.1.0"
 dependencies = [
  "libc",
@@ -61,7 +61,7 @@ dependencies = [
 name = "termtheme"
 version = "0.1.0"
 dependencies = [
- "terminal-color",
+ "term-color",
 ]
 
 [[package]]

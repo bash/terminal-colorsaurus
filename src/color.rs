@@ -10,6 +10,11 @@ impl Color {
     /// The perceived lightness of the color
     /// as a value between `0` (black) and `100` (white)
     /// where `50` is the perceptual "middle grey".
+    /// ```
+    /// # use term_color::Color;
+    /// # let color = Color::default();
+    /// let is_dark = color.perceived_lightness() <= 50;
+    /// ```
     pub fn perceived_lightness(&self) -> u8 {
         luminance_to_perceived_lightness(luminance(self))
     }

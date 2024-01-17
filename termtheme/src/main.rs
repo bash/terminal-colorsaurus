@@ -1,4 +1,4 @@
-use terminal_color::background_color;
+use term_color::background_color;
 
 fn main() {
     let theme = match background_color() {
