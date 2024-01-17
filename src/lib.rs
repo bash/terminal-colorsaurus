@@ -49,10 +49,10 @@ fn parse_response(response: String) -> Result<Color> {
         .strip_prefix("\x1b]11;")
         .and_then(|response| {
             response
-                .strip_suffix("\x07")
+                .strip_suffix('\x07')
                 .or(response.strip_suffix("\x1b\\"))
         })
-        .and_then(|response| Color::parse_x11(&response))
+        .and_then(Color::parse_x11)
         .ok_or_else(|| Error::Parse(response))
 }
 

@@ -13,7 +13,7 @@ pub(crate) const MAX_TIMEOUT: Duration = Duration::from_secs(1);
 pub(crate) fn estimate_timeout(tty: &mut File) -> Result<Duration> {
     let (_, latency) = query(tty, "\x1b[c", MAX_TIMEOUT)?;
     let timeout = latency * 2; // We want to be in the same ballpark as the latency of our test query. Factor 2 is mostly arbitrary.
-    return Ok(min(max(timeout, MIN_TIMEOUT), MAX_TIMEOUT));
+    Ok(min(max(timeout, MIN_TIMEOUT), MAX_TIMEOUT))
 }
 
 pub(crate) fn query(tty: &mut File, query: &str, timeout: Duration) -> Result<(String, Duration)> {

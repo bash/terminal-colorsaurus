@@ -19,7 +19,7 @@ impl Color {
     /// Parses an X11 color (see `man xparsecolor`).
     pub(crate) fn parse_x11(input: &str) -> Option<Self> {
         let raw_parts = input.strip_prefix("rgb:")?;
-        let mut parts = raw_parts.split("/");
+        let mut parts = raw_parts.split('/');
         let red = parse_channel(parts.next()?)?;
         let green = parse_channel(parts.next()?)?;
         let blue = parse_channel(parts.next()?)?;
@@ -34,7 +34,7 @@ fn parse_channel(input: &str) -> Option<u16> {
     //   hh the value scaled in 8 bits,
     //   hhh the value scaled in 12 bits, and
     //   hhhh the value scaled in 16 bits, respectively.
-    let shift = (len >= 1 && len <= 4).then(|| 16 - 4 * len as u16)?;
+    let shift = (1..=4).contains(&len).then_some(16 - 4 * len as u16)?;
     Some(u16::from_str_radix(input, 16).ok()? << shift)
 }
 

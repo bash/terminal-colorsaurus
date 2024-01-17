@@ -49,6 +49,6 @@ impl TerminalKind {
             }
         }
 
-        return TerminalKind::Unknown;
+        TerminalKind::Unknown
     }
 }
