@@ -1,7 +1,6 @@
 use crate::terminal::TerminalKind;
 use crate::xterm::estimate_timeout;
-use os::run_in_raw_mode;
-use std::fs::{File, OpenOptions};
+use os::{run_in_raw_mode, tty};
 use std::io;
 use std::os::fd::AsRawFd;
 use std::time::Duration;
@@ -66,10 +65,6 @@ fn query_color_raw(query: &str, terminal: TerminalKind) -> Result<String> {
     run_in_raw_mode(tty.as_raw_fd(), move || match terminal {
         TerminalKind::Unsupported => unreachable!(),
         TerminalKind::Supported => Ok(xterm::query(&mut tty, query, xterm::MAX_TIMEOUT)?.0),
-        // TerminalKind::Passthrough(Passthrough::Screen) => {
-        //     let timeout = estimate_timeout(&mut tty)?;
-        //     Ok(xterm::query(&mut tty, &format!("{ESC}P{query}"), timeout)?.0)
-        // }
         TerminalKind::Unknown => {
             // We use a well-supported sequence such as CSI C to measure the latency.
             // this is to avoid mixing up the case where the terminal is slow to respond
@@ -79,10 +74,4 @@ fn query_color_raw(query: &str, terminal: TerminalKind) -> Result<String> {
             Ok(xterm::query(&mut tty, query, timeout)?.0)
         }
     })
-}
-
-// TODO: Re-use already opened tty
-fn tty() -> io::Result<File> {
-    // Ok(unsafe { File::from_raw_fd(libc::STDIN_FILENO) })
-    OpenOptions::new().read(true).write(true).open("/dev/tty")
 }
