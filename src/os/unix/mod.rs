@@ -1,8 +1,6 @@
 use libc::c_int;
 use std::io;
 
-mod tty;
-pub(crate) use tty::*;
 mod raw_tty;
 pub(crate) use raw_tty::*;
 #[cfg(not(target_os = "macos"))]

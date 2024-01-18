@@ -54,6 +54,16 @@ version = "0.1.0"
 dependencies = [
  "libc",
  "mio",
+ "terminal-trx",
+ "thiserror",
+]
+
+[[package]]
+name = "terminal-trx"
+version = "0.1.0"
+source = "git+https://github.com/bash/terminal-trx#18be7e295460c41b05afd74dbe72918ae4b20938"
+dependencies = [
+ "libc",
  "thiserror",
 ]
 
