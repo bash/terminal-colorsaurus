@@ -1,12 +1,10 @@
-use crate::os::{poll_read, run_in_raw_mode};
+use crate::os::poll_read;
 use crate::terminal::TerminalKind;
 use crate::{Color, Error, QueryOptions, Result};
 use std::cmp::{max, min};
-use std::io::{Read, Write as _};
-use std::os::fd::AsRawFd;
 use std::str::from_utf8;
 use std::time::{Duration, Instant};
-use terminal_trx::{terminal, TerminalLock};
+use terminal_trx::{terminal, Transceive};
 
 const MIN_TIMEOUT: Duration = Duration::from_millis(100);
 
@@ -55,30 +53,30 @@ fn query_color_raw(q: &str, options: QueryOptions, kind: TerminalKind) -> Result
     }
 
     let mut tty = terminal()?;
-    run_in_raw_mode(tty.as_raw_fd(), move || {
-        let mut tty = tty.lock()?;
-        match kind {
-            TerminalKind::Unsupported => unreachable!(),
-            TerminalKind::Supported => Ok(query(&mut tty, q, options.max_timeout)?.0),
-            TerminalKind::Unknown => {
-                // We use a well-supported sequence such as CSI C to measure the latency.
-                // this is to avoid mixing up the case where the terminal is slow to respond
-                // (e.g. because we're connected via SSH and have a slow connection)
-                // with the case where the terminal does not support querying for colors.
-                let timeout = estimate_timeout(&mut tty, options.max_timeout)?;
-                Ok(query(&mut tty, q, timeout)?.0)
-            }
+    let mut tty = tty.lock()?;
+    let mut tty = tty.enable_raw_mode()?;
+
+    match kind {
+        TerminalKind::Unsupported => unreachable!(),
+        TerminalKind::Supported => Ok(query(&mut tty, q, options.max_timeout)?.0),
+        TerminalKind::Unknown => {
+            // We use a well-supported sequence such as CSI C to measure the latency.
+            // this is to avoid mixing up the case where the terminal is slow to respond
+            // (e.g. because we're connected via SSH and have a slow connection)
+            // with the case where the terminal does not support querying for colors.
+            let timeout = estimate_timeout(&mut tty, options.max_timeout)?;
+            Ok(query(&mut tty, q, timeout)?.0)
         }
-    })
+    }
 }
 
-fn estimate_timeout(tty: &mut TerminalLock<'_>, max_timeout: Duration) -> Result<Duration> {
+fn estimate_timeout(tty: &mut dyn Transceive, max_timeout: Duration) -> Result<Duration> {
     let (_, latency) = query(tty, "\x1b[c", max_timeout)?;
     let timeout = latency * 2; // We want to be in the same ballpark as the latency of our test query. Factor 2 is mostly arbitrary.
     Ok(min(max(timeout, MIN_TIMEOUT), max_timeout))
 }
 
-fn query(tty: &mut TerminalLock<'_>, query: &str, timeout: Duration) -> Result<(String, Duration)> {
+fn query(tty: &mut dyn Transceive, query: &str, timeout: Duration) -> Result<(String, Duration)> {
     let mut buffer = vec![0; 100];
 
     write!(tty, "{}", query)?;

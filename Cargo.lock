@@ -61,7 +61,7 @@ dependencies = [
 [[package]]
 name = "terminal-trx"
 version = "0.1.0"
-source = "git+https://github.com/bash/terminal-trx#18be7e295460c41b05afd74dbe72918ae4b20938"
+source = "git+https://github.com/bash/terminal-trx#a1c03e03f99a2a6d5cf6bee92519acf89968d6a3"
 dependencies = [
  "libc",
  "thiserror",
