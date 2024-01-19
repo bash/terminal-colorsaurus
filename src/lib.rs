@@ -125,13 +125,13 @@ pub fn background_color(options: QueryOptions) -> Result<Color> {
 
 #[cfg(not(unix))]
 mod unsupported {
-    use crate::{Color, Error, Result};
+    use crate::{Color, Error, QueryOptions, Result};
 
-    pub(crate) fn foreground_color() -> Result<Color> {
+    pub(crate) fn foreground_color(_options: QueryOptions) -> Result<Color> {
         Err(Error::UnsupportedTerminal)
     }
 
-    pub(crate) fn background_color() -> Result<Color> {
+    pub(crate) fn background_color(_options: QueryOptions) -> Result<Color> {
         Err(Error::UnsupportedTerminal)
     }
 }

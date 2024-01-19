@@ -11,7 +11,7 @@ thiserror = "1.0.56"
 [target.'cfg(unix)'.dependencies]
 libc = "0.2.151"
 mio = { version = "0.8.10", features = ["os-poll", "os-ext"], default-features = false }
-terminal-trx = { git = "https://github.com/bash/terminal-trx" }
+terminal-trx = { git = "https://github.com/bash/terminal-trx", branch = "windows" }
 
 [workspace]
 members = [
