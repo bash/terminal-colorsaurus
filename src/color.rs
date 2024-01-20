@@ -24,9 +24,9 @@ impl Color {
 impl From<Color> for rgb::RGB16 {
     fn from(value: Color) -> Self {
         rgb::RGB16 {
-            r: self.r,
-            g: self.g,
-            b: self.b,
+            r: value.r,
+            g: value.g,
+            b: value.b,
         }
     }
 }
@@ -35,9 +35,9 @@ impl From<Color> for rgb::RGB16 {
 impl From<rgb::RGB16> for Color {
     fn from(value: rgb::RGB16) -> Self {
         Color {
-            red: self.r,
-            green: self.g,
-            blue: self.b,
+            r: value.r,
+            g: value.g,
+            b: value.b,
         }
     }
 }
