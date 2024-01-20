@@ -56,12 +56,13 @@ dependencies = [
  "mio",
  "terminal-trx",
  "thiserror",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
 name = "terminal-trx"
 version = "0.1.0"
-source = "git+https://github.com/bash/terminal-trx?branch=windows#3e3d2f134b965a03119ec44038ca526893c9d284"
+source = "git+https://github.com/bash/terminal-trx#33745e1081190ba2fc7ea80da2f0c84cda510db5"
 dependencies = [
  "libc",
  "thiserror",

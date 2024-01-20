@@ -1,24 +1,17 @@
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence.
 //!
+//! On Windows, the colors are queried using the Win32 Console API.
+//!
+//! This is useful for answering the question *"Is this terminal dark or light?"*.
+//!
 //! ## Features
 //! * Background and foreground color detection.
 //! * Uses a variable timeout (for situations with high latency such as an SSH connection).
 //! * *Correct* perceived lightness calculation.
 //! * Works even if all of stderr, stdout and stdin are redirected.
-//! * Safely restores the terminal from raw mode even if the library panicks.
-//!
-//! ## Supported Terminals
-//! * macOS Terminal
-//! * iTerm2
-//! * Alacritty
-//! * VSCode (xterm.js)
-//! * IntelliJ IDEA
-//! * Contour
-//! * GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (elementary) Terminal, LXTerminal
-//! * Console
-//! * foot
-//! * xterm
+//! * Safely restores the terminal from raw mode even if the library errors or panicks.
+//! * Does not send any escape sequences if `TERM=dumb`.
 //!
 //! ## Example: Test If the Terminal Uses a Dark Background
 //! ```no_run
@@ -29,38 +22,84 @@
 //! let is_light = bg.map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
 //! ```
 //!
+//! ## Terminals
+//! The following terminals have known support or non-support for
+//! querying for the background/foreground colors.
+//!
+//! Note that terminals that support the relevant terminal
+//! sequences automatically work with this library even if they
+//! are not explicitly listed below.
+//!
+//! ### Supported
+//! * macOS Terminal
+//! * iTerm2
+//! * Alacritty
+//! * VSCode (xterm.js)
+//! * IntelliJ IDEA
+//! * Contour
+//! * GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (elementary) Terminal, LXTerminal
+//! * Console
+//! * foot
+//! * xterm
+//! * tmux (next-3.4)
+//! * Windows Console (conhost)
+//!
+//! ### Unsupported
+//! * linux
+//! * Jetbrains Fleet
+//! * Windows Terminal
+//!
 //! ## Variable Timeout
 //! Knowing whether or not a terminal supports querying for the
 //! foreground and background colors hard to reliably detect.
 //! Employing a fixed timeout is not the best options because the terminal might support the sequence
 //! but have a lot of latency (e.g. the user is connected over SSH).
 //!
-//! This library assumes that the terminal support the [widely supported][terminal-survey] `CSI c` sequence.
+//! This library assumes that the terminal support the [widely supported][`terminal_survey`] `CSI c` sequence.
 //! Using this, it measures the latency. This measurement then informs the timeout enforced on the actual query.
 //!
-//! ## Comparison with Other Libraries
-//! * termbg: TODO
-//! * dark-light: TODO
+//! ## Comparison with Other Crates
+//! ### [termbg]
+//! * Is hardcoded to use stdin/stderr for communicating with the terminal. \
+//!   This means that it does not work if some or all of these streams are redirected.
+//! * Pulls in an async runtime for the timeout.
 //!
-//! [terminal-survey]: https://github.com/bash/term-color/blob/main/doc/terminal-survey.md
+//! ### [terminal-light]
+//! * Is hardcoded to use stdin/stdout for communicating with the terminal.
+//! * Does not report the colors, only the color's luma.
+//!
+//! [termbg]: https://docs.rs/termbg
+//! [terminal-light]: https://docs.rs/terminal-light
 
 use std::io;
 use std::time::Duration;
 use thiserror::Error;
 
 mod color;
-#[cfg(unix)]
 mod os;
+
 #[cfg(unix)]
 mod terminal;
+#[cfg(windows)]
+mod winapi;
 #[cfg(unix)]
 mod xterm;
 
+#[cfg(windows)]
+use winapi as imp;
 #[cfg(unix)]
 use xterm as imp;
 
-#[cfg(not(unix))]
+#[cfg(not(any(unix, windows)))]
 use unsupported as imp;
+
+#[cfg(feature = "__docs")]
+#[doc = include_str!("../doc/terminal-survey.md")]
+pub mod terminal_survey {}
+
+#[cfg(feature = "__test_readme")]
+#[doc = include_str!("../readme.md")]
+pub mod readme {}
 
 pub use color::*;
 
@@ -123,7 +162,7 @@ pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
 }
 
-#[cfg(not(unix))]
+#[cfg(not(any(unix, windows)))]
 mod unsupported {
     use crate::{Color, Error, QueryOptions, Result};
 

@@ -24,14 +24,20 @@
 | ConEmu / Cmder        | yes     | no                   | no                   | -            | -                | -                 | -                      | 230724 stable              |
 | Mintty                | yes     | `rgb:ffff/ffff/ffff` | `rgb:ffff/ffff/ffff` | -            | `xterm`          | `mintty`          | yes                    | 3.6.1                      |
 
-> [!note]
-> Some Linux terminals are omitted since they all use the `vte` library behind the scenes. \
-> Here's a non-exhaustive list: GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (GNOME) Builder, (elementary) Terminal, LXTerminal.
+<br>
+
+**ℹ️ Note:**
+Some Linux terminals are omitted since they all use the `vte` library behind the scenes. \
+Here's a non-exhaustive list: GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (GNOME) Builder, (elementary) Terminal, LXTerminal.
 
 [^1]: But it sets `TERMINAL_EMULATOR=JetBrains-JediTerm` instead.
+
 [^2]: But it provides a terminfo entry by adding `TERMINFO_DIRS`.
+
 [^3]: But it sets `TERMINAL_NAME=contour` instead.
+
 [^4]: But it sets `TERMINAL_VERSION_STRING` and `TERMINAL_VERSION_TRIPLE` instead.
+
 [^5]: But it can be recognized by `WT_SESSION` instead.
 
 

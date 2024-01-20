@@ -1,5 +1,4 @@
 use std::error::Error;
-
 use term_color::QueryOptions;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -7,5 +6,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     dbg!(color.perceived_lightness());
     dbg!(color.perceived_lightness() <= 50);
     dbg!(color);
+    dbg!(term_color::foreground_color(QueryOptions::default())?);
     Ok(())
 }
