@@ -22,4 +22,4 @@ jobs:
     - name: Run clippy
       run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
     - name: Run tests
-      run: cargo test --all
+      run: cargo test --all --all-features
