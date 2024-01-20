@@ -1,9 +1,9 @@
 /// An RGB color with 16 bits per channel.
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
 pub struct Color {
-    pub red: u16,
-    pub green: u16,
-    pub blue: u16,
+    pub r: u16,
+    pub g: u16,
+    pub b: u16,
 }
 
 impl Color {
@@ -11,12 +11,34 @@ impl Color {
     /// as a value between `0` (black) and `100` (white)
     /// where `50` is the perceptual "middle grey".
     /// ```
-    /// # use term_color::Color;
+    /// # use terminal_colorsaurus::Color;
     /// # let color = Color::default();
     /// let is_dark = color.perceived_lightness() <= 50;
     /// ```
     pub fn perceived_lightness(&self) -> u8 {
         luminance_to_perceived_lightness(luminance(self))
+    }
+}
+
+#[cfg(feature = "rgb")]
+impl From<Color> for rgb::RGB16 {
+    fn from(value: Color) -> Self {
+        rgb::RGB16 {
+            r: value.r,
+            g: value.g,
+            b: value.b,
+        }
+    }
+}
+
+#[cfg(feature = "rgb")]
+impl From<rgb::RGB16> for Color {
+    fn from(value: rgb::RGB16) -> Self {
+        Color {
+            r: value.r,
+            g: value.g,
+            b: value.b,
+        }
     }
 }
 
@@ -26,18 +48,18 @@ impl Color {
     pub(crate) fn parse_x11(input: &str) -> Option<Self> {
         let raw_parts = input.strip_prefix("rgb:")?;
         let mut parts = raw_parts.split('/');
-        let red = parse_channel(parts.next()?)?;
-        let green = parse_channel(parts.next()?)?;
-        let blue = parse_channel(parts.next()?)?;
-        Some(Color { red, green, blue })
+        let r = parse_channel(parts.next()?)?;
+        let g = parse_channel(parts.next()?)?;
+        let b = parse_channel(parts.next()?)?;
+        Some(Color { r, g, b })
     }
 
     #[cfg(windows)]
-    pub(crate) fn from_8bit(red: u8, green: u8, blue: u8) -> Color {
+    pub(crate) fn from_8bit(r: u8, g: u8, b: u8) -> Color {
         Color {
-            red: (red as u16) << 8,
-            green: (green as u16) << 8,
-            blue: (blue as u16) << 8,
+            r: (r as u16) << 8,
+            g: (g as u16) << 8,
+            b: (b as u16) << 8,
         }
     }
 }
@@ -67,9 +89,9 @@ fn srgb_to_lin(channel: f64) -> f64 {
 
 // Luminance (Y)
 fn luminance(color: &Color) -> f64 {
-    let r = color.red as f64 / u16::MAX as f64;
-    let g = color.green as f64 / u16::MAX as f64;
-    let b = color.blue as f64 / u16::MAX as f64;
+    let r = color.r as f64 / u16::MAX as f64;
+    let g = color.g as f64 / u16::MAX as f64;
+    let b = color.b as f64 / u16::MAX as f64;
     0.2126 * srgb_to_lin(r) + 0.7152 * srgb_to_lin(g) + 0.0722 * srgb_to_lin(b)
 }
 
@@ -95,9 +117,9 @@ mod tests {
     #[test]
     fn white_has_perceived_lightness_100() {
         let black = Color {
-            red: u16::MAX,
-            green: u16::MAX,
-            blue: u16::MAX,
+            r: u16::MAX,
+            g: u16::MAX,
+            b: u16::MAX,
         };
         assert_eq!(100, black.perceived_lightness())
     }

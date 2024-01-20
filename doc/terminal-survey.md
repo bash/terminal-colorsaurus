@@ -1,4 +1,4 @@
-# Terminal Survey
+A list of terminals that were tested for support of `CSI c` and `OSC 10` / `OSC 11`.
 
 | Terminal              | `CSI c` | fg                   | bg                   | mean latency | `TERM`           | `TERM_PROGRAM`    | `TERM_PROGRAM_VERSION` | Version Tested             |
 |-----------------------|---------|----------------------|----------------------|--------------|------------------|-------------------|------------------------|----------------------------|

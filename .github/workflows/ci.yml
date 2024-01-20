@@ -20,10 +20,8 @@ jobs:
       run: cargo build
     - name: Check format
       run: cargo fmt -- --check
-    - name: Run clippy
-      run: cargo clippy --all-targets --all-features -- --deny warnings
     - name: Docs
-      run: cargo doc --features __docs
+      run: cargo doc --features docs,rgb
   test:
     strategy:
       matrix:
@@ -32,4 +30,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Run tests
-      run: cargo test
+      run: cargo test --features __test_readme
+    - name: Run clippy
+      run: cargo clippy --all-targets --all-features -- --deny warnings

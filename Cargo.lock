@@ -3,6 +3,12 @@
 version = 3
 
 [[package]]
+name = "bytemuck"
+version = "1.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "374d28ec25809ee0e23827c2ab573d729e293f281dfe393500e7ad618baa61c6"
+
+[[package]]
 name = "libc"
 version = "0.2.152"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -38,6 +44,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rgb"
+version = "0.8.37"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05aaa8004b64fd573fc9d002f4e632d51ad4f026c2b5ba95fcb6c2f32c2c47d8"
+dependencies = [
+ "bytemuck",
+]
+
+[[package]]
 name = "syn"
 version = "2.0.48"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -49,11 +64,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "term-color"
+name = "terminal-colorsaurus"
 version = "0.1.0"
 dependencies = [
  "libc",
  "mio",
+ "rgb",
  "terminal-trx",
  "thiserror",
  "windows-sys 0.52.0",
@@ -62,18 +78,12 @@ dependencies = [
 [[package]]
 name = "terminal-trx"
 version = "0.1.0"
-source = "git+https://github.com/bash/terminal-trx#33745e1081190ba2fc7ea80da2f0c84cda510db5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c65469586ce1dd3e6488af435329575fa51c35168d2ad6fc16183f1c62fdec4a"
 dependencies = [
  "libc",
  "thiserror",
  "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "termtheme"
-version = "0.1.0"
-dependencies = [
- "term-color",
 ]
 
 [[package]]

@@ -1,4 +1,4 @@
-# term-color
+# terminal-colorsaurus 🦕
 Determines the background and foreground color of the terminal
 using the `OSC 10` and `OSC 11` terminal sequence.
 On Windows, the colors are queried using the Win32 Console API.
@@ -7,10 +7,10 @@ This is useful for answering the question *"Is this terminal dark or light?"*.
 
 ## Example
 ```rust,no_run
-use term_color::{background_color, QueryOptions};
-let bg = background_color(QueryOptions::default());
-// Perceived lightness is a value between 0 (black) and 100 (white)
-let is_light = bg.map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
+use terminal_colorsaurus::{color_scheme, QueryOptions};
+
+let colors = color_scheme(QueryOptions::default()).unwrap();
+dbg!(colors.is_dark_on_light());
 ```
 
 ## Wishlist
