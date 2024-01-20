@@ -1,4 +1,5 @@
 #![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
+#![deny(clippy::undocumented_unsafe_blocks)]
 
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence.
