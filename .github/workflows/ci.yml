@@ -30,6 +30,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Run tests
-      run: cargo test
+      run: cargo test --features __test_readme
     - name: Run clippy
       run: cargo clippy --all-targets --all-features -- --deny warnings
