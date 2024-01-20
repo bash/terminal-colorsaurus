@@ -24,8 +24,3 @@ __test_readme = []
 
 [package.metadata.docs.rs]
 features = ["__docs", "__nightly"]
-
-[workspace]
-members = [
-    "termtheme"
-]
