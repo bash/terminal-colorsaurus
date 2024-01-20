@@ -1,6 +1,17 @@
 # term-color
 Determines the background and foreground color of the terminal
 using the `OSC 10` and `OSC 11` terminal sequence.
+On Windows, the colors are queried using the Win32 Console API.
+
+This is useful for answering the question *"Is this terminal dark or light?"*.
+
+## Example
+```rust,no_run
+use term_color::{background_color, QueryOptions};
+let bg = background_color(QueryOptions::default());
+// Perceived lightness is a value between 0 (black) and 100 (white)
+let is_light = bg.map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
+```
 
 ## Wishlist
 These are some features that I would like to include in this crate,
@@ -23,9 +34,9 @@ This crate borrows ideas from many other projects. This list is by no means exha
 Licensed under either of
 
 * Apache License, Version 2.0
-  ([license-apache.txt](license-apache.txt) or http://www.apache.org/licenses/LICENSE-2.0)
+  ([license-apache.txt](license-apache.txt) or <http://www.apache.org/licenses/LICENSE-2.0>)
 * MIT license
-  ([license-mit.txt](license-mit.txt) or http://opensource.org/licenses/MIT)
+  ([license-mit.txt](license-mit.txt) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
