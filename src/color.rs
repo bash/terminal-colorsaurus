@@ -20,6 +20,28 @@ impl Color {
     }
 }
 
+#[cfg(feature = "rgb")]
+impl From<Color> for rgb::RGB16 {
+    fn from(value: Color) -> Self {
+        rgb::RGB16 {
+            r: self.red,
+            g: self.green,
+            b: self.blue,
+        }
+    }
+}
+
+#[cfg(feature = "rgb")]
+impl From<rgb::RGB16> for Color {
+    fn from(value: rgb::RGB16) -> Self {
+        Color {
+            red: self.r,
+            green: self.g,
+            blue: self.b,
+        }
+    }
+}
+
 impl Color {
     /// Parses an X11 color (see `man xparsecolor`).
     #[cfg(unix)]

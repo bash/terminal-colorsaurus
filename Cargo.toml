@@ -1,12 +1,18 @@
 [package]
 name = "terminal-colorsaurus"
+description = "Provides a handle to the terminal of the current process"
+readme = "readme.md"
+repository = "https://github.com/bash/terminal-colorsaurus"
+categories = ["command-line-interface"]
+license = "MIT OR Apache-2.0"
 version = "0.1.0"
 edition = "2021"
-license = "MIT or Apache-2.0"
 rust-version = "1.70.0"
+exclude = [".github", ".gitignore", "*.sh"]
 
 [dependencies]
 thiserror = "1.0.56"
+rgb = { version = "0.8.37", optional = true }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2.151"

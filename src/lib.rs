@@ -58,6 +58,9 @@
 //! * Jetbrains Fleet
 //! * Windows Terminal
 //!
+//! ## Optional Dependencies
+//! * [`rgb`] — Enable this feature to convert between [`Color`] and [`rgb::RGB16`].
+//!
 //! ## Variable Timeout
 //! Knowing whether or not a terminal supports querying for the
 //! foreground and background colors hard to reliably detect.
