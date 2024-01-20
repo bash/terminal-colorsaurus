@@ -1,5 +1,5 @@
 use std::error::Error;
-use term_color::{color_scheme, QueryOptions};
+use terminal_colorsaurus::{color_scheme, QueryOptions};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let colors = color_scheme(QueryOptions::default())?;

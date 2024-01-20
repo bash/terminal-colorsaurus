@@ -11,7 +11,7 @@ impl Color {
     /// as a value between `0` (black) and `100` (white)
     /// where `50` is the perceptual "middle grey".
     /// ```
-    /// # use term_color::Color;
+    /// # use terminal_colorsaurus::Color;
     /// # let color = Color::default();
     /// let is_dark = color.perceived_lightness() <= 50;
     /// ```
