@@ -33,12 +33,16 @@ impl TerminalKind {
                 "vscode",
                 "kgx", // (GNOME) Console
                 "Hyper",
+            ];
+            const UNSUPPORTED: &[&str] = &[
+                // While mintty supports the OSC 10 and 11 escape sequences, terminal-trx does not support enabling raw mode on it.
                 "mintty",
+                "Jetbrains.Fleet",
             ];
 
             if SUPPORTED.contains(&term_program.as_str()) {
                 return TerminalKind::Supported;
-            } else if term_program == "Jetbrains.Fleet" {
+            } else if UNSUPPORTED.contains(&term_program.as_str()) {
                 return TerminalKind::Unsupported;
             }
         }

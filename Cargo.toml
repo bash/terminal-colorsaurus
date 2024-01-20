@@ -13,6 +13,10 @@ libc = "0.2.151"
 mio = { version = "0.8.10", features = ["os-poll", "os-ext"], default-features = false }
 terminal-trx = { git = "https://github.com/bash/terminal-trx", branch = "windows" }
 
+[target.'cfg(windows)'.dependencies]
+terminal-trx = { git = "https://github.com/bash/terminal-trx", branch = "windows" }
+windows-sys = { version = "0.52.0", features = ["Win32_System_Threading", "Win32_Foundation"] }
+
 [workspace]
 members = [
     "termtheme"

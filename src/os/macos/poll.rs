@@ -4,13 +4,14 @@ use libc::{timespec, FD_ISSET};
 use std::os::fd::RawFd;
 use std::time::Duration;
 use std::{mem, ptr};
+use terminal_trx::Transceive;
 
 // macOS does not support polling /dev/tty using kqueue, so we have to
 // resort to pselect/select. See https://nathancraddock.com/blog/macos-dev-tty-polling/.
-pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> Result<()> {
+pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> Result<()> {
     let mut readfds = unsafe { std::mem::zeroed() };
     let timespec = to_timespec(timeout);
-    unsafe { libc::FD_SET(fd, &mut readfds) };
+    unsafe { libc::FD_SET(terminal.as_raw_fd(), &mut readfds) };
     to_io_result(unsafe {
         libc::pselect(
             fd + 1,
@@ -21,7 +22,7 @@ pub(crate) fn poll_read(fd: RawFd, timeout: Duration) -> Result<()> {
             ptr::null(),
         )
     })?;
-    if unsafe { FD_ISSET(fd, &readfds) } {
+    if unsafe { FD_ISSET(terminal.as_raw_fd(), &readfds) } {
         Ok(())
     } else {
         Err(Error::Timeout(timeout))

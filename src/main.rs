@@ -1,5 +1,4 @@
 use std::error::Error;
-
 use term_color::QueryOptions;
 
 fn main() -> Result<(), Box<dyn Error>> {

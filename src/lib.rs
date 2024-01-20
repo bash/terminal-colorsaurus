@@ -49,17 +49,15 @@ use std::time::Duration;
 use thiserror::Error;
 
 mod color;
-#[cfg(unix)]
 mod os;
-#[cfg(unix)]
+
 mod terminal;
-#[cfg(unix)]
 mod xterm;
 
-#[cfg(unix)]
+#[cfg(any(unix, windows))]
 use xterm as imp;
 
-#[cfg(not(unix))]
+#[cfg(not(any(unix, windows)))]
 use unsupported as imp;
 
 pub use color::*;
@@ -123,7 +121,7 @@ pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
 }
 
-#[cfg(not(unix))]
+#[cfg(not(any(unix, windows)))]
 mod unsupported {
     use crate::{Color, Error, QueryOptions, Result};
 

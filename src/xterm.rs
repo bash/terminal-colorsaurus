@@ -83,7 +83,7 @@ fn query(tty: &mut dyn Transceive, query: &str, timeout: Duration) -> Result<(St
     tty.flush()?;
 
     let start = Instant::now();
-    poll_read(tty.as_raw_fd(), timeout)?;
+    poll_read(tty, timeout)?;
     let bytes_read = tty.read(&mut buffer)?;
     let duration = start.elapsed();
 
