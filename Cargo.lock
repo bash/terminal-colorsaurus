@@ -78,7 +78,8 @@ dependencies = [
 [[package]]
 name = "terminal-trx"
 version = "0.1.0"
-source = "git+https://github.com/bash/terminal-trx#33745e1081190ba2fc7ea80da2f0c84cda510db5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c65469586ce1dd3e6488af435329575fa51c35168d2ad6fc16183f1c62fdec4a"
 dependencies = [
  "libc",
  "thiserror",
