@@ -28,7 +28,7 @@
 //! use terminal_colorsaurus::{foreground_color, QueryOptions};
 //!
 //! let fg = foreground_color(QueryOptions::default()).unwrap();
-//! println!("rgb({}, {}, {})", fg.red, fg.green, fg.blue);
+//! println!("rgb({}, {}, {})", fg.r, fg.g, fg.b);
 //! ```
 //!
 //! ## Terminals
