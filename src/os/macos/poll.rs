@@ -29,7 +29,7 @@ pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> Result<
     }
 }
 
-const fn to_timespec(duration: Duration) -> timespec {
+fn to_timespec(duration: Duration) -> timespec {
     let mut ts: timespec = unsafe { mem::zeroed() };
     ts.tv_sec = duration.as_secs() as libc::time_t;
     #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
