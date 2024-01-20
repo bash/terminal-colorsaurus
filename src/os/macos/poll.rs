@@ -30,17 +30,13 @@ pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> Result<
 }
 
 fn to_timespec(duration: Duration) -> timespec {
-    let mut ts: timespec = unsafe { mem::zeroed() };
-    ts.tv_sec = duration.as_secs() as libc::time_t;
-    #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-    {
-        ts.tv_nsec = duration.subsec_nanos() as i64;
+    timespec {
+        tv_sec: duration.as_secs() as libc::time_t,
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        tv_nsec: duration.subsec_nanos() as i64,
+        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+        tv_nsec: duration.subsec_nanos() as libc::c_long,
     }
-    #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-    {
-        ts.tv_nsec = duration.subsec_nanos() as libc::c_long;
-    }
-    ts
 }
 
 pub(super) fn to_io_result(value: c_int) -> io::Result<c_int> {
