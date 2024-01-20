@@ -1,6 +1,8 @@
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence.
 //!
+//! This is useful for answering the question *"Is this terminal dark or light?"*.
+//!
 //! ## Features
 //! * Background and foreground color detection.
 //! * Uses a variable timeout (for situations with high latency such as an SSH connection).
@@ -52,11 +54,19 @@
 //! This library assumes that the terminal support the [widely supported][terminal-survey] `CSI c` sequence.
 //! Using this, it measures the latency. This measurement then informs the timeout enforced on the actual query.
 //!
-//! ## Comparison with Other Libraries
-//! * termbg: TODO
-//! * dark-light: TODO
+//! ## Comparison with Other Crates
+//! ### [termbg]
+//! * Is hardcoded to use stdin/stderr for communicating with the terminal. \
+//!   This means that it does not work if some or all of these streams are redirected.
+//! * Pulls in an async runtime for the timeout.
+//!
+//! ### [terminal-light]
+//! * Is hardcoded to use stdin/stdout for communicating with the terminal.
+//! * Does not report the colors, only the color's luma.
 //!
 //! [terminal-survey]: https://github.com/bash/term-color/blob/main/doc/terminal-survey.md
+//! [termbg]: https://docs.rs/termbg
+//! [terminal-light]: https://docs.rs/terminal-light
 
 use std::io;
 use std::time::Duration;
