@@ -55,7 +55,7 @@
 //! Employing a fixed timeout is not the best options because the terminal might support the sequence
 //! but have a lot of latency (e.g. the user is connected over SSH).
 //!
-//! This library assumes that the terminal support the [widely supported][terminal-survey] `CSI c` sequence.
+//! This library assumes that the terminal support the [widely supported][`terminal_survey`] `CSI c` sequence.
 //! Using this, it measures the latency. This measurement then informs the timeout enforced on the actual query.
 //!
 //! ## Comparison with Other Crates
@@ -68,7 +68,6 @@
 //! * Is hardcoded to use stdin/stdout for communicating with the terminal.
 //! * Does not report the colors, only the color's luma.
 //!
-//! [terminal-survey]: https://github.com/bash/term-color/blob/main/doc/terminal-survey.md
 //! [termbg]: https://docs.rs/termbg
 //! [terminal-light]: https://docs.rs/terminal-light
 
@@ -93,6 +92,10 @@ use xterm as imp;
 
 #[cfg(not(any(unix, windows)))]
 use unsupported as imp;
+
+#[cfg(feature = "__docs")]
+#[doc = include_str!("../doc/terminal-survey.md")]
+pub mod terminal_survey {}
 
 pub use color::*;
 

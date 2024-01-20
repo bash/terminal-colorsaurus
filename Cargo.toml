@@ -17,6 +17,9 @@ terminal-trx = { git = "https://github.com/bash/terminal-trx" }
 terminal-trx = { git = "https://github.com/bash/terminal-trx" }
 windows-sys = { version = "0.52.0", features = ["Win32_System_Threading", "Win32_System_Console", "Win32_Foundation"] }
 
+[features]
+__docs = []
+
 [workspace]
 members = [
     "termtheme"
