@@ -1,6 +1,6 @@
 [package]
 name = "terminal-colorsaurus"
-description = "Provides a handle to the terminal of the current process"
+description = "Determines the background and foreground color of the terminal"
 readme = "readme.md"
 repository = "https://github.com/bash/terminal-colorsaurus"
 categories = ["command-line-interface"]
@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.70.0"
-exclude = [".github", ".gitignore", "*.sh"]
+exclude = [".github", ".gitignore"]
 
 [dependencies]
 thiserror = "1.0.56"

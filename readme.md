@@ -1,4 +1,4 @@
-# terminal-colorsaurus
+# terminal-colorsaurus 🦕
 Determines the background and foreground color of the terminal
 using the `OSC 10` and `OSC 11` terminal sequence.
 On Windows, the colors are queried using the Win32 Console API.
