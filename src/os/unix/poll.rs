@@ -1,7 +1,6 @@
 use crate::{Error, Result};
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
-use std::os::fd::RawFd;
 use std::time::Duration;
 use terminal_trx::Transceive;
 

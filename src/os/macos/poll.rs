@@ -1,4 +1,3 @@
-use super::super::to_io_result;
 use crate::{Error, Result};
 use libc::{timespec, FD_ISSET};
 use std::os::fd::RawFd;
@@ -41,4 +40,12 @@ const fn to_timespec(duration: Duration) -> timespec {
         ts.tv_nsec = duration.subsec_nanos() as libc::c_long;
     }
     ts
+}
+
+pub(super) fn to_io_result(value: c_int) -> io::Result<c_int> {
+    if value == -1 {
+        Err(io::Error::last_os_error())
+    } else {
+        Ok(value)
+    }
 }
