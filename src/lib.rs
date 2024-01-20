@@ -6,9 +6,27 @@
 //! * Uses a variable timeout (for situations with high latency such as an SSH connection).
 //! * *Correct* perceived lightness calculation.
 //! * Works even if all of stderr, stdout and stdin are redirected.
-//! * Safely restores the terminal from raw mode even if the library panicks.
+//! * Safely restores the terminal from raw mode even if the library errors or panicks.
+//! * Does not send any escape sequences if `TERM=dumb`.
 //!
-//! ## Supported Terminals
+//! ## Example: Test If the Terminal Uses a Dark Background
+//! ```no_run
+//! use term_color::{background_color, QueryOptions};
+//!
+//! let bg = background_color(QueryOptions::default());
+//! // Perceived lightness is a value between 0 (black) and 100 (white)
+//! let is_light = bg.map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
+//! ```
+//!
+//! ## Terminals
+//! The following terminals have known support or non-support for
+//! querying for the background/foreground colors.
+//!
+//! Note that terminals that support the relevant terminal
+//! sequences automatically work with this library even if they
+//! are not explicitly listed below.
+//!
+//! ### Supported
 //! * macOS Terminal
 //! * iTerm2
 //! * Alacritty
@@ -19,15 +37,11 @@
 //! * Console
 //! * foot
 //! * xterm
+//! * tmux (next-3.4)
 //!
-//! ## Example: Test If the Terminal Uses a Dark Background
-//! ```no_run
-//! use term_color::{background_color, QueryOptions};
-//!
-//! let bg = background_color(QueryOptions::default());
-//! // Perceived lightness is a value between 0 (black) and 100 (white)
-//! let is_light = bg.map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
-//! ```
+//! ### Unsupported
+//! * linux
+//! * Jetbrains Fleet
 //!
 //! ## Variable Timeout
 //! Knowing whether or not a terminal supports querying for the
