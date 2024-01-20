@@ -1,3 +1,7 @@
+# Waiting for Console Input with a Timeout
+This can be achieved using `WaitForSingleObject`.
+
+```rust
 use crate::{Error, Result};
 use std::io;
 use std::os::windows::io::AsRawHandle;
@@ -17,3 +21,4 @@ pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> Result<
         _ => Err(Error::Io(io::Error::last_os_error())),
     }
 }
+```

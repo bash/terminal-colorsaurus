@@ -22,6 +22,7 @@ impl Color {
 
 impl Color {
     /// Parses an X11 color (see `man xparsecolor`).
+    #[cfg(unix)]
     pub(crate) fn parse_x11(input: &str) -> Option<Self> {
         let raw_parts = input.strip_prefix("rgb:")?;
         let mut parts = raw_parts.split('/');
@@ -30,8 +31,18 @@ impl Color {
         let blue = parse_channel(parts.next()?)?;
         Some(Color { red, green, blue })
     }
+
+    #[cfg(windows)]
+    pub(crate) fn from_8bit(red: u8, green: u8, blue: u8) -> Color {
+        Color {
+            red: (red as u16) << 8,
+            green: (green as u16) << 8,
+            blue: (blue as u16) << 8,
+        }
+    }
 }
 
+#[cfg(unix)]
 fn parse_channel(input: &str) -> Option<u16> {
     let len = input.len();
     // From the xparsecolor man page:
