@@ -19,10 +19,11 @@ windows-sys = { version = "0.52.0", features = ["Win32_System_Threading", "Win32
 
 [features]
 __docs = []
+__nightly = []
 __test_readme = []
 
 [package.metadata.docs.rs]
-features = ["__docs"]
+features = ["__docs", "__nightly"]
 
 [workspace]
 members = [

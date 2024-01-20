@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "__nightly", feature(doc_cfg, doc_auto_cfg))]
+
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence.
 //!
@@ -13,13 +15,20 @@
 //! * Safely restores the terminal from raw mode even if the library errors or panicks.
 //! * Does not send any escape sequences if `TERM=dumb`.
 //!
-//! ## Example: Test If the Terminal Uses a Dark Background
+//! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
-//! use term_color::{background_color, QueryOptions};
+//! use term_color::{color_scheme, QueryOptions};
 //!
-//! let bg = background_color(QueryOptions::default());
-//! // Perceived lightness is a value between 0 (black) and 100 (white)
-//! let is_light = bg.map(|c| c.perceived_lightness() >= 50).unwrap_or_default();
+//! let colors = color_scheme(QueryOptions::default()).unwrap();
+//! dbg!(colors.is_dark_on_light());
+//! ```
+//!
+//! ## Example 2: Query for the Terminal's Foreground Color
+//! ```no_run
+//! use term_color::{foreground_color, QueryOptions};
+//!
+//! let fg = foreground_color(QueryOptions::default()).unwrap();
+//! println!("rgb({}, {}, {})", fg.red, fg.green, fg.blue);
 //! ```
 //!
 //! ## Terminals
@@ -63,10 +72,12 @@
 //! * Is hardcoded to use stdin/stderr for communicating with the terminal. \
 //!   This means that it does not work if some or all of these streams are redirected.
 //! * Pulls in an async runtime for the timeout.
+//! * Does not calculate the perceived lightness, but another metric.
 //!
 //! ### [terminal-light]
 //! * Is hardcoded to use stdin/stdout for communicating with the terminal.
 //! * Does not report the colors, only the color's luma.
+//! * Does not calculate the perceived lightness, but another metric.
 //!
 //! [termbg]: https://docs.rs/termbg
 //! [terminal-light]: https://docs.rs/terminal-light
@@ -103,6 +114,31 @@ pub mod readme {}
 
 pub use color::*;
 
+/// The color scheme i.e. foreground and background colors of the terminal.
+/// Retrieved by calling [`color_scheme`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct ColorScheme {
+    pub foreground: Color,
+    pub background: Color,
+}
+
+impl ColorScheme {
+    /// Tests if this color scheme uses dark text on a light background.
+    /// This is done by computing and comparing the perceived brightness of the two colors.
+    pub fn is_dark_on_light(&self) -> bool {
+        self.foreground.perceived_lightness() <= self.background.perceived_lightness()
+    }
+
+    /// Tests if this color scheme uses light text on a dark background.
+    /// This is done by computing and comparing the perceived brightness of the two colors.
+    ///
+    /// Note that `is_light_on_dark = !is_dark_on_light`.
+    pub fn is_light_on_dark(&self) -> bool {
+        !self.is_dark_on_light()
+    }
+}
+
 /// Result used by this library.
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -130,7 +166,7 @@ pub enum Error {
 }
 
 /// Options to be used with [`foreground_color`] and [`background_color`].
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct QueryOptions {
     /// The maximum time spent waiting for a response from the terminal \
@@ -152,12 +188,19 @@ impl Default for QueryOptions {
     }
 }
 
-/// Queries the terminal for it's foreground color.
+/// Queries the terminal for it's color scheme (foreground and background color).
+pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
+    imp::color_scheme(options)
+}
+
+/// Queries the terminal for it's foreground color. \
+/// If you also need the foreground color it is more efficient to use [`color_scheme`] instead.
 pub fn foreground_color(options: QueryOptions) -> Result<Color> {
     imp::foreground_color(options)
 }
 
-/// Queries the terminal for it's background color.
+/// Queries the terminal for it's background color. \
+/// If you also need the foreground color it is more efficient to use [`color_scheme`] instead.
 pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
 }

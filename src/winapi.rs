@@ -1,4 +1,4 @@
-use crate::{Color, Error, QueryOptions, Result};
+use crate::{Color, ColorScheme, Error, QueryOptions, Result};
 use std::os::windows::io::AsRawHandle;
 use std::{env, io, mem};
 use terminal_trx::{terminal, ConsoleHandles as _};
@@ -7,16 +7,17 @@ use windows_sys::Win32::System::Console::{
     GetConsoleScreenBufferInfoEx, CONSOLE_SCREEN_BUFFER_INFOEX, COORD, SMALL_RECT,
 };
 
-pub(crate) fn foreground_color(_options: QueryOptions) -> Result<Color> {
-    let (foreground, _) = colors_from_winapi()?;
-    error_on_windows_terminal()?;
-    Ok(foreground)
+pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
+    color_scheme(options).map(|c| c.foreground)
 }
 
-pub(crate) fn background_color(_options: QueryOptions) -> Result<Color> {
-    let (_, background) = colors_from_winapi()?;
+pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
+    color_scheme(options).map(|c| c.background)
+}
+
+pub(crate) fn color_scheme(_options: QueryOptions) -> Result<ColorScheme> {
     error_on_windows_terminal()?;
-    Ok(background)
+    colors_from_winapi()
 }
 
 // Windows Terminal does not correctly console colors:
@@ -28,7 +29,7 @@ fn error_on_windows_terminal() -> Result<()> {
     }
 }
 
-fn colors_from_winapi() -> Result<(Color, Color)> {
+fn colors_from_winapi() -> Result<ColorScheme> {
     let terminal = terminal()?;
     let screen_buffer = terminal.screen_buffer_handle();
 
@@ -56,13 +57,13 @@ fn colors_from_winapi() -> Result<(Color, Color)> {
 // The positions are derived from the BACKGROUND_* and FOREGROUND_* constants.
 //
 // See: https://stackoverflow.com/a/9509664
-fn extract_colors(info: CONSOLE_SCREEN_BUFFER_INFOEX) -> (Color, Color) {
+fn extract_colors(info: CONSOLE_SCREEN_BUFFER_INFOEX) -> ColorScheme {
     let foreground_index = (info.wAttributes & 0b1111) as usize;
     let background_index = ((info.wAttributes >> 4) & 0b1111) as usize;
-    (
-        to_color(info.ColorTable[foreground_index]),
-        to_color(info.ColorTable[background_index]),
-    )
+    ColorScheme {
+        foreground: to_color(info.ColorTable[foreground_index]),
+        background: to_color(info.ColorTable[background_index]),
+    }
 }
 
 fn to_color(color: COLORREF) -> Color {
