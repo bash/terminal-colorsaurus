@@ -1,4 +1,4 @@
-#![cfg_attr(feature = "__nightly", feature(doc_cfg, doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
 
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence.
@@ -107,7 +107,7 @@ use xterm as imp;
 #[cfg(not(any(unix, windows)))]
 use unsupported as imp;
 
-#[cfg(feature = "__docs")]
+#[cfg(feature = "docs")]
 #[doc = include_str!("../doc/terminal-survey.md")]
 pub mod terminal_survey {}
 

@@ -23,7 +23,7 @@ jobs:
     - name: Run clippy
       run: cargo clippy --all-targets --all-features -- --deny warnings
     - name: Docs
-      run: cargo doc --features __docs
+      run: cargo doc --features docs,rgb
   test:
     strategy:
       matrix:

@@ -24,9 +24,9 @@ terminal-trx = { git = "https://github.com/bash/terminal-trx" }
 windows-sys = { version = "0.52.0", features = ["Win32_System_Threading", "Win32_System_Console", "Win32_Foundation"] }
 
 [features]
-__docs = []
-__nightly = []
+docs = []
 __test_readme = []
 
 [package.metadata.docs.rs]
-features = ["__docs", "__nightly"]
+features = ["docs", "rgb"]
+rustdoc-args = ["--cfg", "docsrs"]
