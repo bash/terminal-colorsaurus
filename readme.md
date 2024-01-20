@@ -1,4 +1,9 @@
 # terminal-colorsaurus 🦕
+
+[![Docs](https://img.shields.io/docsrs/terminal-colorsaurus/latest)](https://docs.rs/terminal-colorsaurus)
+[![Crate Version](https://img.shields.io/crates/v/terminal-colorsaurus)](https://crates.io/crates/terminal-colorsaurus)
+
+
 Determines the background and foreground color of the terminal
 using the `OSC 10` and `OSC 11` terminal sequence.
 On Windows, the colors are queried using the Win32 Console API.
@@ -12,6 +17,8 @@ use terminal_colorsaurus::{color_scheme, QueryOptions};
 let colors = color_scheme(QueryOptions::default()).unwrap();
 dbg!(colors.is_dark_on_light());
 ```
+
+## [Docs](https://docs.rs/terminal-colorsaurus)
 
 ## Wishlist
 These are some features that I would like to include in this crate,
