@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.2
+* Add missing docs and clarify in some places.
+
 ## 0.2.1
 * Expose pager detection heuristic.
 
