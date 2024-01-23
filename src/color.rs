@@ -1,8 +1,12 @@
 /// An RGB color with 16 bits per channel.
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
+#[allow(clippy::exhaustive_structs)]
 pub struct Color {
+    /// Red
     pub r: u16,
+    /// Green
     pub g: u16,
+    /// Blue
     pub b: u16,
 }
 
@@ -89,9 +93,9 @@ fn srgb_to_lin(channel: f64) -> f64 {
 
 // Luminance (Y)
 fn luminance(color: &Color) -> f64 {
-    let r = color.r as f64 / u16::MAX as f64;
-    let g = color.g as f64 / u16::MAX as f64;
-    let b = color.b as f64 / u16::MAX as f64;
+    let r = f64::from(color.r) / f64::from(u16::MAX);
+    let g = f64::from(color.g) / f64::from(u16::MAX);
+    let b = f64::from(color.b) / f64::from(u16::MAX);
     0.2126 * srgb_to_lin(r) + 0.7152 * srgb_to_lin(g) + 0.0722 * srgb_to_lin(b)
 }
 

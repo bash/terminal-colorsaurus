@@ -1,5 +1,4 @@
 #![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
-#![deny(clippy::undocumented_unsafe_blocks)]
 
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence.
@@ -112,7 +111,9 @@ pub use color::*;
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct ColorScheme {
+    /// The foreground color of the terminal.
     pub foreground: Color,
+    /// The background color of the terminal.
     pub background: Color,
 }
 
@@ -156,6 +157,7 @@ pub enum Error {
     /// The terminal is known to be unsupported.
     #[error("unsupported terminal")]
     UnsupportedTerminal,
+    /// A precondition configured in [`QueryOptions::preconditions`] was not met.
     #[error("precondition not met: {0}")]
     UnmetPrecondition(String),
 }

@@ -27,6 +27,19 @@ windows-sys = { version = "0.52.0", features = ["Win32_System_Console", "Win32_F
 [features]
 docs = []
 
+[lints.rust]
+missing_debug_implementations = "warn"
+missing_docs = "warn"
+
+[lints.clippy]
+unimplemented = "warn"
+undocumented_unsafe_blocks = "deny"
+dbg_macro = "warn"
+exhaustive_enums = "warn"
+exhaustive_structs = "warn"
+unwrap_used = "deny"
+use_debug = "warn"
+
 [package.metadata.docs.rs]
 features = ["docs", "rgb"]
 rustdoc-args = ["--cfg", "docsrs"]
