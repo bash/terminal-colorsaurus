@@ -19,7 +19,8 @@ pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
         options.max_timeout,
         |w| write!(w, "{QUERY_FG}"),
         |r| read_color_response(r),
-    )?;
+    )
+    .map_err(map_timed_out_err(options.max_timeout))?;
     parse_response(response, FG_RESPONSE_PREFIX)
 }
 
@@ -29,7 +30,8 @@ pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
         options.max_timeout,
         |w| write!(w, "{QUERY_BG}"),
         |r| read_color_response(r),
-    )?;
+    )
+    .map_err(map_timed_out_err(options.max_timeout))?;
     parse_response(response, BG_RESPONSE_PREFIX)
 }
 
@@ -38,13 +40,21 @@ pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
         options.max_timeout,
         |w| write!(w, "{QUERY_FG}{QUERY_BG}"),
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
-    )?;
+    )
+    .map_err(map_timed_out_err(options.max_timeout))?;
     let foreground = parse_response(fg_response, FG_RESPONSE_PREFIX)?;
     let background = parse_response(bg_response, BG_RESPONSE_PREFIX)?;
     Ok(ColorScheme {
         foreground,
         background,
     })
+}
+
+fn map_timed_out_err(timeout: Duration) -> impl Fn(Error) -> Error {
+    move |e| match e {
+        Error::Io(io) if io.kind() == io::ErrorKind::TimedOut => Error::Timeout(timeout),
+        e => e,
+    }
 }
 
 // We don't want to send any escape sequences to
