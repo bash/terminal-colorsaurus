@@ -1,3 +1,6 @@
+//! This example shows how to detect if the terminal uses
+//! a dark-on-light or a light-on-dark theme.
+
 use std::error::Error;
 use terminal_colorsaurus::{color_scheme, QueryOptions};
 

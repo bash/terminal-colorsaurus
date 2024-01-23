@@ -1,3 +1,5 @@
+//! This example shows how to retrieve the terminal's background color.
+
 use std::error::Error;
 use terminal_colorsaurus::{background_color, QueryOptions};
 
