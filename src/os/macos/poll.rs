@@ -1,10 +1,10 @@
-use super::super::timed_out;
 use libc::{c_int, pselect, time_t, timespec, FD_ISSET, FD_SET};
 use std::io;
 use std::mem::zeroed;
 use std::os::fd::{AsRawFd as _, BorrowedFd};
 use std::ptr::{null, null_mut};
 use std::time::Duration;
+use thiserror::Error;
 
 // macOS does not support polling /dev/tty using kqueue, so we have to
 // resort to pselect/select. See https://nathancraddock.com/blog/macos-dev-tty-polling/.
@@ -54,3 +54,11 @@ fn to_io_result(value: c_int) -> io::Result<c_int> {
         Ok(value)
     }
 }
+
+fn timed_out() -> io::Error {
+    io::Error::new(io::ErrorKind::TimedOut, PollReadTimedOutError)
+}
+
+#[derive(Debug, Error)]
+#[error("poll_read timed out")]
+struct PollReadTimedOutError;
