@@ -1,7 +1,8 @@
 use self::io_utils::{read_until2, TermReader};
-use crate::{Color, ColorScheme, Error, QueryOptions, Result};
+use crate::{Color, ColorScheme, Error, Preconditions, QueryOptions, Result};
 use std::env;
-use std::io::{self, BufRead, BufReader, Write as _};
+use std::io::{self, stdout, BufRead, BufReader, Write as _};
+use std::os::fd::{AsFd as _, AsRawFd as _, BorrowedFd};
 use std::str::from_utf8;
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
@@ -16,7 +17,7 @@ const BG_RESPONSE_PREFIX: &str = "\x1b]11;";
 #[allow(clippy::redundant_closure)]
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     let response = query(
-        options.timeout,
+        &options,
         |w| write!(w, "{QUERY_FG}"),
         |r| read_color_response(r),
     )
@@ -27,7 +28,7 @@ pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
 #[allow(clippy::redundant_closure)]
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
     let response: String = query(
-        options.timeout,
+        &options,
         |w| write!(w, "{QUERY_BG}"),
         |r| read_color_response(r),
     )
@@ -37,7 +38,7 @@ pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
 
 pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
     let (fg_response, bg_response) = query(
-        options.timeout,
+        &options,
         |w| write!(w, "{QUERY_FG}{QUERY_BG}"),
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
     )
@@ -66,6 +67,14 @@ fn ensure_capable_terminal() -> Result<()> {
     }
 }
 
+fn ensure_preconditions(preconditions: &Preconditions) -> Result<()> {
+    if preconditions.stdout_not_piped && is_pipe(stdout().as_fd()).unwrap_or_default() {
+        Err(Error::UnmetPrecondition("stdout is not piped".to_string()))
+    } else {
+        Ok(())
+    }
+}
+
 fn parse_response(response: String, prefix: &str) -> Result<Color> {
     response
         .strip_prefix(prefix)
@@ -85,11 +94,12 @@ fn parse_response(response: String, prefix: &str) -> Result<Color> {
 //
 // Source: https://gitlab.freedesktop.org/terminal-wg/specifications/-/issues/8#note_151381
 fn query<T>(
-    timeout: Duration,
+    options: &QueryOptions,
     write_query: impl FnOnce(&mut dyn io::Write) -> io::Result<()>,
     read_response: impl FnOnce(&mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<T>,
 ) -> Result<T> {
     ensure_capable_terminal()?;
+    ensure_preconditions(&options.preconditions)?;
 
     let mut tty = terminal()?;
     let mut tty = tty.lock()?;
@@ -99,7 +109,7 @@ fn query<T>(
     write!(tty, "{DA1}")?;
     tty.flush()?;
 
-    let mut reader = BufReader::with_capacity(32, TermReader::new(tty, timeout));
+    let mut reader = BufReader::with_capacity(32, TermReader::new(tty, options.timeout));
 
     let response = read_response(&mut reader)?;
 
@@ -142,4 +152,26 @@ fn consume_da1_response(r: &mut impl BufRead, consume_esc: bool) -> io::Result<(
     r.read_until(b'[', &mut buf)?;
     r.read_until(b'c', &mut buf)?;
     Ok(())
+}
+
+// The mode can be bitwise AND-ed with S_IFMT to extract the file type code, and compared to the appropriate constant
+// Source: https://www.gnu.org/software/libc/manual/html_node/Testing-File-Type.html
+fn is_pipe(fd: BorrowedFd) -> std::io::Result<bool> {
+    use libc::{S_IFIFO, S_IFMT};
+    Ok(fstat(fd)?.st_mode & S_IFMT == S_IFIFO)
+}
+
+fn fstat(fd: BorrowedFd) -> std::io::Result<libc::stat> {
+    // SAFETY:
+    // 1. File descriptor is valid (we have a borrowed fd for the lifetime of this function)
+    // 2. fstat64 fills the stat structure for us (if successful).
+    unsafe {
+        let mut stat = std::mem::zeroed();
+        let ret = libc::fstat(fd.as_raw_fd(), &mut stat);
+        if ret == 0 {
+            Ok(stat)
+        } else {
+            Err(std::io::Error::last_os_error())
+        }
+    }
 }

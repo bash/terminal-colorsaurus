@@ -156,6 +156,8 @@ pub enum Error {
     /// The terminal is known to be unsupported.
     #[error("unsupported terminal")]
     UnsupportedTerminal,
+    #[error("precondition not met: {0}")]
+    UnmetPrecondition(String),
 }
 
 /// Options to be used with [`foreground_color`] and [`background_color`].
@@ -167,12 +169,34 @@ pub struct QueryOptions {
     /// Consider leaving this on a high value as there might be a lot of latency \
     /// between you and the terminal (e.g. when you're connected via SSH).
     pub timeout: Duration,
+
+    /// Certain preconditions that have to be met before querying.
+    pub preconditions: Preconditions,
+}
+
+/// Preconditions that have to be met before querying.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct Preconditions {
+    stdout_not_piped: bool,
+}
+
+impl Preconditions {
+    /// A precondition that ensures that stdout is not piped.
+    /// This is a heuristic for detecting if the output might be piped to a pager.
+    ///
+    /// Note that this only has an effect on unix.
+    pub fn stdout_not_piped() -> Self {
+        Self {
+            stdout_not_piped: true,
+        }
+    }
 }
 
 impl Default for QueryOptions {
     fn default() -> Self {
         Self {
             timeout: Duration::from_secs(1),
+            preconditions: Preconditions::default(),
         }
     }
 }
