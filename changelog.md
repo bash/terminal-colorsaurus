@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.1
+* Expose pager detection heuristic.
+
 ## 0.2.0
 * Improve detection of terminals that support querying for colors.
 * Rename `QueryOptions.max_timeout` -> `QueryOptions.timeout`.
