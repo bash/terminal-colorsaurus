@@ -1,4 +1,4 @@
-use super::super::timed_out;
+use super::timed_out;
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
 use std::io;
