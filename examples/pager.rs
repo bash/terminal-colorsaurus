@@ -1,3 +1,5 @@
+#![allow(clippy::use_debug)]
+
 //! This example shows how to heuristically avoid having a race condition with a pager (e.g. `less`).
 //! The race condition occurs because the pager and colorsaurus simultaneously
 //! enable/disable raw mode and read/write to the same terminal.
