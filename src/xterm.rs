@@ -12,6 +12,7 @@ const FG_RESPONSE_PREFIX: &str = "\x1b]10;";
 const QUERY_BG: &str = "\x1b]11;?\x07";
 const BG_RESPONSE_PREFIX: &str = "\x1b]11;";
 
+#[allow(clippy::redundant_closure)]
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     let response = query(
         options.max_timeout,
@@ -21,6 +22,7 @@ pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     parse_response(response, FG_RESPONSE_PREFIX)
 }
 
+#[allow(clippy::redundant_closure)]
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
     let response = query(
         options.max_timeout,
