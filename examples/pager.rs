@@ -48,13 +48,13 @@ fn is_pipe(fd: BorrowedFd) -> io::Result<bool> {
 }
 
 #[cfg(unix)]
-fn fstat(fd: BorrowedFd) -> io::Result<libc::stat64> {
+fn fstat(fd: BorrowedFd) -> io::Result<libc::stat> {
     // SAFETY:
     // 1. File descriptor is valid (we have a borrowed fd for the lifetime of this function)
     // 2. fstat64 fills the stat structure for us (if successful).
     unsafe {
         let mut stat = mem::zeroed();
-        let ret = libc::fstat64(fd.as_raw_fd(), &mut stat);
+        let ret = libc::fstat(fd.as_raw_fd(), &mut stat);
         if ret == 0 {
             Ok(stat)
         } else {
