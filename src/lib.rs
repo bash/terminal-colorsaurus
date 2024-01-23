@@ -93,8 +93,6 @@ use thiserror::Error;
 mod color;
 mod os;
 
-#[cfg(unix)]
-mod terminal;
 #[cfg(windows)]
 mod winapi;
 #[cfg(unix)]
