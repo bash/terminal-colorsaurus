@@ -10,7 +10,7 @@
 //!
 //! ## Features
 //! * Background and foreground color detection.
-//! * Uses a variable timeout (for situations with high latency such as an SSH connection).
+//! * Uses a timeout (for situations with high latency such as an SSH connection).
 //! * *Correct* perceived lightness calculation.
 //! * Works even if all of stderr, stdout and stdin are redirected.
 //! * Safely restores the terminal from raw mode even if the library errors or panicks.
