@@ -178,18 +178,21 @@ impl Default for QueryOptions {
 }
 
 /// Queries the terminal for it's color scheme (foreground and background color).
+#[doc = include_str!("../doc/caveats.md")]
 pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
     imp::color_scheme(options)
 }
 
 /// Queries the terminal for it's foreground color. \
 /// If you also need the foreground color it is more efficient to use [`color_scheme`] instead.
+#[doc = include_str!("../doc/caveats.md")]
 pub fn foreground_color(options: QueryOptions) -> Result<Color> {
     imp::foreground_color(options)
 }
 
 /// Queries the terminal for it's background color. \
 /// If you also need the foreground color it is more efficient to use [`color_scheme`] instead.
+#[doc = include_str!("../doc/caveats.md")]
 pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
 }
