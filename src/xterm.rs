@@ -1,5 +1,6 @@
 use self::io_utils::{read_until2, TermReader};
 use crate::{Color, ColorScheme, Error, QueryOptions, Result};
+use std::env;
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::str::from_utf8;
 use std::time::Duration;
@@ -46,6 +47,15 @@ pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
     })
 }
 
+// We don't want to send any escape sequences to
+// terminals that don't support them.
+fn ensure_capable_terminal() -> Result<()> {
+    match env::var("TERM") {
+        Ok(term) if term == "dumb" => Err(Error::UnsupportedTerminal),
+        Ok(_) | Err(_) => Ok(()),
+    }
+}
+
 fn parse_response(response: String, prefix: &str) -> Result<Color> {
     response
         .strip_prefix(prefix)
@@ -58,11 +68,19 @@ fn parse_response(response: String, prefix: &str) -> Result<Color> {
         .ok_or_else(|| Error::Parse(response))
 }
 
+// We detect terminals that don't support the color query in quite a smart way:
+// First, we send the color query and then a query that we know is well-supported (DA1).
+// Since queries are answered sequentially, if a terminal answers to DA1 first, we know that
+// it does not support querying for colors.
+//
+// Source: https://gitlab.freedesktop.org/terminal-wg/specifications/-/issues/8#note_151381
 fn query<T>(
     timeout: Duration,
     write_query: impl FnOnce(&mut dyn io::Write) -> io::Result<()>,
     read_response: impl FnOnce(&mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<T>,
 ) -> Result<T> {
+    ensure_capable_terminal()?;
+
     let mut tty = terminal()?;
     let mut tty = tty.lock()?;
     let mut tty = tty.enable_raw_mode()?;
