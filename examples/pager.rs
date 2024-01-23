@@ -1,6 +1,4 @@
 use std::error::Error;
-use std::io::stdout;
-use std::{io, mem};
 use terminal_colorsaurus::{color_scheme, QueryOptions};
 
 /// This example is best in a couple of different ways:
@@ -30,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 #[cfg(unix)]
 fn should_auto_detect() -> bool {
     use std::os::fd::AsFd;
-    !is_pipe(stdout().as_fd()).unwrap_or_default()
+    !is_pipe(std::io::stdout().as_fd()).unwrap_or_default()
 }
 
 #[cfg(not(unix))]
@@ -41,24 +39,24 @@ fn should_auto_detect() -> bool {
 // The mode can be bitwise AND-ed with S_IFMT to extract the file type code, and compared to the appropriate constant
 // Source: https://www.gnu.org/software/libc/manual/html_node/Testing-File-Type.html
 #[cfg(unix)]
-fn is_pipe(fd: std::os::fd::BorrowedFd) -> io::Result<bool> {
+fn is_pipe(fd: std::os::fd::BorrowedFd) -> std::io::Result<bool> {
     use libc::{S_IFIFO, S_IFMT};
     Ok(fstat(fd)?.st_mode & S_IFMT == S_IFIFO)
 }
 
 #[cfg(unix)]
-fn fstat(fd: std::os::fd::BorrowedFd) -> io::Result<libc::stat> {
+fn fstat(fd: std::os::fd::BorrowedFd) -> std::io::Result<libc::stat> {
     use std::os::fd::AsRawFd as _;
     // SAFETY:
     // 1. File descriptor is valid (we have a borrowed fd for the lifetime of this function)
     // 2. fstat64 fills the stat structure for us (if successful).
     unsafe {
-        let mut stat = mem::zeroed();
+        let mut stat = std::mem::zeroed();
         let ret = libc::fstat(fd.as_raw_fd(), &mut stat);
         if ret == 0 {
             Ok(stat)
         } else {
-            Err(io::Error::last_os_error())
+            Err(std::io::Error::last_os_error())
         }
     }
 }
