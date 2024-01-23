@@ -101,9 +101,9 @@ use unsupported as imp;
 #[doc = include_str!("../doc/terminal-survey.md")]
 pub mod terminal_survey {}
 
-#[cfg(feature = "__test_readme")]
+#[cfg(doctest)]
 #[doc = include_str!("../readme.md")]
-pub mod readme {}
+pub mod readme_doctests {}
 
 pub use color::*;
 

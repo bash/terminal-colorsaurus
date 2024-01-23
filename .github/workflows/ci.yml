@@ -17,11 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: cargo build
+      run: cargo build --all-features
     - name: Check format
       run: cargo fmt -- --check
     - name: Docs
-      run: cargo doc --features docs,rgb
+      run: cargo doc --all-features
   test:
     strategy:
       matrix:
@@ -30,6 +30,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Run tests
-      run: cargo test --features __test_readme
+      run: cargo test --all-features
     - name: Run clippy
       run: cargo clippy --all-targets --all-features -- --deny warnings

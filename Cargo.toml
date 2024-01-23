@@ -26,7 +26,6 @@ windows-sys = { version = "0.52.0", features = ["Win32_System_Console", "Win32_F
 
 [features]
 docs = []
-__test_readme = []
 
 [package.metadata.docs.rs]
 features = ["docs", "rgb"]
