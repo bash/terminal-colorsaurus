@@ -16,32 +16,32 @@ const BG_RESPONSE_PREFIX: &str = "\x1b]11;";
 #[allow(clippy::redundant_closure)]
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     let response = query(
-        options.max_timeout,
+        options.timeout,
         |w| write!(w, "{QUERY_FG}"),
         |r| read_color_response(r),
     )
-    .map_err(map_timed_out_err(options.max_timeout))?;
+    .map_err(map_timed_out_err(options.timeout))?;
     parse_response(response, FG_RESPONSE_PREFIX)
 }
 
 #[allow(clippy::redundant_closure)]
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
-    let response = query(
-        options.max_timeout,
+    let response: String = query(
+        options.timeout,
         |w| write!(w, "{QUERY_BG}"),
         |r| read_color_response(r),
     )
-    .map_err(map_timed_out_err(options.max_timeout))?;
+    .map_err(map_timed_out_err(options.timeout))?;
     parse_response(response, BG_RESPONSE_PREFIX)
 }
 
 pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
     let (fg_response, bg_response) = query(
-        options.max_timeout,
+        options.timeout,
         |w| write!(w, "{QUERY_FG}{QUERY_BG}"),
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
     )
-    .map_err(map_timed_out_err(options.max_timeout))?;
+    .map_err(map_timed_out_err(options.timeout))?;
     let foreground = parse_response(fg_response, FG_RESPONSE_PREFIX)?;
     let background = parse_response(bg_response, BG_RESPONSE_PREFIX)?;
     Ok(ColorScheme {

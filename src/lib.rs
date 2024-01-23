@@ -62,15 +62,6 @@
 //! ## Optional Dependencies
 //! * [`rgb`] — Enable this feature to convert between [`Color`] and [`rgb::RGB16`].
 //!
-//! ## Variable Timeout
-//! Knowing whether or not a terminal supports querying for the
-//! foreground and background colors hard to reliably detect.
-//! Employing a fixed timeout is not the best options because the terminal might support the sequence
-//! but have a lot of latency (e.g. the user is connected over SSH).
-//!
-//! This library assumes that the terminal support the [widely supported][`terminal_survey`] `CSI c` sequence.
-//! Using this, it measures the latency. This measurement then informs the timeout enforced on the actual query.
-//!
 //! ## Comparison with Other Crates
 //! ### [termbg]
 //! * Is hardcoded to use stdin/stderr for communicating with the terminal. \
@@ -171,21 +162,17 @@ pub enum Error {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct QueryOptions {
-    /// The maximum time spent waiting for a response from the terminal \
-    /// even when we *know* that the terminal supports querying for colors. Defaults to 1 s.
+    /// The maximum time spent waiting for a response from the terminal. Defaults to 1 s.
     ///
-    /// Note that this timeout might not always apply as we use a variable timeout
-    /// for the color query.
-    ///
-    ///  Consider leaving this on a high value as there might be a lot of latency \
+    /// Consider leaving this on a high value as there might be a lot of latency \
     /// between you and the terminal (e.g. when you're connected via SSH).
-    pub max_timeout: Duration,
+    pub timeout: Duration,
 }
 
 impl Default for QueryOptions {
     fn default() -> Self {
         Self {
-            max_timeout: Duration::from_secs(1),
+            timeout: Duration::from_secs(1),
         }
     }
 }
