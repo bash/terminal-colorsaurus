@@ -1,4 +1,4 @@
-use crate::{Error, Result};
+use super::super::timed_out;
 use libc::{c_int, pselect, time_t, timespec, FD_ISSET, FD_SET};
 use std::io;
 use std::mem::zeroed;
@@ -8,7 +8,11 @@ use std::time::Duration;
 
 // macOS does not support polling /dev/tty using kqueue, so we have to
 // resort to pselect/select. See https://nathancraddock.com/blog/macos-dev-tty-polling/.
-pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> Result<()> {
+pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<()> {
+    if timeout.is_zero() {
+        return Err(timed_out());
+    }
+
     let fd = terminal.as_raw_fd();
     let timespec = to_timespec(timeout);
     // SAFETY: A zeroed fd_set is valid (FD_ZERO zeroes an existing fd_set so this state must be fine).
@@ -28,7 +32,7 @@ pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> Result<()> {
         if FD_ISSET(fd, &readfds) {
             Ok(())
         } else {
-            Err(Error::Timeout(timeout))
+            Err(timed_out())
         }
     }
 }
@@ -43,7 +47,7 @@ fn to_timespec(duration: Duration) -> timespec {
     }
 }
 
-pub(super) fn to_io_result(value: c_int) -> io::Result<c_int> {
+fn to_io_result(value: c_int) -> io::Result<c_int> {
     if value == -1 {
         Err(io::Error::last_os_error())
     } else {
