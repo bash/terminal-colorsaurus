@@ -1,10 +1,15 @@
-use crate::{Error, Result};
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
+use std::io;
+use std::os::fd::{AsRawFd as _, BorrowedFd};
 use std::time::Duration;
-use terminal_trx::Transceive;
+use thiserror::Error;
 
-pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> Result<()> {
+pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<()> {
+    if timeout.is_zero() {
+        return Err(timed_out());
+    }
+
     let mut poll = Poll::new()?;
     let mut events = Events::with_capacity(1024);
     let token = Token(0);
@@ -19,5 +24,13 @@ pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> Result<
             return Ok(());
         }
     }
-    Err(Error::Timeout(timeout))
+    Err(timed_out())
 }
+
+fn timed_out() -> io::Error {
+    io::Error::new(io::ErrorKind::TimedOut, PollReadTimedOutError)
+}
+
+#[derive(Debug, Error)]
+#[error("poll_read timed out")]
+struct PollReadTimedOutError;

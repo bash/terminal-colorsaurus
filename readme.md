@@ -25,9 +25,6 @@ These are some features that I would like to include in this crate,
 but have not yet had the time to implement. PRs are welcome :)
 
 * [ ] A CLI tool version of this library.
-* [ ] Improve dynamic latency strategy (iTerm is a bit of a headache here as it has quite a big range when it comes to latency).
-* [ ] Add support for `$COLORFGBG`
-     (I don't  know if this is a good idea actually, the [readme](https://github.com/Canop/terminal-light#colorfgbg-strategy) of `terminal-light` lists some downsides.)
 
 ## Inspiration
 This crate borrows ideas from many other projects. This list is by no means exhaustive.

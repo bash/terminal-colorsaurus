@@ -1,47 +1,69 @@
-use crate::os::poll_read;
-use crate::terminal::TerminalKind;
+use self::io_utils::{read_until2, TermReader};
 use crate::{Color, ColorScheme, Error, QueryOptions, Result};
-use std::cmp::{max, min};
+use std::env;
+use std::io::{self, BufRead, BufReader, Write as _};
 use std::str::from_utf8;
-use std::time::{Duration, Instant};
-use terminal_trx::{terminal, Transceive};
+use std::time::Duration;
+use terminal_trx::{terminal, RawModeGuard};
 
-const MIN_TIMEOUT: Duration = Duration::from_millis(100);
+mod io_utils;
 
+const QUERY_FG: &str = "\x1b]10;?\x07";
+const FG_RESPONSE_PREFIX: &str = "\x1b]10;";
+const QUERY_BG: &str = "\x1b]11;?\x07";
+const BG_RESPONSE_PREFIX: &str = "\x1b]11;";
+
+#[allow(clippy::redundant_closure)]
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
-    execute_query(options, TerminalKind::from_env(), query_foreground_color)
+    let response = query(
+        options.timeout,
+        |w| write!(w, "{QUERY_FG}"),
+        |r| read_color_response(r),
+    )
+    .map_err(map_timed_out_err(options.timeout))?;
+    parse_response(response, FG_RESPONSE_PREFIX)
 }
 
+#[allow(clippy::redundant_closure)]
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
-    execute_query(options, TerminalKind::from_env(), query_background_color)
+    let response: String = query(
+        options.timeout,
+        |w| write!(w, "{QUERY_BG}"),
+        |r| read_color_response(r),
+    )
+    .map_err(map_timed_out_err(options.timeout))?;
+    parse_response(response, BG_RESPONSE_PREFIX)
 }
 
 pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
-    execute_query(options, TerminalKind::from_env(), |tty, timeout| {
-        let foreground = query_foreground_color(tty, timeout)?;
-        let background = query_background_color(tty, timeout)?;
-        Ok(ColorScheme {
-            foreground,
-            background,
-        })
+    let (fg_response, bg_response) = query(
+        options.timeout,
+        |w| write!(w, "{QUERY_FG}{QUERY_BG}"),
+        |r| Ok((read_color_response(r)?, read_color_response(r)?)),
+    )
+    .map_err(map_timed_out_err(options.timeout))?;
+    let foreground = parse_response(fg_response, FG_RESPONSE_PREFIX)?;
+    let background = parse_response(bg_response, BG_RESPONSE_PREFIX)?;
+    Ok(ColorScheme {
+        foreground,
+        background,
     })
 }
 
-fn query_foreground_color(tty: &mut dyn Transceive, timeout: Duration) -> Result<Color> {
-    query_color(tty, timeout, "\x1b]10;?\x07", "\x1b]10;")
+fn map_timed_out_err(timeout: Duration) -> impl Fn(Error) -> Error {
+    move |e| match e {
+        Error::Io(io) if io.kind() == io::ErrorKind::TimedOut => Error::Timeout(timeout),
+        e => e,
+    }
 }
 
-fn query_background_color(tty: &mut dyn Transceive, timeout: Duration) -> Result<Color> {
-    query_color(tty, timeout, "\x1b]11;?\x07", "\x1b]11;")
-}
-
-fn query_color(
-    tty: &mut dyn Transceive,
-    timeout: Duration,
-    q: &str,
-    response_prefix: &str,
-) -> Result<Color> {
-    query(tty, q, timeout).and_then(|(r, _)| parse_response(r, response_prefix))
+// We don't want to send any escape sequences to
+// terminals that don't support them.
+fn ensure_capable_terminal() -> Result<()> {
+    match env::var("TERM") {
+        Ok(term) if term == "dumb" => Err(Error::UnsupportedTerminal),
+        Ok(_) | Err(_) => Ok(()),
+    }
 }
 
 fn parse_response(response: String, prefix: &str) -> Result<Color> {
@@ -56,51 +78,68 @@ fn parse_response(response: String, prefix: &str) -> Result<Color> {
         .ok_or_else(|| Error::Parse(response))
 }
 
-fn execute_query<T>(
-    options: QueryOptions,
-    kind: TerminalKind,
-    f: impl FnOnce(&mut dyn Transceive, Duration) -> Result<T>,
+// We detect terminals that don't support the color query in quite a smart way:
+// First, we send the color query and then a query that we know is well-supported (DA1).
+// Since queries are answered sequentially, if a terminal answers to DA1 first, we know that
+// it does not support querying for colors.
+//
+// Source: https://gitlab.freedesktop.org/terminal-wg/specifications/-/issues/8#note_151381
+fn query<T>(
+    timeout: Duration,
+    write_query: impl FnOnce(&mut dyn io::Write) -> io::Result<()>,
+    read_response: impl FnOnce(&mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<T>,
 ) -> Result<T> {
-    if let TerminalKind::Unsupported = kind {
-        return Err(Error::UnsupportedTerminal);
-    }
+    ensure_capable_terminal()?;
 
     let mut tty = terminal()?;
     let mut tty = tty.lock()?;
     let mut tty = tty.enable_raw_mode()?;
 
-    match kind {
-        TerminalKind::Unsupported => unreachable!(),
-        TerminalKind::Supported => f(&mut tty, options.max_timeout),
-        TerminalKind::Unknown => {
-            // We use a well-supported sequence such as CSI C to measure the latency.
-            // this is to avoid mixing up the case where the terminal is slow to respond
-            // (e.g. because we're connected via SSH and have a slow connection)
-            // with the case where the terminal does not support querying for colors.
-            let timeout = estimate_timeout(&mut tty, options.max_timeout)?;
-            f(&mut tty, timeout)
-        }
-    }
-}
-
-fn estimate_timeout(tty: &mut dyn Transceive, max_timeout: Duration) -> Result<Duration> {
-    let (_, latency) = query(tty, "\x1b[c", max_timeout)?;
-    let timeout = latency * 2; // We want to be in the same ballpark as the latency of our test query. Factor 2 is mostly arbitrary.
-    Ok(min(max(timeout, MIN_TIMEOUT), max_timeout))
-}
-
-fn query(tty: &mut dyn Transceive, query: &str, timeout: Duration) -> Result<(String, Duration)> {
-    let mut buffer = vec![0; 100];
-
-    write!(tty, "{}", query)?;
+    write_query(&mut tty)?;
+    write!(tty, "{DA1}")?;
     tty.flush()?;
 
-    let start = Instant::now();
-    poll_read(tty, timeout)?;
-    let bytes_read = tty.read(&mut buffer)?;
-    let duration = start.elapsed();
+    let mut reader = BufReader::with_capacity(32, TermReader::new(tty, timeout));
 
-    let response = from_utf8(&buffer[..bytes_read])?.to_owned();
+    let response = read_response(&mut reader)?;
 
-    Ok((response, duration))
+    // We still need to consume the reponse to DA1
+    // Let's ignore errors, they are not that important.
+    _ = consume_da1_response(&mut reader, true);
+
+    Ok(response)
+}
+
+const ESC: u8 = b'\x1b';
+const BEL: u8 = b'\x07';
+const DA1: &str = "\x1b[c";
+
+fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<String> {
+    let mut buf = Vec::new();
+    r.read_until(ESC, &mut buf)?; // Both responses start with ESC
+
+    // If we get the response for DA1 back first, then we know that
+    // the terminal does not recocgnize the color query.
+    if !r.buffer().starts_with(&[b']']) {
+        _ = consume_da1_response(r, false);
+        return Err(Error::UnsupportedTerminal);
+    }
+
+    // Some terminals like iTerm2 always respond with ST (= ESC \)
+    read_until2(r, BEL, ESC, &mut buf)?;
+    if buf.last() == Some(&ESC) {
+        r.read_until(b'\\', &mut buf)?;
+    }
+
+    Ok(from_utf8(&buf)?.to_owned())
+}
+
+fn consume_da1_response(r: &mut impl BufRead, consume_esc: bool) -> io::Result<()> {
+    let mut buf = Vec::new();
+    if consume_esc {
+        r.read_until(ESC, &mut buf)?;
+    }
+    r.read_until(b'[', &mut buf)?;
+    r.read_until(b'c', &mut buf)?;
+    Ok(())
 }

@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.70.0"
-exclude = [".github", ".gitignore"]
+exclude = [".github", ".gitignore", "*.sh"]
 
 [dependencies]
 thiserror = "1.0.56"
@@ -16,6 +16,7 @@ rgb = { version = "0.8.37", optional = true }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2.151"
+memchr = "2.7.1"
 mio = { version = "0.8.10", features = ["os-poll", "os-ext"], default-features = false }
 terminal-trx = "0.1.0"
 
