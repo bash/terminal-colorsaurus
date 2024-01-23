@@ -1,6 +1,5 @@
 use std::error::Error;
 use std::io::stdout;
-use std::os::fd::{AsRawFd, BorrowedFd};
 use std::{io, mem};
 use terminal_colorsaurus::{color_scheme, QueryOptions};
 
@@ -42,13 +41,14 @@ fn should_auto_detect() -> bool {
 // The mode can be bitwise AND-ed with S_IFMT to extract the file type code, and compared to the appropriate constant
 // Source: https://www.gnu.org/software/libc/manual/html_node/Testing-File-Type.html
 #[cfg(unix)]
-fn is_pipe(fd: BorrowedFd) -> io::Result<bool> {
+fn is_pipe(fd: std::os::fd::BorrowedFd) -> io::Result<bool> {
     use libc::{S_IFIFO, S_IFMT};
     Ok(fstat(fd)?.st_mode & S_IFMT == S_IFIFO)
 }
 
 #[cfg(unix)]
-fn fstat(fd: BorrowedFd) -> io::Result<libc::stat> {
+fn fstat(fd: std::os::fd::BorrowedFd) -> io::Result<libc::stat> {
+    use std::os::fd::AsRawFd as _;
     // SAFETY:
     // 1. File descriptor is valid (we have a borrowed fd for the lifetime of this function)
     // 2. fstat64 fills the stat structure for us (if successful).
