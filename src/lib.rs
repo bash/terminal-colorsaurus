@@ -154,8 +154,8 @@ pub enum Error {
     /// or the terminal has a lot of latency (e.g. when connected via SSH).
     #[error("operation did not complete within {0:?}")]
     Timeout(Duration),
-    /// The terminal is known to be unsupported.
-    #[error("unsupported terminal")]
+    /// The terminal does not support querying for the foreground or background color.
+    #[error("the terminal does not support querying for its colors")]
     UnsupportedTerminal,
     /// A precondition configured in [`QueryOptions::preconditions`] was not met.
     #[error("precondition not met: {0}")]
