@@ -38,7 +38,9 @@
 //! sequences automatically work with this library even if they
 //! are not explicitly listed below.
 //!
-//! ### Supported
+//! <details>
+//! <summary><strong>Supported</strong></summary>
+//!
 //! * macOS Terminal
 //! * iTerm2
 //! * Alacritty
@@ -52,10 +54,16 @@
 //! * tmux (next-3.4)
 //! * Windows Console (conhost)
 //!
-//! ### Unsupported
+//! </details>
+//!
+//! <details>
+//! <summary><strong>Unsupported</strong></summary>
+//!
 //! * linux
 //! * Jetbrains Fleet
 //! * Windows Terminal
+//!
+//! </details>
 //!
 //! ## Optional Dependencies
 //! * [`rgb`] — Enable this feature to convert between [`Color`] and [`rgb::RGB16`].
