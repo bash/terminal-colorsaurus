@@ -1,11 +1,10 @@
 #![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
 
 //! Determines the background and foreground color of the terminal
-//! using the `OSC 10` and `OSC 11` terminal sequence.
-//!
+//! using the `OSC 10` and `OSC 11` terminal sequence. \
 //! On Windows, the colors are queried using the Win32 Console API.
 //!
-//! This is useful for answering the question *"Is this terminal dark or light?"*.
+//! This crate helps answer the question *"Is this terminal dark or light?"*.
 //!
 //! ## Features
 //! * Background and foreground color detection.
