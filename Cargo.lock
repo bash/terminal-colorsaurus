@@ -84,12 +84,11 @@ dependencies = [
 
 [[package]]
 name = "terminal-trx"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c65469586ce1dd3e6488af435329575fa51c35168d2ad6fc16183f1c62fdec4a"
+checksum = "1a4af7c93f02d5bd5e120c812f7fb413003b7060e8a22d0ea90346f1be769210"
 dependencies = [
  "libc",
- "thiserror",
  "windows-sys 0.52.0",
 ]
 

@@ -102,7 +102,7 @@ fn query<T>(
     ensure_preconditions(&options.preconditions)?;
 
     let mut tty = terminal()?;
-    let mut tty = tty.lock()?;
+    let mut tty = tty.lock();
     let mut tty = tty.enable_raw_mode()?;
 
     write_query(&mut tty)?;

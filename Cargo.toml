@@ -18,10 +18,10 @@ rgb = { version = "0.8.37", optional = true }
 libc = "0.2.151"
 memchr = "2.7.1"
 mio = { version = "0.8.10", features = ["os-poll", "os-ext"], default-features = false }
-terminal-trx = "0.1.0"
+terminal-trx = "0.2.0"
 
 [target.'cfg(windows)'.dependencies]
-terminal-trx = "0.1.0"
+terminal-trx = "0.2.0"
 windows-sys = { version = "0.52.0", features = ["Win32_System_Console", "Win32_Foundation"] }
 
 [features]
