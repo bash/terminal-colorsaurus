@@ -6,9 +6,10 @@
 
 Determines the background and foreground color of the terminal
 using the `OSC 10` and `OSC 11` terminal sequence.
-On Windows, the colors are queried using the Win32 Console API.
 
 This is useful for answering the question *"Is this terminal dark or light?"*.
+
+Windows is unfortunately [not supported](./doc/windows.md)
 
 ## Example
 ```rust,no_run

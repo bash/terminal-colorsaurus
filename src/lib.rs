@@ -3,9 +3,9 @@
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence. \
 //!
-//! Windows is [not supported][windows_unsupported].
-//!
 //! This crate helps answer the question *"Is this terminal dark or light?"*.
+//!
+//! Windows is [not supported][windows_unsupported].
 //!
 //! ## Features
 //! * Background and foreground color detection.
