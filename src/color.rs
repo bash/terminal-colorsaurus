@@ -57,15 +57,6 @@ impl Color {
         let b = parse_channel(parts.next()?)?;
         Some(Color { r, g, b })
     }
-
-    #[cfg(windows)]
-    pub(crate) fn from_8bit(r: u8, g: u8, b: u8) -> Color {
-        Color {
-            r: (r as u16) << 8,
-            g: (g as u16) << 8,
-            b: (b as u16) << 8,
-        }
-    }
 }
 
 #[cfg(unix)]

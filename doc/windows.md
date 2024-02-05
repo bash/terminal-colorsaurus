@@ -1,15 +1,20 @@
-# Windows
-## Windows Terminal
-The Win32 API provides access to the console foreground and background colors.
-However, this currently does not work in Windows Terminal. [Incorrect colors are reported] as a result.
+# Why is Windows not supported?
+Terminals on Windows rely on a component called [Console Host], also referred to as `conhost`.
 
-Hopefully Windows Terminal [will support] querying for the colors using the OSC sequences.
+This is done in one of two ways:
+1. By using the [Pseudoconsole] API. This is what newer terminals such as **Windows Terminal** or **Alacritty** do.
+2. By [launching a hidden console window][RealConsole]. This is what third party terminals that have been around since before the introduction of the [Pseudoconsole] API do. One example is **ConEmu**.
 
-## Other Terminals
-Terminals relying on [conpty] that support OSC sequences on other platforms
-do not support them of Windows because [conhost intercepts these OSC sequences].
+To preserve backwards compatibility with programs that use (now mostly obsolete) [Console API],
+`conhost` intercepts some escape sequences such as `OSC 10` and `OSC 11`. However, `conhost` only supports setting colors using these two sequences, [but not querying][conhost/osc].
 
-[Incorrect colors are reported]: https://github.com/microsoft/terminal/issues/10639
-[will support]: https://github.com/microsoft/terminal/issues/3718
-[conpty]: https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
-[conhost intercepts these OSC sequences]: https://github.com/microsoft/terminal/issues/1173
+An alternative approach would be to retrieve the foreground and background color by using the [Console API]. \
+However, for all custom Terminals—this includes **Windows Terminal**—[incorrect colors are reported](conhost/palette).
+
+
+[Console Host]: https://learn.microsoft.com/en-us/windows/console/definitions#console-host
+[RealConsole]: https://conemu.github.io/en/RealConsole.html
+[Pseudoconsole]: https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
+[Console API]: https://learn.microsoft.com/en-us/windows/console/console-functions
+[conhost/osc]: https://github.com/microsoft/terminal/issues/3718
+[conhost/palette]: https://github.com/microsoft/terminal/issues/10639

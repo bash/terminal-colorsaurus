@@ -2,7 +2,8 @@
 
 //! Determines the background and foreground color of the terminal
 //! using the `OSC 10` and `OSC 11` terminal sequence. \
-//! On Windows, the colors are queried using the Win32 Console API.
+//!
+//! Windows is [not supported][windows_unsupported].
 //!
 //! This crate helps answer the question *"Is this terminal dark or light?"*.
 //!
@@ -52,7 +53,6 @@
 //! * foot
 //! * xterm
 //! * tmux (next-3.4)
-//! * Windows Console (conhost)
 //!
 //! </details>
 //!
@@ -61,7 +61,6 @@
 //!
 //! * linux
 //! * Jetbrains Fleet
-//! * Windows Terminal
 //!
 //! </details>
 //!
@@ -90,22 +89,22 @@ use thiserror::Error;
 mod color;
 mod os;
 
-#[cfg(windows)]
-mod winapi;
 #[cfg(unix)]
 mod xterm;
 
-#[cfg(windows)]
-use winapi as imp;
 #[cfg(unix)]
 use xterm as imp;
 
-#[cfg(not(any(unix, windows)))]
+#[cfg(not(unix))]
 use unsupported as imp;
 
 #[cfg(feature = "docs")]
 #[doc = include_str!("../doc/terminal-survey.md")]
 pub mod terminal_survey {}
+
+#[cfg(feature = "docs")]
+#[doc = include_str!("../doc/windows.md")]
+pub mod windows_unsupported {}
 
 #[cfg(doctest)]
 #[doc = include_str!("../readme.md")]
@@ -230,9 +229,13 @@ pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
 }
 
-#[cfg(not(any(unix, windows)))]
+#[cfg(not(any(unix)))]
 mod unsupported {
-    use crate::{Color, Error, QueryOptions, Result};
+    use crate::{Color, ColorScheme, Error, QueryOptions, Result};
+
+    pub(crate) fn color_scheme(_options: QueryOptions) -> Result<ColorScheme> {
+        Err(Error::UnsupportedTerminal)
+    }
 
     pub(crate) fn foreground_color(_options: QueryOptions) -> Result<Color> {
         Err(Error::UnsupportedTerminal)
