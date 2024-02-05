@@ -9,7 +9,7 @@ using the `OSC 10` and `OSC 11` terminal sequence.
 
 This is useful for answering the question *"Is this terminal dark or light?"*.
 
-Windows is unfortunately [not supported](./doc/windows.md)
+Windows is unfortunately [not supported](./doc/windows.md).
 
 ## Example
 ```rust,no_run
