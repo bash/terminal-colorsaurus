@@ -43,3 +43,6 @@ use_debug = "warn"
 [package.metadata.docs.rs]
 features = ["docs", "rgb"]
 rustdoc-args = ["--cfg", "docsrs"]
+
+[workspace]
+members = ["examples/*"]
