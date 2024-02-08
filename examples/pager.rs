@@ -10,20 +10,28 @@
 //! false negatives (output not piped to a pager) and
 //! false positives (stderr piped to a pager).
 //!
+//! You might want to have an explicit option in your CLI app that
+//! allows users to override that heuristic (similar to --color=always/never/auto).
+//!
 //! Test this example as follows:
 //! 1. `cargo run --example pager`—should print the color scheme.
 //! 2. `cargo run --example pager | less`—should not print the color scheme.
-//! 3. `cargo run --example pager > file.txt`—should print the color scheme.
-//! 4. `cargo run --example pager > /dev/null`—should print the color scheme.
+//! 3. `cargo run --example pager | cat`—should not print the color scheme. This is a false negatives.
+//! 4. `cargo run --example pager 2>&1 >/dev/tty | less`—should print the color scheme (or error). This is a false positive.
 
 use std::error::Error;
-use terminal_colorsaurus::{color_scheme, Preconditions, QueryOptions};
+use std::io::{stdout, IsTerminal as _};
+use terminal_colorsaurus::{color_scheme, QueryOptions};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut options = QueryOptions::default();
-    options.preconditions = Preconditions::stdout_not_piped();
-
-    eprintln!("Here's the color scheme: {:#?}", color_scheme(options)?);
+    if stdout().is_terminal() {
+        eprintln!(
+            "Here's the color scheme: {:#?}",
+            color_scheme(QueryOptions::default())?
+        );
+    } else {
+        eprintln!("No color scheme for you today :/");
+    }
 
     Ok(())
 }
