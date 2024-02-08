@@ -3,7 +3,7 @@ Terminals on Windows rely on a component called [Console Host], also referred to
 
 This is done in one of two ways:
 1. By using the [Pseudoconsole] API. This is what newer terminals such as **Windows Terminal** or **Alacritty** do.
-2. By [launching a hidden console window][RealConsole]. This is what third party terminals that have been around since before the introduction of the [Pseudoconsole] API do. One example is **ConEmu**.
+2. By [launching a hidden console window][RealConsole]. This is what older terminals such as **ConEmu** do.
 
 To preserve backwards compatibility with programs that use (the now mostly obsolete) [Console API],
 `conhost` intercepts some escape sequences such as `OSC 10` and `OSC 11`. However, `conhost` only supports setting colors using these two sequences, [but not querying][conhost/osc].
