@@ -1,4 +1,8 @@
 # Changelog
+## 0.3.0
+* Remove support for Windows. [Why?](./doc/windows.md)
+* Remove preconditions from public API.
+
 ## 0.2.3
 * Updated to latest version of `terminal-trx`.
 * Improved docs: Terminal Survey has been simplified.
