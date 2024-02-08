@@ -204,7 +204,7 @@ pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
 }
 
-#[cfg(not(any(unix)))]
+#[cfg(not(unix))]
 mod unsupported {
     use crate::{Color, ColorScheme, Error, QueryOptions, Result};
 
