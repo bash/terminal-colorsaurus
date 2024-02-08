@@ -252,7 +252,7 @@ dependencies = [
 
 [[package]]
 name = "terminal-colorsaurus"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "libc",
  "memchr",
@@ -260,7 +260,6 @@ dependencies = [
  "rgb",
  "terminal-trx",
  "thiserror",
- "windows-sys 0.52.0",
 ]
 
 [[package]]

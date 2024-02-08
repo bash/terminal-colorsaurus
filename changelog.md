@@ -1,5 +1,5 @@
 # Changelog
-## 0.3.0
+## 0.3.1
 * Remove support for Windows. [Why?](./doc/windows.md)
 * Remove preconditions from public API.
 
