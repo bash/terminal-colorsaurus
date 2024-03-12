@@ -111,11 +111,11 @@ mod tests {
 
     #[test]
     fn white_has_perceived_lightness_100() {
-        let black = Color {
+        let white = Color {
             r: u16::MAX,
             g: u16::MAX,
             b: u16::MAX,
         };
-        assert_eq!(100, black.perceived_lightness())
+        assert_eq!(100, white.perceived_lightness())
     }
 }
