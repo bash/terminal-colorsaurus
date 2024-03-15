@@ -1,0 +1,146 @@
+---
+title: "Measurements"
+author: "Jan Hohenheim"
+date: "`r Sys.Date()`"
+header-includes:
+    - \usepackage{fontspec}
+output: 
+  pdf_document:
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(tidyverse);
+library(ggthemes);
+library(svglite)
+theme_set(theme_solarized_2(light = TRUE));
+```
+
+```{r}
+dat_raw <- read_tsv("raw.tsv");
+dat_raw$term <- as.factor(dat_raw$term);
+dat_raw$machine <- as.factor(dat_raw$machine)
+dat_raw$supported <- as.logical(dat_raw$supported);
+```
+
+```{r}
+message("Raw data");
+dat_raw |> summary(maxsum = max(lengths(lapply(dat_raw, unique))))
+
+dat_raw |>
+  group_by(term) |>
+  summarise(
+    "mean [ns]" = mean(duration_ns),
+    "median [ns]" = median(duration_ns),
+    "sd [ns]" = sd(duration_ns),
+  );
+```
+
+```{r}
+message("Filtered data");
+alpha <- 0.05;
+dat <- dat_raw |>
+  filter(duration_ns > quantile(duration_ns, alpha / 2) & duration_ns < quantile(duration_ns, 1 - alpha / 2)) |>
+  mutate(duration_us = duration_ns / 1000) |>
+  select(-duration_ns);
+  
+dat$machine <- dat$machine |>
+  recode(
+    "linux" = "Linux Desktop",
+    "macbook" = "MacBook Pro"
+  );
+
+
+dat |> summary(maxsum = max(lengths(lapply(dat, unique))));
+
+dat |>
+  group_by(term) |>
+  summarise(
+    "mean [μs]" = mean(duration_us),
+    "median [μs]" = median(duration_us),
+    "sd [μs]" = sd(duration_us),
+  );
+
+```
+
+## Violin plots
+
+
+```{r}
+for (current_term in unique(dat$term)) {
+  machine <- dat |>
+    filter(term == current_term) |>
+    pull(machine) |>
+    unique();
+  plt <- dat |>
+    filter(term == current_term) |>
+    ggplot(aes(x = term, y = duration_us)) +
+    geom_violin() +
+    ggtitle(glue::glue("Violin plot for {current_term} on {machine}")) +
+    ylab("Duration [μs]");
+  print(plt);
+}
+```
+
+
+## Histograms
+
+```{r}
+for (current_term in unique(dat$term)) {
+  machine <- dat |>
+    filter(term == current_term) |>
+    pull(machine) |>
+    unique();
+  plt <- dat |>
+    filter(term == current_term) |>
+    ggplot(aes(x = duration_us)) +
+    geom_histogram(bins = 200) +
+    ggtitle(glue::glue("Histogram for {current_term} on {machine}")) +
+    xlab("Duration [μs]");
+  print(plt);
+}
+```
+
+## Median plot
+
+```{r}
+dat.median <- dat |>
+  group_by(term, machine) |>
+  summarise(
+    median = median(duration_us),
+    supported = ifelse(first(supported), "True", "False"),
+    fast = median(duration_us) < 2000,
+    .groups = "keep",
+  );
+
+dat.median |>
+  filter(fast) |>
+  ggplot(aes(x = term, y = median, fill = supported)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  ggtitle("Median duration per terminal for fast terminals") +
+  ylab("Median duration [μs]") +
+  xlab("Term") +
+  scale_fill_manual(values = c(True = "steelblue", False = "coral2")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1));
+
+ggsave("measurements_fast.svg", width = 10, height = 8)
+
+dat.median |>
+  filter(!fast) |>
+  ggplot(aes(x = term, y = median, fill = supported)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  ggtitle("Median duration per terminal for slow terminals") +
+  ylab("Median duration [μs]") +
+  xlab("Term") +
+  scale_fill_manual(values = c(True = "steelblue", False = "coral2")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1));
+
+ggsave("measurements_slow.svg", width = 10, height = 8)
+```
+
