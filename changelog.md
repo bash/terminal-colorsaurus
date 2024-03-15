@@ -1,4 +1,12 @@
 # Changelog
+## 0.3.2
+* Add support for Terminology's color format.
+* Bump `mio` dependency.
+
+### Docs
+* Include benchmark results in rustdocs.
+* Extend terminal survey to more terminals.
+
 ## 0.3.1
 * Remove support for Windows. [Why?](./doc/windows.md)
 * Remove preconditions from public API.
