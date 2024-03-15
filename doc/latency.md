@@ -14,7 +14,14 @@ Measurements generated using [examples/benchmark](../examples/benchmark/src/main
 | VSCode              | 10000      | 24.164008 ms | 140.036258 ms | 26.061349 ms | yes       |
 | iTerm2              | 10000      | 4.065856 ms  | 49.872777 ms  | 28.259948 ms | yes       |
 | QTerminal           | 10000      | 26.22 µs     | 4.127641 ms   | 37.446 µs    | no        |
-| linux               | 10000	   | 15.47 µs     | 75.19 µs      | 16.107 µs    | no        |
+| linux               | 10000      | 15.47 µs     | 75.19 µs      | 16.107 µs    | no        |
+| WezTerm             | 10000      | 1.174129 ms  | 6.400318 ms   | 3.461548 ms  | yes       |
+| kitty               | 10000      | 1.412243 ms  | 6.343324 ms   | 3.137705 ms  | yes       |
+| Rio                 | 10000      | 36.94 µs     | 1.626094 ms   | 56.959 µs    | yes       |
+| rxvt-unicode        | 10000      | 27.9 µs      | 11.97489 ms   | 37.092 µs    | yes       |
+| QMLKonsole          | 10000      | 25.01 µs     | 0.969482 ms   | 27.317 µs    | no        |
+| cool-retro-term     | 10000      | 28.07 µs     | 3.457008 ms   | 35.218 µs    | no        |
+| Terminology         | 10000      | 30.57 µs     | 0.620351 ms   | 36.248 µs    | yes       |
 
 **ℹ️ Note:**
 The macOS terminals were not tested on the same machine as the Linux terminals.
