@@ -56,15 +56,9 @@ fn save_results(results: &[Duration], term: String) -> io::Result<()> {
     let mut file = OpenOptions::new()
         .append(true)
         .create(true)
-        .open("benchmark.tsv")?;
-    writeln!(
-        file,
-        "{}\t{}\t{}\t{}\t{}",
-        term,
-        results.len(),
-        results.iter().min().unwrap().as_nanos(),
-        results.iter().max().unwrap().as_nanos(),
-        (results.iter().sum::<Duration>() / results.len() as u32).as_nanos(),
-    )?;
+        .open("benchmark/raw.tsv")?;
+    for result in results {
+        writeln!(file, "{}\t{}", term, result.as_nanos())?;
+    }
     Ok(())
 }
