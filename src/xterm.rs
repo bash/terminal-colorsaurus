@@ -74,7 +74,7 @@ fn parse_response(response: String, prefix: &str) -> Result<Color> {
                 .strip_suffix('\x07')
                 .or(response.strip_suffix("\x1b\\"))
         })
-        .and_then(Color::parse_x11)
+        .and_then(|c| Color::parse_x11(c).or_else(|| Color::parse_css_like(c)))
         .ok_or_else(|| Error::Parse(response))
 }
 
