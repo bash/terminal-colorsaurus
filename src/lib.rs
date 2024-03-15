@@ -107,7 +107,7 @@ pub mod terminal_survey {}
 pub mod windows_unsupported {}
 
 #[cfg(feature = "docs")]
-#[doc = include_str!("../doc/latency.md")]
+#[doc = include_str!("../doc/latency-rustdoc.md")]
 pub mod latency {}
 
 #[cfg(doctest)]
