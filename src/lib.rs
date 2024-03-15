@@ -106,6 +106,10 @@ pub mod terminal_survey {}
 #[doc = include_str!("../doc/windows.md")]
 pub mod windows_unsupported {}
 
+#[cfg(feature = "docs")]
+#[doc = include_str!("../doc/latency.md")]
+pub mod latency {}
+
 #[cfg(doctest)]
 #[doc = include_str!("../readme.md")]
 pub mod readme_doctests {}
@@ -173,6 +177,11 @@ pub struct QueryOptions {
     ///
     /// Consider leaving this on a high value as there might be a lot of latency \
     /// between you and the terminal (e.g. when you're connected via SSH).
+    ///
+    /// Terminals that don't support querying for colors will
+    /// almost always be detected as such before this timeout elapses.
+    ///
+    /// See the [Latency Measurements](`latency`) for examples.
     pub timeout: Duration,
 }
 

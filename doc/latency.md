@@ -1,5 +1,8 @@
-# Latency
+# Latency Measurements
 Measurements generated using [examples/benchmark](../examples/benchmark/src/main.rs):
+```shell
+cargo run --release -p benchmark '<TERM_NAME>'
+```
 
 | Terminal            | Iterations | min          | max           | mean         | supported |
 |---------------------|------------|--------------|---------------|--------------|-----------|
