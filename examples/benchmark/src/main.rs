@@ -5,7 +5,7 @@ use std::fs::OpenOptions;
 use std::hint::black_box;
 use std::io::{self, Write as _};
 use std::time::{Duration, Instant};
-use terminal_colorsaurus::{color_scheme, QueryOptions, Result};
+use terminal_colorsaurus::{color_scheme, Error, QueryOptions, Result};
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -46,8 +46,10 @@ fn main() -> Result<()> {
 
 fn bench() -> Result<Duration> {
     let start = Instant::now();
-    let _ = black_box(color_scheme(QueryOptions::default()))?;
-    Ok(start.elapsed())
+    match black_box(color_scheme(QueryOptions::default())) {
+        Ok(_) | Err(Error::UnsupportedTerminal) => Ok(start.elapsed()),
+        Err(err) => Err(err),
+    }
 }
 
 fn save_results(results: &[Duration], term: String) -> io::Result<()> {
