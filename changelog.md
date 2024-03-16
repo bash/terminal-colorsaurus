@@ -1,4 +1,12 @@
 # Changelog
+## 0.3.3
+* Feature: Add new `Color::to_rgb8` convenience function that converts channels to 8 bit.
+* Fix: Correctly scale colors up to 16 bits per channel.
+* Fix: Support full range of `#r(rrr)g(ggg)b(bbb)` color syntax.
+### Docs
+* Update terminal survey docs.
+* Replace table with pretty graphs for latency docs ✨.
+
 ## 0.3.2
 * Add support for Terminology's color format.
 * Bump `mio` dependency.
