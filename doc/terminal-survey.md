@@ -37,11 +37,15 @@ A list of terminals that were tested for support of DA1 (`CSI c`) and `OSC 10` /
 
 <br>
 
-**ℹ️ Note:**
+**ℹ️ Note 1:**
 Some Linux terminals are omitted since they all use the `vte` library behind the scenes. \
 Here's a non-exhaustive list: GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (GNOME) Builder, (elementary) Terminal, LXTerminal, Guake.
 
-[^1]: The response does not use the `XParseColor` format but rather a CSS-like hex code (e.g. `#AAAAAA`).
+**ℹ️ Note 2:**
+If not otherwise noted, the terminals respond using the `rgb:r(rrr)/g(ggg)/b(bbbb)` format.
+See [Color Strings](https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings) for details on what is theoretically possible.
+
+[^1]: Responds using the `#r(rrr)g(ggg)b(bbb)` format.
 
 [Contour]: https://contour-terminal.org/
 [QTerminal]: https://github.com/lxqt/qterminal

@@ -1,13 +1,16 @@
 use crate::Color;
 
-/// Parses a color value that follows the `xparsecolor` format.
+/// Parses a color value that follows the `XParseColor` format.
+/// See https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings
+/// for a reference of what `XParseColor` supports.
+///
+/// Not all formats are supported, just the ones that are returned
+/// by the tested terminals.
 pub(crate) fn xparsecolor(input: &str) -> Option<Color> {
     if input.starts_with('#') {
         parse_sharp(&input[1..])
     } else if input.starts_with("rgb:") {
         parse_rgb(&input[4..])
-    } else if input.starts_with("rgbi:") {
-        parse_rgbi(&input[5..])
     } else {
         None
     }
@@ -73,18 +76,6 @@ fn parse_channel_scaled(input: &str) -> Option<u16> {
     } else {
         None
     }
-}
-
-/// From the `xparsecolor` man page:
-/// > An RGB intensity specification is identified by the prefix `rgbi:` and conforms to the following syntax:
-/// > ```text
-/// > rgbi:<red>/<green>/<blue>
-/// > ```
-/// Note that red, green, and blue are floating-point values between 0.0 and 1.0, inclusive.
-/// The input format for these values is an optional sign, a string of numbers possibly containing a decimal point,
-/// and an optional exponent field containing an E or e followed by a possibly signed integer string.
-fn parse_rgbi(_input: &str) -> Option<Color> {
-    todo!()
 }
 
 #[cfg(test)]
