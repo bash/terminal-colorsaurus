@@ -1,4 +1,5 @@
 /// An RGB color with 16 bits per channel.
+/// You can use [`Color::scale_to_8bit`] to convert to an 8bit RGB color.
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
 #[allow(clippy::exhaustive_structs)]
 pub struct Color {
@@ -23,27 +24,26 @@ impl Color {
         luminance_to_perceived_lightness(luminance(self))
     }
 
-    /// Scales each channel from 16 bits to 8 bits.
-    /// This conversion is lossy by definition.
+    /// Converts the color to 8 bit precision per channel by scaling each channel.
     ///
     /// ```
     /// # use terminal_colorsaurus::Color;
     /// let white = Color { r: u16::MAX, g: u16::MAX, b: u16::MAX };
-    /// assert_eq!((u8::MAX, u8::MAX, u8::MAX), white.to_rgb8());
+    /// assert_eq!((u8::MAX, u8::MAX, u8::MAX), white.scale_to_8bit());
     ///
     /// let black = Color { r: 0, g: 0, b: 0 };
-    /// assert_eq!((0, 0, 0), black.to_rgb8());
+    /// assert_eq!((0, 0, 0), black.scale_to_8bit());
     /// ```
-    pub fn to_rgb8(&self) -> (u8, u8, u8) {
+    pub fn scale_to_8bit(&self) -> (u8, u8, u8) {
         (
-            to_u8_scaled(self.r),
-            to_u8_scaled(self.g),
-            to_u8_scaled(self.b),
+            scale_to_u8(self.r),
+            scale_to_u8(self.g),
+            scale_to_u8(self.b),
         )
     }
 }
 
-fn to_u8_scaled(channel: u16) -> u8 {
+fn scale_to_u8(channel: u16) -> u8 {
     (channel as u32 * (u8::MAX as u32) / (u16::MAX as u32)) as u8
 }
 

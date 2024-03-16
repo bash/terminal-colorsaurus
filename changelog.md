@@ -1,6 +1,6 @@
 # Changelog
 ## 0.3.3
-* Feature: Add new `Color::to_rgb8` convenience function that converts channels to 8 bit.
+* Feature: Add new `Color::scale_to_8bit` function.
 * Fix: Correctly scale colors up to 16 bits per channel.
 * Fix: Support full range of `#r(rrr)g(ggg)b(bbb)` color syntax.
 ### Docs
