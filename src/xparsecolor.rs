@@ -5,7 +5,8 @@ use crate::Color;
 /// for a reference of what `XParseColor` supports.
 ///
 /// Not all formats are supported, just the ones that are returned
-/// by the tested terminals.
+/// by the tested terminals. Feel free to open a PR if you encounter
+/// a terminal that returns a different format.
 pub(crate) fn xparsecolor(input: &str) -> Option<Color> {
     if input.starts_with('#') {
         parse_sharp(&input[1..])
