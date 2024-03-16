@@ -8,10 +8,10 @@ use crate::Color;
 /// by the tested terminals. Feel free to open a PR if you encounter
 /// a terminal that returns a different format.
 pub(crate) fn xparsecolor(input: &str) -> Option<Color> {
-    if input.starts_with('#') {
-        parse_sharp(&input[1..])
-    } else if input.starts_with("rgb:") {
-        parse_rgb(&input[4..])
+    if let Some(stripped) = input.strip_prefix('#') {
+        parse_sharp(stripped)
+    } else if let Some(stripped) = input.strip_prefix("rgb:") {
+        parse_rgb(stripped)
     } else {
         None
     }
@@ -42,7 +42,7 @@ fn parse_sharp(input: &str) -> Option<Color> {
 
 fn parse_channel_shifted(input: &str) -> Option<u16> {
     let value = u16::from_str_radix(input, 16).ok()?;
-    Some(value << (4 - input.len()) * 4)
+    Some(value << ((4 - input.len()) * 4))
 }
 
 /// From the `xparsecolor` man page:
