@@ -88,6 +88,8 @@ use thiserror::Error;
 
 mod color;
 mod os;
+#[cfg(unix)]
+mod xparsecolor;
 
 #[cfg(unix)]
 mod xterm;

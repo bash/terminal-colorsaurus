@@ -1,4 +1,5 @@
 use self::io_utils::{read_until2, TermReader};
+use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorScheme, Error, QueryOptions, Result};
 use std::env;
 use std::io::{self, BufRead, BufReader, Write as _};
@@ -74,7 +75,7 @@ fn parse_response(response: String, prefix: &str) -> Result<Color> {
                 .strip_suffix('\x07')
                 .or(response.strip_suffix("\x1b\\"))
         })
-        .and_then(|c| Color::parse_x11(c).or_else(|| Color::parse_css_like(c)))
+        .and_then(xparsecolor)
         .ok_or_else(|| Error::Parse(response))
 }
 
