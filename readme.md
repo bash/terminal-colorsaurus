@@ -33,7 +33,9 @@ This crate borrows ideas from many other projects. This list is by no means exha
 * [xterm-query]: Use `mio` to wait for the terminal's response with a timeout.
 * [termbg]: Lists a lot of terminals which served as a good starting point for me to test terminals as well.
 * [macOS doesn't like polling /dev/tty][macos-dev-tty] by Nathan Craddock
-* [This excellent answer on Stack Overflow][perceived-lightness] for determining the perceived lightness of a color. 
+* [This excellent answer on Stack Overflow][perceived-lightness] for determining the perceived lightness of a color.
+* [This comment in the Terminal WG](https://gitlab.freedesktop.org/terminal-wg/specifications/-/issues/8#note_151381) for the `DA1` trick
+  to easily detect terminals that don't support querying the colors with `OSC 10` / `OSC 11`.
 
 ## License
 Licensed under either of
