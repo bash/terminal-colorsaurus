@@ -80,7 +80,6 @@ fn parse_channel_scaled(input: &str) -> Option<u16> {
 }
 
 #[cfg(test)]
-#[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
 
