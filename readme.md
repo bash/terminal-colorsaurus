@@ -5,9 +5,9 @@
 
 
 Determines the background and foreground color of the terminal
-using the `OSC 10` and `OSC 11` terminal sequence.
+using the `OSC 10` and `OSC 11` escape codes.
 
-This is useful for answering the question *"Is this terminal dark or light?"*.
+This library helps answer the question *«Is this terminal dark or light?»*.
 
 Windows is unfortunately [not supported](./doc/windows.md).
 
