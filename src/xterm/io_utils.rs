@@ -20,15 +20,12 @@ pub(super) fn read_until2<R: BufRead + ?Sized>(
                 Err(ref e) if e.kind() == io::ErrorKind::Interrupted => continue,
                 Err(e) => return Err(e),
             };
-            match memchr::memchr2(delim1, delim2, available) {
-                Some(i) => {
-                    buf.extend_from_slice(&available[..=i]);
-                    (true, i + 1)
-                }
-                None => {
-                    buf.extend_from_slice(available);
-                    (false, available.len())
-                }
+            if let Some(i) = memchr::memchr2(delim1, delim2, available) {
+                buf.extend_from_slice(&available[..=i]);
+                (true, i + 1)
+            } else {
+                buf.extend_from_slice(available);
+                (false, available.len())
             }
         };
         r.consume(used);

@@ -1,7 +1,7 @@
 use crate::Color;
 
 /// Parses a color value that follows the `XParseColor` format.
-/// See https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings
+/// See <https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings>
 /// for a reference of what `XParseColor` supports.
 ///
 /// Not all formats are supported, just the ones that are returned
