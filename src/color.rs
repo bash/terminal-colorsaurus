@@ -22,6 +22,29 @@ impl Color {
     pub fn perceived_lightness(&self) -> u8 {
         luminance_to_perceived_lightness(luminance(self))
     }
+
+    /// Scales each channel from 16 bits to 8 bits.
+    /// This conversion is lossy by definition.
+    ///
+    /// ```
+    /// # use terminal_colorsaurus::Color;
+    /// let white = Color { r: u16::MAX, g: u16::MAX, b: u16::MAX };
+    /// assert_eq!((u8::MAX, u8::MAX, u8::MAX), white.to_rgb8());
+    ///
+    /// let black = Color { r: 0, g: 0, b: 0 };
+    /// assert_eq!((0, 0, 0), black.to_rgb8());
+    /// ```
+    pub fn to_rgb8(&self) -> (u8, u8, u8) {
+        (
+            to_u8_scaled(self.r),
+            to_u8_scaled(self.g),
+            to_u8_scaled(self.b),
+        )
+    }
+}
+
+fn to_u8_scaled(channel: u16) -> u8 {
+    (channel as u32 * (u8::MAX as u32) / (u16::MAX as u32)) as u8
 }
 
 #[cfg(feature = "rgb")]
