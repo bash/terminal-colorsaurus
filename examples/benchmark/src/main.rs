@@ -10,6 +10,7 @@ use terminal_colorsaurus::{color_scheme, Error, QueryOptions, Result};
 #[derive(Parser, Debug)]
 struct Args {
     term: String,
+    machine: String,
     #[arg(short = 'I', long, default_value_t = 10_000)]
     iterations: u32,
 }
@@ -39,7 +40,13 @@ fn main() -> Result<()> {
         .collect::<Result<Vec<_>>>()?;
     bar.finish();
 
-    save_results(&measurements, args.term)?;
+    let supported = match color_scheme(QueryOptions::default()) {
+        Ok(_) => true,
+        Err(Error::UnsupportedTerminal) => false,
+        Err(e) => return Err(e),
+    };
+
+    save_results(&measurements, args.term, supported, args.machine)?;
 
     Ok(())
 }
@@ -52,13 +59,25 @@ fn bench() -> Result<Duration> {
     }
 }
 
-fn save_results(results: &[Duration], term: String) -> io::Result<()> {
+fn save_results(
+    results: &[Duration],
+    term: String,
+    supported: bool,
+    machine: String,
+) -> io::Result<()> {
     let mut file = OpenOptions::new()
         .append(true)
         .create(true)
         .open("benchmark/raw.tsv")?;
     for result in results {
-        writeln!(file, "{}\t{}", term, result.as_nanos())?;
+        writeln!(
+            file,
+            "{}\t{}\t{}\t{}",
+            term,
+            result.as_nanos(),
+            supported as u8,
+            machine
+        )?;
     }
     Ok(())
 }
