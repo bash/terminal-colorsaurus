@@ -34,6 +34,7 @@ A list of terminals that were tested for support of DA1 (`CSI c`) and `OSC 10` /
 | [anyterm]             | no ⚠️ | no         | no         | 1.2.3                              |
 | [shellinabox]         | no ⚠️ | no         | no         | 2.20                               |
 | [Terminology]         | yes  | yes [^1]   | yes        | 1.13.0                             |
+| [Termux]              | yes  | yes        | yes        | 0.118.0                            |
 
 <br>
 
@@ -58,3 +59,4 @@ See [Color Strings](https://www.x.org/releases/current/doc/libX11/libX11/libX11.
 [anyterm]: https://anyterm.org/
 [shellinabox]: https://github.com/shellinabox/shellinabox
 [Terminology]: http://www.enlightenment.org/
+[Termux]: https://termux.dev/en/
