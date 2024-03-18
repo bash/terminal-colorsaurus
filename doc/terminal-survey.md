@@ -1,64 +1,75 @@
-A list of terminals that were tested for support of DA1 (`CSI c`) and `OSC 10` / `OSC 11`.
+A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1` (= `CSI c`).
 
-| Terminal              | DA1  | Foreground | Background | Version Tested                     |
-|-----------------------|------|------------|------------|------------------------------------|
-| Jetbrains Fleet       | yes  | no         | no         | build 1.29.213 (macOS)             |
-| macOS Terminal        | yes  | yes        | yes        | Version 2.13 (447)                 |
-| iTerm2                | yes  | yes        | yes        | Build 3.5.0beta18                  |
-| Alacritty             | yes  | yes        | yes        | Version 0.13.1 (1) (macOS)         |
-| VSCode (xterm.js)     | yes  | yes        | yes        | 1.85.1 (macOS)                     |
-| iSH (hterm)           | yes  | no         | no         | 1.3.2 (Build 494) (iOS)            |
-| IntelliJ IDEA         | yes  | yes        | yes        | PyCharm 2023.3.2 (macOS)           |
-| [Contour]             | yes  | yes        | yes        | 0.4.1.6292 (macOS)                 |
-| GNOME Terminal (vte)  | yes  | yes        | yes        | 3.50.1                             |
-| (GNOME) Console (vte) | yes  | yes        | yes        | 45.0                               |
-| Konsole               | yes  | yes        | yes        | 23.08.4                            |
-| [QTerminal]           | yes  | no         | no         | 1.3.0                              |
-| [foot]                | yes  | yes        | yes        | 1.16.1                             |
-| xterm                 | yes  | yes        | yes        | 385                                |
-| Linux console         | yes  | no         | no         | -                                  |
-| Windows Terminal      | yes  | no         | no         | 1.18.3181.0                        |
-| Windows Console Host  | yes  | no         | no         | Windows 10.0.22631.2428            |
-| PuTTY                 | yes  | no         | no         | 0.80                               |
-| Hyper                 | yes  | yes        | yes        | 3.4.1 (macOS)                      |
-| ConEmu / Cmder        | yes  | no         | no         | 230724 stable                      |
-| Mintty                | yes  | yes        | yes        | 3.6.1                              |
-| [WezTerm]             | yes  | yes        | yes        | 20240203-110809-5046fc22 (flatpak) |
-| [kitty]               | yes  | yes        | yes        | 0.31.0                             |
-| [Rio Terminal]        | yes  | yes        | yes        | 0.0.36 (wayland)                   |
-| [rxvt-unicode]        | yes  | yes        | yes        | 9.31                               |
-| QMLKonsole            | yes  | no         | no         | 23.08.5                            |
-| mrxvt                 | yes  | no         | no         | 0.5.3                              |
-| Eterm                 | no ⚠️ | no         | no         | 0.9.6                              |
-| [cool-retro-term]     | yes  | no         | no         | 1.2.0                              |
-| [anyterm]             | no ⚠️ | no         | no         | 1.2.3                              |
-| [shellinabox]         | no ⚠️ | no         | no         | 2.20                               |
-| [Terminology]         | yes  | yes [^1]   | yes        | 1.13.0                             |
-| [Termux]              | yes  | yes        | yes        | 0.118.0                            |
-| [st]                  | yes  | yes        | yes        | 0.9                                |
+| Terminal                   | `OSC 10` and `OSC 11` | `DA1` | Version Tested                     |
+|----------------------------|-----------------------|-------|------------------------------------|
+| [Alacritty]                | yes                   | yes   | Version 0.13.1 (1) (macOS)         |
+| (GNOME) [Console] [^1]     | yes                   | yes   | 3.50.1                             |
+| [Contour]                  | yes                   | yes   | 0.4.1.6292 (macOS)                 |
+| [foot]                     | yes                   | yes   | 1.16.1                             |
+| [Hyper]                    | yes                   | yes   | 3.4.1 (macOS)                      |
+| IntelliJ IDEA ([JediTerm]) | yes                   | yes   | PyCharm 2023.3.2 (macOS)           |
+| [iTerm2]                   | yes                   | yes   | Build 3.5.0beta18                  |
+| [kitty]                    | yes                   | yes   | 0.31.0                             |
+| [Konsole]                  | yes                   | yes   | 23.08.4                            |
+| [mintty]                   | yes                   | yes   | 3.6.1                              |
+| macOS Terminal             | yes                   | yes   | Version 2.13 (447)                 |
+| [Rio]                      | yes                   | yes   | 0.0.36 (wayland)                   |
+| [rxvt-unicode]             | yes                   | yes   | 9.31                               |
+| [st]                       | yes                   | yes   | 0.9                                |
+| [Terminology]              | yes                   | yes   | 1.13.0                             |
+| [Termux]                   | yes                   | yes   | 0.118.0                            |
+| VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
+| [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
+| [xterm]                    | yes                   | yes   | 385                                |
+| anyterm                    | no                    | *no*  | 1.2.3                              |
+| ConEmu / Cmder             | no                    | yes   | 230724 stable                      |
+| cool-retro-term            | no                    | yes   | 1.2.0                              |
+| Eterm                      | no                    | *no*  | 0.9.6                              |
+| [iSH] (hterm)              | no                    | yes   | 1.3.2 (Build 494) (iOS)            |
+| Jetbrains Fleet            | no                    | yes   | build 1.29.213 (macOS)             |
+| Linux console              | no                    | yes   | -                                  |
+| mrxvt                      | no                    | yes   | 0.5.3                              |
+| [PuTTY]                    | no                    | yes   | 0.80                               |
+| shellinabox                | no                    | *no*  | 2.20                               |
+| QMLKonsole                 | no                    | yes   | 23.08.5                            |
+| [QTerminal]                | no                    | yes   | 1.3.0                              |
+| Windows Terminal (conhost) | no                    | yes   | 1.18.3181.0                        |
 
 <br>
 
-**ℹ️ Note 1:**
-Some Linux terminals are omitted since they all use the `vte` library behind the scenes. \
-Here's a non-exhaustive list: GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (GNOME) Builder, (elementary) Terminal, LXTerminal, Guake.
+[^1]: Some Linux terminals are omitted since they all use the `vte` library behind the scenes. \
+      Here's a non-exhaustive list: GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (GNOME) Builder, (elementary) Terminal, LXTerminal, and Guake.
 
-**ℹ️ Note 2:**
-If not otherwise noted, the terminals respond using the `rgb:r(rrr)/g(ggg)/b(bbbb)` format.
-See [Color Strings](https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings) for details on what is theoretically possible.
 
-[^1]: Responds using the `#r(rrr)g(ggg)b(bbb)` format.
+The following shell commands can be used to test a terminal:
+```shell
+printf '\e[c' && cat -v # Tests for DA1. Example output: ^[[?65;1;9c
+printf '\e]10;?\a' && cat -v # Tests for foreground color support. Example output: ^[]10;rgb:0000/0000/0000^G
+printf '\e]11;?\a' && cat -v # Tests for foreground color support. Example output: ^[]11;rgb:ffff/ffff/ffff^G
+```
 
-[Contour]: https://contour-terminal.org/
-[QTerminal]: https://github.com/lxqt/qterminal
-[foot]: https://codeberg.org/dnkl/foot
-[WezTerm]: https://wezfurlong.org/wezterm/
-[kitty]: https://sw.kovidgoyal.net/kitty/
-[Rio Terminal]: https://raphamorim.io/rio/
-[rxvt-unicode]: http://software.schmorp.de/pkg/rxvt-unicode.html
-[cool-retro-term]: https://github.com/Swordfish90/cool-retro-term
+[Alacritty]: https://alacritty.org/
 [anyterm]: https://anyterm.org/
+[Console]: https://apps.gnome.org/en-GB/Console/
+[Contour]: https://contour-terminal.org/
+[cool-retro-term]: https://github.com/Swordfish90/cool-retro-term
+[foot]: https://codeberg.org/dnkl/foot
+[Hyper]: https://hyper.is/
+[iSH]: https://ish.app/
+[iTerm2]: https://iterm2.com/
+[JediTerm]: https://github.com/JetBrains/jediterm
+[kitty]: https://sw.kovidgoyal.net/kitty/
+[Konsole]: https://konsole.kde.org/
+[mintty]: https://mintty.github.io/
+[PuTTY]: https://www.chiark.greenend.org.uk/~sgtatham/putty/
+[QTerminal]: https://github.com/lxqt/qterminal
+[Rio Terminal]: https://raphamorim.io/rio/
+[Rio]: https://raphamorim.io/rio/
+[rxvt-unicode]: http://software.schmorp.de/pkg/rxvt-unicode.html
 [shellinabox]: https://github.com/shellinabox/shellinabox
+[st]: https://st.suckless.org/
 [Terminology]: http://www.enlightenment.org/
 [Termux]: https://termux.dev/en/
-[st]: https://st.suckless.org/
+[WezTerm]: https://wezfurlong.org/wezterm/
+[xterm.js]: https://xtermjs.org/
+[xterm]: https://invisible-island.net/xterm/
