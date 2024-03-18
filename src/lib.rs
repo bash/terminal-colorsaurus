@@ -42,17 +42,24 @@
 //! <details>
 //! <summary><strong>Supported</strong></summary>
 //!
-//! * macOS Terminal
-//! * iTerm2
 //! * Alacritty
-//! * VSCode (xterm.js)
-//! * IntelliJ IDEA
 //! * Contour
-//! * GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (elementary) Terminal, LXTerminal
-//! * Console
 //! * foot
-//! * xterm
+//! * GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (elementary) Terminal, LXTerminal
+//! * Hyper
+//! * The builtin terminal of JetBrains IDEs (i.e. IntelliJ IDEA, …)
+//! * iTerm2
+//! * kitty
+//! * Konsole
+//! * macOS Terminal
+//! * Rio
+//! * st
+//! * Terminology
+//! * Termux
 //! * tmux (next-3.4)
+//! * VSCode (xterm.js)
+//! * WezTerm
+//! * xterm
 //!
 //! </details>
 //!
@@ -61,6 +68,7 @@
 //!
 //! * linux
 //! * Jetbrains Fleet
+//! * iSH
 //!
 //! </details>
 //!
@@ -111,6 +119,10 @@ pub mod windows_unsupported {}
 #[cfg(feature = "docs")]
 #[doc = include_str!("../doc/latency-rustdoc.md")]
 pub mod latency {}
+
+#[cfg(feature = "docs")]
+#[doc = include_str!("../doc/feature-detection.md")]
+pub mod feature_detection {}
 
 #[cfg(doctest)]
 #[doc = include_str!("../readme.md")]
@@ -183,7 +195,7 @@ pub struct QueryOptions {
     /// Terminals that don't support querying for colors will
     /// almost always be detected as such before this timeout elapses.
     ///
-    /// See the [Latency Measurements](`latency`) for examples.
+    /// See [Feature Detection](`feature_detection`) for details on how this works.
     pub timeout: Duration,
 }
 
