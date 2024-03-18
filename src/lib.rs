@@ -120,6 +120,10 @@ pub mod windows_unsupported {}
 #[doc = include_str!("../doc/latency-rustdoc.md")]
 pub mod latency {}
 
+#[cfg(feature = "docs")]
+#[doc = include_str!("../doc/feature-detection.md")]
+pub mod feature_detection {}
+
 #[cfg(doctest)]
 #[doc = include_str!("../readme.md")]
 pub mod readme_doctests {}
@@ -191,7 +195,7 @@ pub struct QueryOptions {
     /// Terminals that don't support querying for colors will
     /// almost always be detected as such before this timeout elapses.
     ///
-    /// See the [Latency Measurements](`latency`) for examples.
+    /// See [Feature Detection](`feature_detection`) for details on how this works.
     pub timeout: Duration,
 }
 
