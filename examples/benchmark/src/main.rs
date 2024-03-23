@@ -5,7 +5,7 @@ use std::fs::OpenOptions;
 use std::hint::black_box;
 use std::io::{self, Write as _};
 use std::time::{Duration, Instant};
-use terminal_colorsaurus::{color_scheme, Error, QueryOptions, Result};
+use terminal_colorsaurus::{color_palette, Error, QueryOptions, Result};
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -40,7 +40,7 @@ fn main() -> Result<()> {
         .collect::<Result<Vec<_>>>()?;
     bar.finish();
 
-    let supported = match color_scheme(QueryOptions::default()) {
+    let supported = match color_palette(QueryOptions::default()) {
         Ok(_) => true,
         Err(Error::UnsupportedTerminal) => false,
         Err(e) => return Err(e),
@@ -53,7 +53,7 @@ fn main() -> Result<()> {
 
 fn bench() -> Result<Duration> {
     let start = Instant::now();
-    match black_box(color_scheme(QueryOptions::default())) {
+    match black_box(color_palette(QueryOptions::default())) {
         Ok(_) | Err(Error::UnsupportedTerminal) => Ok(start.elapsed()),
         Err(err) => Err(err),
     }

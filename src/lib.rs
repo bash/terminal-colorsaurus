@@ -17,10 +17,10 @@
 //!
 //! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
-//! use terminal_colorsaurus::{color_scheme, QueryOptions};
+//! use terminal_colorsaurus::{color_palette, QueryOptions};
 //!
-//! let colors = color_scheme(QueryOptions::default()).unwrap();
-//! dbg!(colors.is_dark_on_light());
+//! let palette = color_palette(QueryOptions::default()).unwrap();
+//! dbg!(palette.is_dark_on_light());
 //! ```
 //!
 //! ## Example 2: Query for the Terminal's Foreground Color
@@ -130,30 +130,42 @@ pub mod readme_doctests {}
 
 pub use color::*;
 
-/// The color scheme i.e. foreground and background colors of the terminal.
-/// Retrieved by calling [`color_scheme`].
+/// The color palette i.e. foreground and background colors of the terminal.
+/// Retrieved by calling [`color_palette`].
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
-pub struct ColorScheme {
+pub struct ColorPalette {
     /// The foreground color of the terminal.
     pub foreground: Color,
     /// The background color of the terminal.
     pub background: Color,
 }
 
-impl ColorScheme {
-    /// Tests if this color scheme uses dark text on a light background.
-    /// This is done by computing and comparing the perceived brightness of the two colors.
-    pub fn is_dark_on_light(&self) -> bool {
-        self.foreground.perceived_lightness() <= self.background.perceived_lightness()
-    }
+/// The color scheme of the terminal.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[allow(clippy::exhaustive_enums)]
+pub enum ColorScheme {
+    /// The terminal uses a dark background with light text.
+    #[default]
+    Dark,
+    /// The terminal uses a light background with dark text.
+    Light,
+}
 
-    /// Tests if this color scheme uses light text on a dark background.
-    /// This is done by computing and comparing the perceived brightness of the two colors.
-    ///
-    /// Note that `is_light_on_dark = !is_dark_on_light`.
-    pub fn is_light_on_dark(&self) -> bool {
-        !self.is_dark_on_light()
+const PERCEPTUAL_MIDDLE_GRAY: u8 = 50;
+
+impl ColorPalette {
+    /// Determines if the terminal uses a dark or light background.
+    pub fn color_scheme(&self) -> ColorScheme {
+        let fg = self.foreground.perceived_lightness();
+        let bg = self.background.perceived_lightness();
+        if bg < fg {
+            ColorScheme::Dark
+        } else if bg > fg || bg > PERCEPTUAL_MIDDLE_GRAY {
+            ColorScheme::Light
+        } else {
+            ColorScheme::Dark
+        }
     }
 }
 
@@ -209,19 +221,19 @@ impl Default for QueryOptions {
 
 /// Queries the terminal for it's color scheme (foreground and background color).
 #[doc = include_str!("../doc/caveats.md")]
-pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
+pub fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     imp::color_scheme(options)
 }
 
 /// Queries the terminal for it's foreground color. \
-/// If you also need the foreground color it is more efficient to use [`color_scheme`] instead.
+/// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
 #[doc = include_str!("../doc/caveats.md")]
 pub fn foreground_color(options: QueryOptions) -> Result<Color> {
     imp::foreground_color(options)
 }
 
 /// Queries the terminal for it's background color. \
-/// If you also need the foreground color it is more efficient to use [`color_scheme`] instead.
+/// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
 #[doc = include_str!("../doc/caveats.md")]
 pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
@@ -229,9 +241,9 @@ pub fn background_color(options: QueryOptions) -> Result<Color> {
 
 #[cfg(not(unix))]
 mod unsupported {
-    use crate::{Color, ColorScheme, Error, QueryOptions, Result};
+    use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 
-    pub(crate) fn color_scheme(_options: QueryOptions) -> Result<ColorScheme> {
+    pub(crate) fn color_palette(_options: QueryOptions) -> Result<ColorPalette> {
         Err(Error::UnsupportedTerminal)
     }
 
@@ -243,3 +255,7 @@ mod unsupported {
         Err(Error::UnsupportedTerminal)
     }
 }
+
+#[cfg(test)]
+#[path = "color_scheme_tests.rs"]
+mod tests;

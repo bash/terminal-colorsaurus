@@ -21,13 +21,13 @@
 
 use std::error::Error;
 use std::io::{stdout, IsTerminal as _};
-use terminal_colorsaurus::{color_scheme, QueryOptions};
+use terminal_colorsaurus::{color_palette, QueryOptions};
 
 fn main() -> Result<(), Box<dyn Error>> {
     if stdout().is_terminal() {
         eprintln!(
             "Here's the color scheme: {:#?}",
-            color_scheme(QueryOptions::default())?
+            color_palette(QueryOptions::default())?
         );
     } else {
         eprintln!("No color scheme for you today :/");

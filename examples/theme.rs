@@ -2,15 +2,14 @@
 //! a dark-on-light or a light-on-dark theme.
 
 use std::error::Error;
-use terminal_colorsaurus::{color_scheme, QueryOptions};
+use terminal_colorsaurus::{color_palette, ColorScheme, QueryOptions};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let colors = color_scheme(QueryOptions::default())?;
+    let colors = color_palette(QueryOptions::default())?;
 
-    let theme = if colors.is_light_on_dark() {
-        "light on dark"
-    } else {
-        "dark on light"
+    let theme = match colors.color_scheme() {
+        ColorScheme::Dark => "dark",
+        ColorScheme::Light => "light",
     };
 
     println!(

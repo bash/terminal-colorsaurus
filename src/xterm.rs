@@ -1,6 +1,6 @@
 use self::io_utils::{read_until2, TermReader};
 use crate::xparsecolor::xparsecolor;
-use crate::{Color, ColorScheme, Error, QueryOptions, Result};
+use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::env;
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::str::from_utf8;
@@ -36,7 +36,7 @@ pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
     parse_response(response, BG_RESPONSE_PREFIX)
 }
 
-pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
+pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorPalette> {
     let (fg_response, bg_response) = query(
         &options,
         |w| write!(w, "{QUERY_FG}{QUERY_BG}"),
@@ -45,7 +45,7 @@ pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
     .map_err(map_timed_out_err(options.timeout))?;
     let foreground = parse_response(fg_response, FG_RESPONSE_PREFIX)?;
     let background = parse_response(bg_response, BG_RESPONSE_PREFIX)?;
-    Ok(ColorScheme {
+    Ok(ColorPalette {
         foreground,
         background,
     })
