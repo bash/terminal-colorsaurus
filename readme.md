@@ -13,10 +13,14 @@ Windows is unfortunately [not supported](./doc/windows.md).
 
 ## Example
 ```rust,no_run
-use terminal_colorsaurus::{color_palette, QueryOptions};
+use terminal_colorsaurus::{color_palette, QueryOptions, ColorScheme};
 
 let palette = color_palette(QueryOptions::default()).unwrap();
-dbg!(palette.is_dark_on_light());
+let color_scheme = palette.color_scheme();
+match color_scheme {
+    ColorScheme::Dark => { /* ... */ },
+    ColorScheme::Light => { /* ... */ },
+}
 ```
 
 ## [Docs](https://docs.rs/terminal-colorsaurus)
