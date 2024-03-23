@@ -222,7 +222,7 @@ impl Default for QueryOptions {
 /// Queries the terminal for it's color scheme (foreground and background color).
 #[doc = include_str!("../doc/caveats.md")]
 pub fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
-    imp::color_scheme(options)
+    imp::color_palette(options)
 }
 
 /// Queries the terminal for it's foreground color. \

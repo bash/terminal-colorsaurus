@@ -36,7 +36,7 @@ pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
     parse_response(response, BG_RESPONSE_PREFIX)
 }
 
-pub(crate) fn color_scheme(options: QueryOptions) -> Result<ColorPalette> {
+pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     let (fg_response, bg_response) = query(
         &options,
         |w| write!(w, "{QUERY_FG}{QUERY_BG}"),
