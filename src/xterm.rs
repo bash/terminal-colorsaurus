@@ -9,9 +9,9 @@ use terminal_trx::{terminal, RawModeGuard};
 
 mod io_utils;
 
-const QUERY_FG: &str = "\x1b]10;?\x07";
+const QUERY_FG: &str = "\x1b]10;?\x1b\\";
 const FG_RESPONSE_PREFIX: &str = "\x1b]10;";
-const QUERY_BG: &str = "\x1b]11;?\x07";
+const QUERY_BG: &str = "\x1b]11;?\x1b\\";
 const BG_RESPONSE_PREFIX: &str = "\x1b]11;";
 
 #[allow(clippy::redundant_closure)]
@@ -111,8 +111,8 @@ fn query<T>(
     Ok(response)
 }
 
-const ESC: u8 = b'\x1b';
-const BEL: u8 = b'\x07';
+const ESC: u8 = 0x1b;
+const BEL: u8 = 0x07;
 const DA1: &str = "\x1b[c";
 
 fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<String> {
@@ -126,7 +126,8 @@ fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<String> {
         return Err(Error::UnsupportedTerminal);
     }
 
-    // Some terminals like iTerm2 always respond with ST (= ESC \)
+    // Some terminals like st always respond with BEL even when sending
+    // the query with ST.
     read_until2(r, BEL, ESC, &mut buf)?;
     if buf.last() == Some(&ESC) {
         r.read_until(b'\\', &mut buf)?;
