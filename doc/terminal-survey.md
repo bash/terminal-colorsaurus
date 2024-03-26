@@ -12,11 +12,11 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [kitty]                    | yes                   | yes   | 0.31.0                             |
 | [Konsole]                  | yes                   | yes   | 23.08.4                            |
 | [mintty]                   | yes                   | yes   | 3.6.1                              |
-| macOS Terminal             | yes                   | yes   | Version 2.13 (447)                 |
+| macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
 | [Rio]                      | yes                   | yes   | 0.0.36 (wayland)                   |
-| [rxvt-unicode]             | yes                   | yes   | 9.31                               |
-| [st]                       | yes                   | yes   | 0.9                                |
-| [Terminology]              | yes                   | yes   | 1.13.0                             |
+| [rxvt-unicode]             | yes [^2]              | yes   | 9.31                               |
+| [st]                       | yes [^3]              | yes   | 0.9                                |
+| [Terminology]              | yes [^4]              | yes   | 1.13.0                             |
 | [Termux]                   | yes                   | yes   | 0.118.0                            |
 | VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
@@ -39,13 +39,15 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 
 [^1]: Some Linux terminals are omitted since they all use the `vte` library behind the scenes. \
       Here's a non-exhaustive list: GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (GNOME) Builder, (elementary) Terminal, LXTerminal, and Guake.
-
+[^2]: The currently released version has a bug where it terminates the response with `ESC` instead of `ST`. Fixed by revision [1.600](http://cvs.schmorp.de/rxvt-unicode/src/command.C?revision=1.600&view=markup)
+[^3]: Response is always terminated with `BEL` even when the query is terminated by `ST`.
+[^4]: Response to `OSC 10` is always terminated with `BEL` even when the query is terminated by `ST`.
 
 The following shell commands can be used to test a terminal:
 ```shell
 printf '\e[c' && cat -v # Tests for DA1. Example output: ^[[?65;1;9c
-printf '\e]10;?\a' && cat -v # Tests for foreground color support. Example output: ^[]10;rgb:0000/0000/0000^G
-printf '\e]11;?\a' && cat -v # Tests for foreground color support. Example output: ^[]11;rgb:ffff/ffff/ffff^G
+printf '\e]10;?\e\\' && cat -v # Tests for foreground color support. Example output: ^[]10;rgb:0000/0000/0000^[\
+printf '\e]11;?\e\\' && cat -v # Tests for foreground color support. Example output: ^[]11;rgb:ffff/ffff/ffff^[\
 ```
 
 [Alacritty]: https://alacritty.org/
