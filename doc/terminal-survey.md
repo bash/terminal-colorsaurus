@@ -12,7 +12,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [kitty]                    | yes                   | yes   | 0.31.0                             |
 | [Konsole]                  | yes                   | yes   | 23.08.4                            |
 | [mintty]                   | yes                   | yes   | 3.6.1                              |
-| macOS Terminal             | yes                   | yes   | Version 2.13 (447)                 |
+| macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
 | [Rio]                      | yes                   | yes   | 0.0.36 (wayland)                   |
 | [rxvt-unicode]             | yes [^2]              | yes   | 9.31                               |
 | [st]                       | yes [^3]              | yes   | 0.9                                |
