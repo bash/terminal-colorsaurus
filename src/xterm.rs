@@ -126,8 +126,7 @@ fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<String> {
         return Err(Error::UnsupportedTerminal);
     }
 
-    // Some terminals like st always respond with BEL even when sending
-    // the query with ST.
+    // Some terminals always respond with BEL (see terminal survey).
     read_until2(r, BEL, ESC, &mut buf)?;
     if buf.last() == Some(&ESC) {
         r.read_until(b'\\', &mut buf)?;
