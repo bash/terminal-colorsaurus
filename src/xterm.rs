@@ -3,22 +3,21 @@ use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::env;
 use std::io::{self, BufRead, BufReader, Write as _};
-use std::str::from_utf8;
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
 
 mod io_utils;
 
-const QUERY_FG: &str = "\x1b]10;?\x1b\\";
-const FG_RESPONSE_PREFIX: &str = "\x1b]10;";
-const QUERY_BG: &str = "\x1b]11;?\x1b\\";
-const BG_RESPONSE_PREFIX: &str = "\x1b]11;";
+const QUERY_FG: &[u8] = b"\x1b]10;?\x1b\\";
+const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
+const QUERY_BG: &[u8] = b"\x1b]11;?\x1b\\";
+const BG_RESPONSE_PREFIX: &[u8] = b"\x1b]11;";
 
 #[allow(clippy::redundant_closure)]
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     let response = query(
         &options,
-        |w| write!(w, "{QUERY_FG}"),
+        |w| w.write_all(QUERY_FG),
         |r| read_color_response(r),
     )
     .map_err(map_timed_out_err(options.timeout))?;
@@ -27,9 +26,9 @@ pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
 
 #[allow(clippy::redundant_closure)]
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
-    let response: String = query(
+    let response = query(
         &options,
-        |w| write!(w, "{QUERY_BG}"),
+        |w| w.write_all(QUERY_BG),
         |r| read_color_response(r),
     )
     .map_err(map_timed_out_err(options.timeout))?;
@@ -39,7 +38,7 @@ pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
 pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     let (fg_response, bg_response) = query(
         &options,
-        |w| write!(w, "{QUERY_FG}{QUERY_BG}"),
+        |w| w.write_all(QUERY_FG).and_then(|_| w.write_all(QUERY_BG)),
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
     )
     .map_err(map_timed_out_err(options.timeout))?;
@@ -67,15 +66,16 @@ fn ensure_capable_terminal() -> Result<()> {
     }
 }
 
-fn parse_response(response: String, prefix: &str) -> Result<Color> {
+const ST: &[u8] = b"\x1b\\";
+const DA1: &[u8] = b"\x1b[c";
+const ESC: u8 = 0x1b;
+const BEL: u8 = 0x07;
+
+fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
     response
         .strip_prefix(prefix)
-        .and_then(|response| {
-            response
-                .strip_suffix('\x07')
-                .or(response.strip_suffix("\x1b\\"))
-        })
-        .and_then(|r| xparsecolor(r.as_bytes()))
+        .and_then(|r| r.strip_suffix(ST).or(r.strip_suffix(&[BEL])))
+        .and_then(xparsecolor)
         .ok_or_else(|| Error::Parse(response))
 }
 
@@ -97,7 +97,7 @@ fn query<T>(
     let mut tty = tty.enable_raw_mode()?;
 
     write_query(&mut tty)?;
-    write!(tty, "{DA1}")?;
+    tty.write_all(DA1)?;
     tty.flush()?;
 
     let mut reader = BufReader::with_capacity(32, TermReader::new(tty, options.timeout));
@@ -111,11 +111,7 @@ fn query<T>(
     Ok(response)
 }
 
-const ESC: u8 = 0x1b;
-const BEL: u8 = 0x07;
-const DA1: &str = "\x1b[c";
-
-fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<String> {
+fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<Vec<u8>> {
     let mut buf = Vec::new();
     r.read_until(ESC, &mut buf)?; // Both responses start with ESC
 
@@ -132,7 +128,7 @@ fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<String> {
         r.read_until(b'\\', &mut buf)?;
     }
 
-    Ok(from_utf8(&buf)?.to_owned())
+    Ok(buf)
 }
 
 fn consume_da1_response(r: &mut impl BufRead, consume_esc: bool) -> io::Result<()> {

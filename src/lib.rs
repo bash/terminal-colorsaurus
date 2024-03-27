@@ -179,12 +179,9 @@ pub enum Error {
     /// I/O error
     #[error("I/O error")]
     Io(#[from] io::Error),
-    /// The terminal responed with invalid UTF-8.
-    #[error("the terminal responed with invalid UTF-8")]
-    Utf8(#[from] std::str::Utf8Error),
     /// The terminal responded using an unsupported response format.
     #[error("failed to parse response {0:?}")]
-    Parse(String),
+    Parse(Vec<u8>),
     /// The query timed out. This can happen because \
     /// either the terminal does not support querying for colors \
     /// or the terminal has a lot of latency (e.g. when connected via SSH).
