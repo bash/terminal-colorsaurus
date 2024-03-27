@@ -75,7 +75,7 @@ fn parse_response(response: String, prefix: &str) -> Result<Color> {
                 .strip_suffix('\x07')
                 .or(response.strip_suffix("\x1b\\"))
         })
-        .and_then(xparsecolor)
+        .and_then(|r| xparsecolor(r.as_bytes()))
         .ok_or_else(|| Error::Parse(response))
 }
 

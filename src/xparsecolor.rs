@@ -1,4 +1,5 @@
 use crate::Color;
+use std::str::from_utf8;
 
 /// Parses a color value that follows the `XParseColor` format.
 /// See <https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings>
@@ -7,11 +8,11 @@ use crate::Color;
 /// Not all formats are supported, just the ones that are returned
 /// by the tested terminals. Feel free to open a PR if you encounter
 /// a terminal that returns a different format.
-pub(crate) fn xparsecolor(input: &str) -> Option<Color> {
-    if let Some(stripped) = input.strip_prefix('#') {
-        parse_sharp(stripped)
-    } else if let Some(stripped) = input.strip_prefix("rgb:") {
-        parse_rgb(stripped)
+pub(crate) fn xparsecolor(input: &[u8]) -> Option<Color> {
+    if let Some(stripped) = input.strip_prefix(b"#") {
+        parse_sharp(from_utf8(stripped).ok()?)
+    } else if let Some(stripped) = input.strip_prefix(b"rgb:") {
+        parse_rgb(from_utf8(stripped).ok()?)
     } else {
         None
     }
@@ -88,7 +89,7 @@ mod tests {
     #[test]
     fn parses_valid_rgb_color() {
         assert_eq!(
-            xparsecolor("rgb:f/e/d"),
+            xparsecolor(b"rgb:f/e/d"),
             Some(Color {
                 r: 0xffff,
                 g: 0xeeee,
@@ -96,7 +97,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("rgb:11/aa/ff"),
+            xparsecolor(b"rgb:11/aa/ff"),
             Some(Color {
                 r: 0x1111,
                 g: 0xaaaa,
@@ -104,7 +105,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("rgb:f/ed1/cb23"),
+            xparsecolor(b"rgb:f/ed1/cb23"),
             Some(Color {
                 r: 0xffff,
                 g: 0xed1d,
@@ -112,7 +113,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("rgb:ffff/0/0"),
+            xparsecolor(b"rgb:ffff/0/0"),
             Some(Color {
                 r: 0xffff,
                 g: 0x0,
@@ -123,11 +124,11 @@ mod tests {
 
     #[test]
     fn fails_for_invalid_rgb_color() {
-        assert!(xparsecolor("rgb:").is_none()); // Empty
-        assert!(xparsecolor("rgb:f/f").is_none()); // Not enough channels
-        assert!(xparsecolor("rgb:f/f/f/f").is_none()); // Too many channels
-        assert!(xparsecolor("rgb:f//f").is_none()); // Empty channel
-        assert!(xparsecolor("rgb:ffff/ffff/fffff").is_none()); // Too many digits for one channel
+        assert!(xparsecolor(b"rgb:").is_none()); // Empty
+        assert!(xparsecolor(b"rgb:f/f").is_none()); // Not enough channels
+        assert!(xparsecolor(b"rgb:f/f/f/f").is_none()); // Too many channels
+        assert!(xparsecolor(b"rgb:f//f").is_none()); // Empty channel
+        assert!(xparsecolor(b"rgb:ffff/ffff/fffff").is_none()); // Too many digits for one channel
     }
 
     // Tests adapted from alacritty/vte:
@@ -135,7 +136,7 @@ mod tests {
     #[test]
     fn parses_valid_sharp_color() {
         assert_eq!(
-            xparsecolor("#1af"),
+            xparsecolor(b"#1af"),
             Some(Color {
                 r: 0x1000,
                 g: 0xa000,
@@ -143,7 +144,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("#1AF"),
+            xparsecolor(b"#1AF"),
             Some(Color {
                 r: 0x1000,
                 g: 0xa000,
@@ -151,7 +152,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("#11aaff"),
+            xparsecolor(b"#11aaff"),
             Some(Color {
                 r: 0x1100,
                 g: 0xaa00,
@@ -159,7 +160,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("#110aa0ff0"),
+            xparsecolor(b"#110aa0ff0"),
             Some(Color {
                 r: 0x1100,
                 g: 0xaa00,
@@ -167,7 +168,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("#1100aa00ff00"),
+            xparsecolor(b"#1100aa00ff00"),
             Some(Color {
                 r: 0x1100,
                 g: 0xaa00,
@@ -175,7 +176,7 @@ mod tests {
             })
         );
         assert_eq!(
-            xparsecolor("#123456789ABC"),
+            xparsecolor(b"#123456789ABC"),
             Some(Color {
                 r: 0x1234,
                 g: 0x5678,
@@ -186,8 +187,8 @@ mod tests {
 
     #[test]
     fn fails_for_invalid_sharp_color() {
-        assert!(xparsecolor("#").is_none()); // Empty
-        assert!(xparsecolor("#1234").is_none()); // Not divisible by three
-        assert!(xparsecolor("#123456789ABCDEF").is_none()); // Too many components
+        assert!(xparsecolor(b"#").is_none()); // Empty
+        assert!(xparsecolor(b"#1234").is_none()); // Not divisible by three
+        assert!(xparsecolor(b"#123456789ABCDEF").is_none()); // Too many components
     }
 }
