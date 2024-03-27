@@ -13,11 +13,9 @@ Windows is unfortunately [not supported](./doc/windows.md).
 
 ## Example
 ```rust,no_run
-use terminal_colorsaurus::{color_palette, QueryOptions, ColorScheme};
+use terminal_colorsaurus::{color_scheme, QueryOptions, ColorScheme};
 
-let palette = color_palette(QueryOptions::default()).unwrap();
-let color_scheme = palette.color_scheme();
-match color_scheme {
+match color_scheme(QueryOptions::default()).unwrap() {
     ColorScheme::Dark => { /* ... */ },
     ColorScheme::Light => { /* ... */ },
 }

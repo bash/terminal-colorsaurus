@@ -17,10 +17,10 @@
 //!
 //! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
-//! use terminal_colorsaurus::{color_palette, QueryOptions, ColorScheme};
+//! use terminal_colorsaurus::{color_scheme, QueryOptions, ColorScheme};
 //!
-//! let palette = color_palette(QueryOptions::default()).unwrap();
-//! dbg!(palette.color_scheme() == ColorScheme::Dark);
+//! let color_scheme = color_scheme(QueryOptions::default()).unwrap();
+//! dbg!(color_scheme == ColorScheme::Dark);
 //! ```
 //!
 //! ## Example 2: Query for the Terminal's Foreground Color
@@ -217,6 +217,11 @@ impl Default for QueryOptions {
             timeout: Duration::from_secs(1),
         }
     }
+}
+
+/// Detects if the terminal is dark or light.
+pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
+    color_palette(options).map(|p| p.color_scheme())
 }
 
 /// Queries the terminal for it's color scheme (foreground and background color).
