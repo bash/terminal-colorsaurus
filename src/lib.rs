@@ -180,7 +180,7 @@ pub enum Error {
     #[error("I/O error")]
     Io(#[from] io::Error),
     /// The terminal responded using an unsupported response format.
-    #[error("failed to parse response {0:?}")]
+    #[error("failed to parse response {}", String::from_utf8_lossy(.0))]
     Parse(Vec<u8>),
     /// The query timed out. This can happen because \
     /// either the terminal does not support querying for colors \
