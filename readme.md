@@ -23,12 +23,6 @@ match color_scheme(QueryOptions::default()).unwrap() {
 
 ## [Docs](https://docs.rs/terminal-colorsaurus)
 
-## Wishlist
-These are some features that I would like to include in this crate,
-but have not yet had the time to implement. PRs are welcome :)
-
-* [ ] A CLI tool version of this library.
-
 ## Inspiration
 This crate borrows ideas from many other projects. This list is by no means exhaustive.
 
