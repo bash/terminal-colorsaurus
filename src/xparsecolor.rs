@@ -13,6 +13,8 @@ pub(crate) fn xparsecolor(input: &[u8]) -> Option<Color> {
         parse_sharp(from_utf8(stripped).ok()?)
     } else if let Some(stripped) = input.strip_prefix(b"rgb:") {
         parse_rgb(from_utf8(stripped).ok()?)
+    } else if let Some(stripped) = input.strip_prefix(b"rgba:") {
+        parse_rgba(from_utf8(stripped).ok()?)
     } else {
         None
     }
@@ -69,6 +71,27 @@ fn parse_rgb(input: &str) -> Option<Color> {
     }
 }
 
+/// Some terminals such as urxvt (rxvt-unicode) optionally support
+/// an alpha channel and sometimes return colors in the format `rgba:<red>/<green>/<blue>/<alpha>`.
+///
+/// Dropping the alpha channel is a best-effort thing as
+/// the effective color (when combined with a background color)
+/// could have a completely different perceived lightness value.
+///
+/// Test with `urxvt -depth 32 -fg grey90 -bg rgba:0000/0000/4444/cccc`
+fn parse_rgba(input: &str) -> Option<Color> {
+    let mut parts = input.split('/');
+    let r = parse_channel_scaled(parts.next()?)?;
+    let g = parse_channel_scaled(parts.next()?)?;
+    let b = parse_channel_scaled(parts.next()?)?;
+    let _a = parse_channel_scaled(parts.next()?)?;
+    if parts.next().is_none() {
+        Some(Color { r, g, b })
+    } else {
+        None
+    }
+}
+
 fn parse_channel_scaled(input: &str) -> Option<u16> {
     let len = input.len();
     if (1..=4).contains(&len) {
@@ -118,6 +141,18 @@ mod tests {
                 r: 0xffff,
                 g: 0x0,
                 b: 0x0
+            })
+        );
+    }
+
+    #[test]
+    fn parses_valid_rgba_color() {
+        assert_eq!(
+            xparsecolor(b"rgba:0000/0000/4443/cccc"),
+            Some(Color {
+                r: 0x0000,
+                g: 0x0000,
+                b: 0x4443,
             })
         );
     }
