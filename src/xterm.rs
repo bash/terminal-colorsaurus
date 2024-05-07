@@ -3,21 +3,22 @@ use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::env;
 use std::io::{self, BufRead, BufReader, Write as _};
+use std::sync::OnceLock;
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
 
 mod io_utils;
 
-const QUERY_FG: &[u8] = b"\x1b]10;?\x1b\\";
+const QUERY_FG: &[u8] = b"\x1b]10;?";
 const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
-const QUERY_BG: &[u8] = b"\x1b]11;?\x1b\\";
+const QUERY_BG: &[u8] = b"\x1b]11;?";
 const BG_RESPONSE_PREFIX: &[u8] = b"\x1b]11;";
 
 #[allow(clippy::redundant_closure)]
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     let response = query(
         &options,
-        |w| w.write_all(QUERY_FG),
+        |w| write_query(w, QUERY_FG),
         |r| read_color_response(r),
     )
     .map_err(map_timed_out_err(options.timeout))?;
@@ -28,7 +29,7 @@ pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
     let response = query(
         &options,
-        |w| w.write_all(QUERY_BG),
+        |w| write_query(w, QUERY_BG),
         |r| read_color_response(r),
     )
     .map_err(map_timed_out_err(options.timeout))?;
@@ -38,7 +39,7 @@ pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
 pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     let (fg_response, bg_response) = query(
         &options,
-        |w| w.write_all(QUERY_FG).and_then(|_| w.write_all(QUERY_BG)),
+        |w| write_query(w, QUERY_FG).and_then(|_| write_query(w, QUERY_BG)),
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
     )
     .map_err(map_timed_out_err(options.timeout))?;
@@ -48,6 +49,12 @@ pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
         foreground,
         background,
     })
+}
+
+fn write_query(w: &mut dyn io::Write, query: &[u8]) -> io::Result<()> {
+    w.write_all(query)?;
+    w.write_all(string_terminator())?;
+    Ok(())
 }
 
 fn map_timed_out_err(timeout: Duration) -> impl Fn(Error) -> Error {
@@ -64,6 +71,19 @@ fn ensure_capable_terminal() -> Result<()> {
         Ok(term) if term == "dumb" => Err(Error::UnsupportedTerminal),
         Ok(_) | Err(_) => Ok(()),
     }
+}
+
+fn string_terminator() -> &'static [u8] {
+    static STRING_TERMINATOR: OnceLock<&[u8]> = OnceLock::new();
+    STRING_TERMINATOR.get_or_init(|| {
+        match env::var("TERM") {
+            // The currently released version has a bug where it terminates the response with `ESC` instead of `ST`.
+            // Fixed by revision [1.600](http://cvs.schmorp.de/rxvt-unicode/src/command.C?revision=1.600&view=markup).
+            // The bug can be worked around by sending a query with `BEL` which will result in a `BEL`-terminated response.
+            Ok(term) if term == "rxvt-unicode" || term.starts_with("rxvt-unicode-") => &[BEL],
+            Ok(_) | Err(_) => ST,
+        }
+    })
 }
 
 const ST: &[u8] = b"\x1b\\";
