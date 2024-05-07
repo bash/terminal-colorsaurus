@@ -95,6 +95,7 @@ use std::time::Duration;
 use thiserror::Error;
 
 mod color;
+mod fmt;
 mod os;
 #[cfg(unix)]
 mod xparsecolor;
@@ -180,7 +181,7 @@ pub enum Error {
     #[error("I/O error")]
     Io(#[from] io::Error),
     /// The terminal responded using an unsupported response format.
-    #[error("failed to parse response {}", String::from_utf8_lossy(.0))]
+    #[error("failed to parse response: {}", fmt::CaretNotation(String::from_utf8_lossy(.0).as_ref()))]
     Parse(Vec<u8>),
     /// The query timed out. This can happen because \
     /// either the terminal does not support querying for colors \
