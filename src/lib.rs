@@ -57,6 +57,7 @@
 //! * Terminology
 //! * Termux
 //! * tmux (next-3.4)
+//! * urxvt (rxvt-unicode)
 //! * VSCode (xterm.js)
 //! * WezTerm
 //! * xterm
