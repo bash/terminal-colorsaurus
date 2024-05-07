@@ -19,11 +19,10 @@
 //! 3. `cargo run --example pager | cat`—should not print the color scheme. This is a false negatives.
 //! 4. `cargo run --example pager 2>&1 >/dev/tty | less`—should print the color scheme (or error). This is a false positive.
 
-use std::error::Error;
 use std::io::{stdout, IsTerminal as _};
-use terminal_colorsaurus::{color_palette, QueryOptions};
+use terminal_colorsaurus::{color_palette, Error, QueryOptions};
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), display::DisplayAsDebug<Error>> {
     if stdout().is_terminal() {
         eprintln!(
             "Here's the color scheme: {:#?}",
@@ -35,3 +34,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+#[path = "../examples-utils/display.rs"]
+mod display;

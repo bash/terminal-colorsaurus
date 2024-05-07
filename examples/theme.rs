@@ -1,10 +1,9 @@
 //! This example shows how to detect if the terminal uses
 //! a dark-on-light or a light-on-dark theme.
 
-use std::error::Error;
-use terminal_colorsaurus::{color_palette, ColorScheme, QueryOptions};
+use terminal_colorsaurus::{color_palette, ColorScheme, Error, QueryOptions};
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), display::DisplayAsDebug<Error>> {
     let colors = color_palette(QueryOptions::default())?;
 
     let theme = match colors.color_scheme() {
@@ -20,3 +19,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+#[path = "../examples-utils/display.rs"]
+mod display;
