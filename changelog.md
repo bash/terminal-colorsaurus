@@ -1,4 +1,13 @@
 # Changelog
+## 0.4.0
+* ⚡ Renamed «color scheme» to «color palette».
+* ⚡ Removed `is_dark_on_light` and `is_light_on_dark` functions. Use `color_scheme` instead.
+* Add new convenience function `color_scheme` which returns a nice `Dark / Light` enum.
+* Add support for urxvt's `rgba:` color format.
+* Further refined the documentation (more organized terminal list, new terminals tested).
+* Improved handling of ambigous color palettes (e.g. when background color is the same as foreground).
+* Queries are now terminated with `ST` (the standard string terminator) instead of `BEL` (which is an xterm extension).
+
 ## 0.3.3
 * Feature: Add new `Color::scale_to_8bit` function.
 * Fix: Correctly scale colors up to 16 bits per channel.

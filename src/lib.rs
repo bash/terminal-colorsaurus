@@ -219,6 +219,7 @@ impl Default for QueryOptions {
 }
 
 /// Detects if the terminal is dark or light.
+#[doc = include_str!("../doc/caveats.md")]
 pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
     color_palette(options).map(|p| p.color_scheme())
 }
