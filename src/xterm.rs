@@ -14,25 +14,15 @@ const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
 const QUERY_BG: &[u8] = b"\x1b]11;?";
 const BG_RESPONSE_PREFIX: &[u8] = b"\x1b]11;";
 
-#[allow(clippy::redundant_closure)]
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
-    let response = query(
-        &options,
-        |w| write_query(w, QUERY_FG),
-        |r| read_color_response(r),
-    )
-    .map_err(map_timed_out_err(options.timeout))?;
+    let response = query(&options, |w| write_query(w, QUERY_FG), read_color_response)
+        .map_err(map_timed_out_err(options.timeout))?;
     parse_response(response, FG_RESPONSE_PREFIX)
 }
 
-#[allow(clippy::redundant_closure)]
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
-    let response = query(
-        &options,
-        |w| write_query(w, QUERY_BG),
-        |r| read_color_response(r),
-    )
-    .map_err(map_timed_out_err(options.timeout))?;
+    let response = query(&options, |w| write_query(w, QUERY_BG), read_color_response)
+        .map_err(map_timed_out_err(options.timeout))?;
     parse_response(response, BG_RESPONSE_PREFIX)
 }
 
@@ -131,7 +121,7 @@ fn query<T>(
     Ok(response)
 }
 
-fn read_color_response<R: io::Read>(r: &mut BufReader<R>) -> Result<Vec<u8>> {
+fn read_color_response(r: &mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<Vec<u8>> {
     let mut buf = Vec::new();
     r.read_until(ESC, &mut buf)?; // Both responses start with ESC
 
