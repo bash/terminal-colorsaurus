@@ -13,9 +13,14 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        min-rust-version: [true, false]
     steps:
     - uses: actions/checkout@v3
+    - name: Use Minimum Rust Version
+      if: matrix.min-rust-version
+      run: ./use-min-rust-version.sh
     - name: Build
       run: cargo build --all-features
     - name: Check format
