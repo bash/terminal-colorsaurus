@@ -22,6 +22,9 @@ jobs:
     - name: Use Minimum Rust Version
       if: matrix.min-rust-version
       run: ./use-min-rust-version.sh
+    - name: Ensure rustfmt is installed
+      run: rustup component add rustfmt
+      if: matrix.min-rust-version
     - name: Build
       run: cargo build --all-features
     - name: Check format
