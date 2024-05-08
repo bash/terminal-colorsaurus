@@ -12,6 +12,7 @@ env:
 
 jobs:
   build:
+    name: ${{ matrix.min-rust-version && 'Build (Minimum Rust Version)' || 'Build' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,6 +29,7 @@ jobs:
     - name: Docs
       run: cargo doc --all-features
   test:
+    name: Test
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
