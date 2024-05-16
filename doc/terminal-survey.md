@@ -47,7 +47,7 @@ The following shell commands can be used to test a terminal:
 ```shell
 printf '\e[c' && cat -v # Tests for DA1. Example output: ^[[?65;1;9c
 printf '\e]10;?\e\\' && cat -v # Tests for foreground color support. Example output: ^[]10;rgb:0000/0000/0000^[\
-printf '\e]11;?\e\\' && cat -v # Tests for foreground color support. Example output: ^[]11;rgb:ffff/ffff/ffff^[\
+printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example output: ^[]11;rgb:ffff/ffff/ffff^[\
 ```
 
 [Alacritty]: https://alacritty.org/
