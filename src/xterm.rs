@@ -55,7 +55,7 @@ pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     })
 }
 
-fn write_query(w: &mut dyn io::Write, quirks: &dyn TerminalQuirks, query: &[u8]) -> io::Result<()> {
+fn write_query(w: &mut dyn io::Write, quirks: TerminalQuirks, query: &[u8]) -> io::Result<()> {
     quirks.write_all(w, query)?;
     quirks.write_string_terminator(w)?;
     Ok(())
@@ -89,7 +89,7 @@ fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
 // Source: https://gitlab.freedesktop.org/terminal-wg/specifications/-/issues/8#note_151381
 fn query<T>(
     options: &QueryOptions,
-    quirks: &dyn TerminalQuirks,
+    quirks: TerminalQuirks,
     write_query: impl FnOnce(&mut dyn io::Write) -> io::Result<()>,
     read_response: impl FnOnce(&mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<T>,
 ) -> Result<T> {
