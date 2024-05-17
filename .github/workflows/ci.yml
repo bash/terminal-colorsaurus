@@ -40,10 +40,17 @@ jobs:
       if: matrix.min-rust-version
     - name: Build
       run: cargo build --all-features
-    - name: Check format
-      run: cargo fmt -- --check
     - name: Docs
       run: cargo doc --all-features
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check format
+        run: cargo fmt -- --check
+      - name: Run clippy
+        run: cargo clippy --all-targets --all-features -- --deny warnings
   test:
     name: Test
     strategy:
@@ -54,5 +61,3 @@ jobs:
     - uses: actions/checkout@v4
     - name: Run tests
       run: cargo test --all-features
-    - name: Run clippy
-      run: cargo clippy --all-targets --all-features -- --deny warnings
