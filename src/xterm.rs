@@ -1,13 +1,13 @@
 use self::io_utils::{read_until2, TermReader};
+use self::quirks::{terminal_quirks_from_env, TerminalQuirks};
 use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
-use std::env;
 use std::io::{self, BufRead, BufReader, Write as _};
-use std::sync::OnceLock;
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
 
 mod io_utils;
+mod quirks;
 
 const QUERY_FG: &[u8] = b"\x1b]10;?";
 const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
@@ -15,21 +15,35 @@ const QUERY_BG: &[u8] = b"\x1b]11;?";
 const BG_RESPONSE_PREFIX: &[u8] = b"\x1b]11;";
 
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
-    let response = query(&options, |w| write_query(w, QUERY_FG), read_color_response)
-        .map_err(map_timed_out_err(options.timeout))?;
+    let quirks = terminal_quirks_from_env();
+    let response = query(
+        &options,
+        quirks,
+        |w| write_query(w, quirks, QUERY_FG),
+        read_color_response,
+    )
+    .map_err(map_timed_out_err(options.timeout))?;
     parse_response(response, FG_RESPONSE_PREFIX)
 }
 
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
-    let response = query(&options, |w| write_query(w, QUERY_BG), read_color_response)
-        .map_err(map_timed_out_err(options.timeout))?;
+    let quirks = terminal_quirks_from_env();
+    let response = query(
+        &options,
+        quirks,
+        |w| write_query(w, quirks, QUERY_BG),
+        read_color_response,
+    )
+    .map_err(map_timed_out_err(options.timeout))?;
     parse_response(response, BG_RESPONSE_PREFIX)
 }
 
 pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
+    let quirks = terminal_quirks_from_env();
     let (fg_response, bg_response) = query(
         &options,
-        |w| write_query(w, QUERY_FG).and_then(|_| write_query(w, QUERY_BG)),
+        quirks,
+        |w| write_query(w, quirks, QUERY_FG).and_then(|_| write_query(w, quirks, QUERY_BG)),
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
     )
     .map_err(map_timed_out_err(options.timeout))?;
@@ -41,9 +55,9 @@ pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     })
 }
 
-fn write_query(w: &mut dyn io::Write, query: &[u8]) -> io::Result<()> {
-    w.write_all(query)?;
-    w.write_all(string_terminator())?;
+fn write_query(w: &mut dyn io::Write, quirks: TerminalQuirks, query: &[u8]) -> io::Result<()> {
+    quirks.write_all(w, query)?;
+    quirks.write_string_terminator(w)?;
     Ok(())
 }
 
@@ -52,28 +66,6 @@ fn map_timed_out_err(timeout: Duration) -> impl Fn(Error) -> Error {
         Error::Io(io) if io.kind() == io::ErrorKind::TimedOut => Error::Timeout(timeout),
         e => e,
     }
-}
-
-// We don't want to send any escape sequences to
-// terminals that don't support them.
-fn ensure_capable_terminal() -> Result<()> {
-    match env::var("TERM") {
-        Ok(term) if term == "dumb" => Err(Error::UnsupportedTerminal),
-        Ok(_) | Err(_) => Ok(()),
-    }
-}
-
-fn string_terminator() -> &'static [u8] {
-    static STRING_TERMINATOR: OnceLock<&[u8]> = OnceLock::new();
-    STRING_TERMINATOR.get_or_init(|| {
-        match env::var("TERM") {
-            // The currently released version has a bug where it terminates the response with `ESC` instead of `ST`.
-            // Fixed by revision [1.600](http://cvs.schmorp.de/rxvt-unicode/src/command.C?revision=1.600&view=markup).
-            // The bug can be worked around by sending a query with `BEL` which will result in a `BEL`-terminated response.
-            Ok(term) if term == "rxvt-unicode" || term.starts_with("rxvt-unicode-") => &[BEL],
-            Ok(_) | Err(_) => ST,
-        }
-    })
 }
 
 const ST: &[u8] = b"\x1b\\";
@@ -97,17 +89,20 @@ fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
 // Source: https://gitlab.freedesktop.org/terminal-wg/specifications/-/issues/8#note_151381
 fn query<T>(
     options: &QueryOptions,
+    quirks: TerminalQuirks,
     write_query: impl FnOnce(&mut dyn io::Write) -> io::Result<()>,
     read_response: impl FnOnce(&mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<T>,
 ) -> Result<T> {
-    ensure_capable_terminal()?;
+    if quirks.is_known_unsupported() {
+        return Err(Error::UnsupportedTerminal);
+    }
 
     let mut tty = terminal()?;
     let mut tty = tty.lock();
     let mut tty = tty.enable_raw_mode()?;
 
     write_query(&mut tty)?;
-    tty.write_all(DA1)?;
+    quirks.write_all(&mut tty, DA1)?;
     tty.flush()?;
 
     let mut reader = BufReader::with_capacity(32, TermReader::new(tty, options.timeout));
