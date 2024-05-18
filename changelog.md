@@ -1,4 +1,8 @@
 # Changelog
+## 0.4.1
+* 🐛 Fixed `OSC 11` response being visible to users of GNU Screen
+     by detecting Screen and erroring before sending any control sequences. #16
+
 ## 0.4.0
 * ⚡ Renamed «color scheme» to «color palette».
 * ⚡ Removed `is_dark_on_light` and `is_light_on_dark` functions. Use `color_scheme` instead.

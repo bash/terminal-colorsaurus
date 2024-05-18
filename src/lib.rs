@@ -70,6 +70,7 @@
 //! * linux
 //! * Jetbrains Fleet
 //! * iSH
+//! * GNU Screen
 //!
 //! </details>
 //!

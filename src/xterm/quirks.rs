@@ -15,20 +15,20 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
         // `TERM=dumb` indicates that the terminal supports very little features.
         // We don't want to send any escape sequences to those terminals.
         Ok(term) if term == "dumb" => Unsupported,
-        // Why is GNU screen unsupported?
+        // Why is GNU Screen unsupported?
         //
-        // 1. screen only supports `OSC 11` (background) and not `OSC 10` (foreground)
+        // 1. Screen only supports `OSC 11` (background) and not `OSC 10` (foreground)
         //
-        // 2. screen replies to queries in the incorrect order.
+        // 2. Screen replies to queries in the incorrect order.
         //    We send  `OSC 11` + `DA1` and expect the answers to also be in that order.
-        //    However, as far as I can tell, screen relays the `OSC 11` query to the underlying terminal,
+        //    However, as far as I can tell, Screen relays the `OSC 11` query to the underlying terminal,
         //    and so we get the `DA1` response back *first*. This is usually an indicator that
         //    the terminal doesn't support the `OSC` query.
         //
         //    There are two both equally broken workarounds:
         //
         //    * Don't send `DA1`, just `OSC 11`. \
-        //      Since screen forwards the query to the underlying terminal, we won't get an answer
+        //      Since Screen forwards the query to the underlying terminal, we won't get an answer
         //      if the underlying terminal doesn't support it. And we don't have a way to detect that
         //      => we hit the 1s timeout :/
         //
