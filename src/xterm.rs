@@ -13,10 +13,6 @@ const QUERY_FG: &[u8] = b"\x1b]10;?";
 const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
 const QUERY_BG: &[u8] = b"\x1b]11;?";
 const BG_RESPONSE_PREFIX: &[u8] = b"\x1b]11;";
-const ST: &[u8] = b"\x1b\\";
-const DA1: &[u8] = b"\x1b[c";
-const ESC: u8 = 0x1b;
-const BEL: u8 = 0x07;
 
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     let quirks = terminal_quirks_from_env();
@@ -71,6 +67,11 @@ fn map_timed_out_err(timeout: Duration) -> impl Fn(Error) -> Error {
         e => e,
     }
 }
+
+const ST: &[u8] = b"\x1b\\";
+const DA1: &[u8] = b"\x1b[c";
+const ESC: u8 = 0x1b;
+const BEL: u8 = 0x07;
 
 fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
     response
