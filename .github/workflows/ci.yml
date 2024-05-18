@@ -25,19 +25,19 @@ jobs:
           echo "rust-version=$rust_version" >> "$GITHUB_OUTPUT"
   build:
     needs: pre-build
-    name: ${{ matrix.min-rust-version && format('Build (Rust {0})', needs.pre-build.outputs.rust-version) || 'Build' }}
+    name: ${{ format('Build ({0})', matrix.rust-version) }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        min-rust-version: [true, false]
+        rust-version: ['${{needs.pre-build.outputs.rust-version}}', stable, nightly]
     steps:
     - uses: actions/checkout@v4
-    - name: Use Minimum Rust Version
-      if: matrix.min-rust-version
-      run: rustup override set "${{ needs.pre-build.outputs.rust-version }}"
+    - name: Use Rust ${{matrix.rust-version}}
+      if: matrix.rust-version != 'stable'
+      run: rustup override set '${{matrix.rust-version}}'
     - name: Ensure rustfmt is installed
       run: rustup component add rustfmt
-      if: matrix.min-rust-version
+      if: matrix.rust-version != 'stable'
     - name: Build
       run: cargo build --all-features
     - name: Docs
