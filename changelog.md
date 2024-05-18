@@ -1,7 +1,7 @@
 # Changelog
 ## 0.4.1
 * 🐛 Fixed `OSC 11` response being visible to users of GNU Screen
-     by detecting Screen and erroring before sending any control sequences. #16
+     by detecting Screen and erroring before sending any control sequences (bash/terminal-colorsaurus#16).
 
 ## 0.4.0
 * ⚡ Renamed «color scheme» to «color palette».
