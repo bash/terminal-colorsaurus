@@ -16,5 +16,5 @@ cargo run --release -p benchmark '<TERM_NAME>'
     <img src="../benchmark/measurements_slow_light.svg">
 </picture>
 
-**ℹ️ Note:**
-The macOS terminals were not tested on the same machine as the Linux terminals.
+> **ℹ️ Note:**
+> The macOS terminals were not tested on the same machine as the Linux terminals.
