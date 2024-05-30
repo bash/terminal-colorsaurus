@@ -39,6 +39,9 @@ def template(*, fast_dark, fast_light, slow_dark, slow_light):
     <source media="(prefers-color-scheme: dark)" srcset="data:image/svg+xml;base64,{slow_dark}">
     <img src="data:image/svg+xml;base64,{slow_light}">
 </picture>
+
+> **ℹ️ Note:**
+> The macOS terminals were not tested on the same machine as the Linux terminals.
 """
 
 
