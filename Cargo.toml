@@ -8,11 +8,10 @@ keywords = ["terminal", "light", "dark", "color-scheme", "cli"]
 license = "MIT OR Apache-2.0"
 version = "0.4.2"
 edition = "2021"
-rust-version = "1.70.0"
+rust-version = "1.70.0" # Search for `FIXME(msrv)` when bumping.
 exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*"]
 
 [dependencies]
-thiserror = "1.0.56"
 rgb = { version = "0.8.37", optional = true }
 
 [target.'cfg(unix)'.dependencies]

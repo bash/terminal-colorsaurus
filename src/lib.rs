@@ -92,11 +92,10 @@
 //! [termbg]: https://docs.rs/termbg
 //! [terminal-light]: https://docs.rs/terminal-light
 
-use std::io;
 use std::time::Duration;
-use thiserror::Error;
 
 mod color;
+mod error;
 mod fmt;
 mod os;
 #[cfg(unix)]
@@ -174,26 +173,7 @@ impl ColorPalette {
 
 /// Result used by this library.
 pub type Result<T> = std::result::Result<T, Error>;
-
-/// An error returned by this library.
-#[derive(Debug, Error)]
-#[non_exhaustive]
-pub enum Error {
-    /// I/O error
-    #[error("I/O error")]
-    Io(#[from] io::Error),
-    /// The terminal responded using an unsupported response format.
-    #[error("failed to parse response: {}", fmt::CaretNotation(String::from_utf8_lossy(.0).as_ref()))]
-    Parse(Vec<u8>),
-    /// The query timed out. This can happen because \
-    /// either the terminal does not support querying for colors \
-    /// or the terminal has a lot of latency (e.g. when connected via SSH).
-    #[error("operation did not complete within {0:?}")]
-    Timeout(Duration),
-    /// The terminal does not support querying for the foreground or background color.
-    #[error("the terminal does not support querying for its colors")]
-    UnsupportedTerminal,
-}
+pub use error::Error;
 
 /// Options to be used with [`foreground_color`] and [`background_color`].
 #[derive(Debug, Clone, PartialEq, Eq)]
