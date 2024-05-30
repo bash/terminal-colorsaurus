@@ -1,4 +1,7 @@
 # Changelog
+## 0.4.2
+* Add `keywords` to package metadata.
+
 ## 0.4.1
 * 🐛 Fixed `OSC 11` response being visible to users of GNU Screen
      by detecting Screen and erroring before sending any control sequences (bash/terminal-colorsaurus#16).
