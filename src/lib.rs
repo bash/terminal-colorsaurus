@@ -75,7 +75,8 @@
 //! </details>
 //!
 //! ## Optional Dependencies
-//! * [`rgb`] — Enable this feature to convert between [`Color`] and [`rgb::RGB16`].
+//! * [`rgb`] — Enable this feature to convert between [`Color`] and [`rgb::RGB16`] / [`rgb::RGB8`].
+//! * [`anstyle`] — Enable this feature to convert [`Color`] to [`anstyle::RgbColor`].
 //!
 //! ## Comparison with Other Crates
 //! ### [termbg]

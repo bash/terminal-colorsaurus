@@ -59,6 +59,14 @@ impl From<Color> for rgb::RGB16 {
 }
 
 #[cfg(feature = "rgb")]
+impl From<Color> for rgb::RGB8 {
+    fn from(value: Color) -> Self {
+        let (r, g, b) = value.scale_to_8bit();
+        rgb::RGB8 { r, g, b }
+    }
+}
+
+#[cfg(feature = "rgb")]
 impl From<rgb::RGB16> for Color {
     fn from(value: rgb::RGB16) -> Self {
         Color {
@@ -66,6 +74,14 @@ impl From<rgb::RGB16> for Color {
             g: value.g,
             b: value.b,
         }
+    }
+}
+
+#[cfg(feature = "anstyle")]
+impl From<Color> for anstyle::RgbColor {
+    fn from(value: Color) -> Self {
+        let (r, g, b) = value.scale_to_8bit();
+        anstyle::RgbColor(r, g, b)
     }
 }
 

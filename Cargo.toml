@@ -13,6 +13,7 @@ exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*"]
 
 [dependencies]
 rgb = { version = "0.8.37", optional = true }
+anstyle = { version = "1.0.7", optional = true }
 
 [target.'cfg(unix)'.dependencies]
 memchr = "2.7.1"
@@ -39,7 +40,7 @@ unwrap_used = "deny"
 use_debug = "warn"
 
 [package.metadata.docs.rs]
-features = ["docs", "rgb"]
+features = ["docs", "rgb", "anstyle"]
 rustdoc-args = ["--cfg", "docsrs"]
 
 [workspace]

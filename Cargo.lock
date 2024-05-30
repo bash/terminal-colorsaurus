@@ -261,6 +261,7 @@ dependencies = [
 name = "terminal-colorsaurus"
 version = "0.4.2"
 dependencies = [
+ "anstyle",
  "libc",
  "memchr",
  "mio",
