@@ -1,4 +1,4 @@
-use super::super::PollReadTimedOutError;
+use crate::os::unix_common::timed_out;
 use libc::{c_int, pselect, time_t, timespec, FD_ISSET, FD_SET};
 use std::io;
 use std::mem::zeroed;
@@ -53,8 +53,4 @@ fn to_io_result(value: c_int) -> io::Result<c_int> {
     } else {
         Ok(value)
     }
-}
-
-fn timed_out() -> io::Error {
-    io::Error::new(io::ErrorKind::TimedOut, PollReadTimedOutError)
 }

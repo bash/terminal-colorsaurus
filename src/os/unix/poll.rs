@@ -1,4 +1,4 @@
-use super::super::PollReadTimedOutError;
+use crate::os::unix_common::timed_out;
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
 use std::io;
@@ -25,8 +25,4 @@ pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<(
         }
     }
     Err(timed_out())
-}
-
-fn timed_out() -> io::Error {
-    io::Error::new(io::ErrorKind::TimedOut, PollReadTimedOutError)
 }
