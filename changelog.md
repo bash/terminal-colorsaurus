@@ -2,6 +2,7 @@
 ## 0.4.2
 * ✨ Add optional dependency on `anstyle` to enable conversions from `Color` to `anstyle::RgbColor`.
 * ✨ Add conversion from `Color` to `rgb::RGB8`.
+* ✨ Treat environments with no `TERM` env var as unsupported.
 * Add `keywords` to package metadata.
 * Remove dependency on `thiserror`.
 

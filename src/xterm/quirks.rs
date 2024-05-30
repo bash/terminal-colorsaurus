@@ -12,6 +12,9 @@ pub(super) fn terminal_quirks_from_env() -> TerminalQuirks {
 fn terminal_quirk_from_env_eager() -> TerminalQuirks {
     use TerminalQuirks::*;
     match env::var("TERM") {
+        // Something is very wrong if we don't have a TERM env var
+        // or if it's not valid unicode.
+        Err(env::VarError::NotPresent) | Err(env::VarError::NotUnicode(_)) => Unsupported,
         // `TERM=dumb` indicates that the terminal supports very little features.
         // We don't want to send any escape sequences to those terminals.
         Ok(term) if term == "dumb" => Unsupported,
@@ -43,7 +46,7 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
         //           some of them are not consumed by us and end up on the user's screen :/
         Ok(term) if term == "screen" || term.starts_with("screen.") => Unsupported,
         Ok(term) if term == "rxvt-unicode" || term.starts_with("rxvt-unicode-") => Urxvt,
-        Ok(_) | Err(_) => None,
+        Ok(_) => None,
     }
 }
 
