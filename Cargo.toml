@@ -4,6 +4,7 @@ description = "Determines the background and foreground color of the terminal"
 readme = "readme.md"
 repository = "https://github.com/bash/terminal-colorsaurus"
 categories = ["command-line-interface"]
+keywords = ["terminal", "light", "dark", "color-scheme", "cli"]
 license = "MIT OR Apache-2.0"
 version = "0.4.1"
 edition = "2021"
