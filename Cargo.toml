@@ -40,7 +40,7 @@ unwrap_used = "deny"
 use_debug = "warn"
 
 [package.metadata.docs.rs]
-features = ["docs", "rgb", "anstyle"]
+features = ["rgb", "anstyle"]
 rustdoc-args = ["--cfg", "docsrs"]
 
 [workspace]
