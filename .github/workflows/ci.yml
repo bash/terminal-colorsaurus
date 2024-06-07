@@ -61,3 +61,12 @@ jobs:
     - uses: actions/checkout@v4
     - name: Run tests
       run: cargo test --all-features
+  test_package:
+    name: Test Package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Package
+      run: cargo package -p terminal-colorsaurus
+    - name: Test Package
+      run: (cd target/package/terminal-colorsaurus-*/ && cargo test)
