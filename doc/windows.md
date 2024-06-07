@@ -9,7 +9,7 @@ To preserve backwards compatibility with programs that use (the now mostly obsol
 `conhost` intercepts some escape sequences such as `OSC 10` and `OSC 11`. However, `conhost` only supports setting colors using these two sequences, [but not querying][conhost/osc].
 
 An alternative approach would be to retrieve the foreground and background color by using the [Console API]. \
-However, for most Terminals—this includes **Windows Terminal**—[incorrect colors are reported](conhost/palette). \
+However, for most Terminals—this includes **Windows Terminal**—[incorrect colors are reported][conhost/palette]. \
 Using the [Console API] to retrieve colors only produces correct results in `conhost`'s own terminal window.
 
 
