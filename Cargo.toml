@@ -23,9 +23,6 @@ terminal-trx = "0.2.0"
 [target.'cfg(target_os = "macos")'.dependencies]
 libc = "0.2.151"
 
-[features]
-docs = []
-
 [lints.rust]
 missing_debug_implementations = "warn"
 missing_docs = "warn"
