@@ -14,6 +14,7 @@ exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*"]
 [dependencies]
 rgb = { version = "0.8.37", optional = true }
 anstyle = { version = "1.0.7", optional = true }
+cfg-if = "1.0.0"
 
 [target.'cfg(unix)'.dependencies]
 memchr = "2.7.1"

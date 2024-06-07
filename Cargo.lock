@@ -262,6 +262,7 @@ name = "terminal-colorsaurus"
 version = "0.4.2"
 dependencies = [
  "anstyle",
+ "cfg-if",
  "libc",
  "memchr",
  "mio",

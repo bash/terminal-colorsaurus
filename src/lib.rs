@@ -93,43 +93,44 @@
 //! [termbg]: https://docs.rs/termbg
 //! [terminal-light]: https://docs.rs/terminal-light
 
+use cfg_if::cfg_if;
 use std::time::Duration;
 
 mod color;
 mod error;
 mod fmt;
 mod os;
-#[cfg(unix)]
-mod xparsecolor;
 
-#[cfg(unix)]
-mod xterm;
+cfg_if! {
+    if #[cfg(unix)] {
+        mod xparsecolor;
+        mod xterm;
+        use xterm as imp;
+    } else {
+        mod unsupported;
+        use unsupported as imp;
+    }
+}
 
-#[cfg(unix)]
-use xterm as imp;
+cfg_if! {
+    if #[cfg(docsrs)] {
+        #[doc(cfg(docsrs))]
+        #[doc = include_str!("../doc/terminal-survey.md")]
+        pub mod terminal_survey {}
 
-#[cfg(not(unix))]
-use unsupported as imp;
+        #[doc(cfg(docsrs))]
+        #[doc = include_str!("../doc/windows.md")]
+        pub mod windows_unsupported {}
 
-#[cfg(docsrs)]
-#[cfg_attr(docsrs, doc(cfg(docsrs)))]
-#[doc = include_str!("../doc/terminal-survey.md")]
-pub mod terminal_survey {}
+        #[doc(cfg(docsrs))]
+        #[doc = include_str!("../doc/latency-rustdoc.md")]
+        pub mod latency {}
 
-#[cfg(docsrs)]
-#[cfg_attr(docsrs, doc(cfg(docsrs)))]
-#[doc = include_str!("../doc/windows.md")]
-pub mod windows_unsupported {}
-
-#[cfg(docsrs)]
-#[cfg_attr(docsrs, doc(cfg(docsrs)))]
-#[doc = include_str!("../doc/latency-rustdoc.md")]
-pub mod latency {}
-
-#[cfg(docsrs)]
-#[cfg_attr(docsrs, doc(cfg(docsrs)))]
-#[doc = include_str!("../doc/feature-detection.md")]
-pub mod feature_detection {}
+        #[doc(cfg(docsrs))]
+        #[doc = include_str!("../doc/feature-detection.md")]
+        pub mod feature_detection {}
+    }
+}
 
 #[cfg(doctest)]
 #[doc = include_str!("../readme.md")]
@@ -228,23 +229,6 @@ pub fn foreground_color(options: QueryOptions) -> Result<Color> {
 #[doc = include_str!("../doc/caveats.md")]
 pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
-}
-
-#[cfg(not(unix))]
-mod unsupported {
-    use crate::{Color, ColorPalette, Error, QueryOptions, Result};
-
-    pub(crate) fn color_palette(_options: QueryOptions) -> Result<ColorPalette> {
-        Err(Error::UnsupportedTerminal)
-    }
-
-    pub(crate) fn foreground_color(_options: QueryOptions) -> Result<Color> {
-        Err(Error::UnsupportedTerminal)
-    }
-
-    pub(crate) fn background_color(_options: QueryOptions) -> Result<Color> {
-        Err(Error::UnsupportedTerminal)
-    }
 }
 
 #[cfg(test)]
