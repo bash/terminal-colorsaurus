@@ -1,4 +1,7 @@
 # Changelog
+## 0.3.4
+* Removed private `docs` crate feature.
+
 ## 0.3.3
 * Feature: Add new `Color::scale_to_8bit` function.
 * Fix: Correctly scale colors up to 16 bits per channel.
