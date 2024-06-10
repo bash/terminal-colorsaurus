@@ -48,6 +48,8 @@ jobs:
     - run: rustup override set nightly
     - name: Build Docs
       run: ./docs.sh
+      env:
+        RUSTDOCFLAGS: -Dwarnings
   lint:
     runs-on: ubuntu-latest
     name: Lint
