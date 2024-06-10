@@ -20,9 +20,6 @@ memchr = "2.7.1"
 mio = { version = "0.8.11", features = ["os-poll", "os-ext"], default-features = false }
 terminal-trx = "0.2.0"
 
-[features]
-docs = []
-
 [lints.rust]
 missing_debug_implementations = "warn"
 missing_docs = "warn"
@@ -37,7 +34,7 @@ unwrap_used = "deny"
 use_debug = "warn"
 
 [package.metadata.docs.rs]
-features = ["docs", "rgb"]
+features = ["rgb"]
 rustdoc-args = ["--cfg", "docsrs"]
 
 [workspace]

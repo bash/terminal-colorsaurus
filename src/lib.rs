@@ -100,15 +100,18 @@ use xterm as imp;
 #[cfg(not(unix))]
 use unsupported as imp;
 
-#[cfg(feature = "docs")]
+#[cfg(docsrs)]
+#[cfg_attr(docsrs, doc(cfg(docsrs)))]
 #[doc = include_str!("../doc/terminal-survey.md")]
 pub mod terminal_survey {}
 
-#[cfg(feature = "docs")]
+#[cfg(docsrs)]
+#[cfg_attr(docsrs, doc(cfg(docsrs)))]
 #[doc = include_str!("../doc/windows.md")]
 pub mod windows_unsupported {}
 
-#[cfg(feature = "docs")]
+#[cfg(docsrs)]
+#[cfg_attr(docsrs, doc(cfg(docsrs)))]
 #[doc = include_str!("../doc/latency-rustdoc.md")]
 pub mod latency {}
 
