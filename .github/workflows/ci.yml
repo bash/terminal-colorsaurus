@@ -13,15 +13,13 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --all-features
     - name: Check format
       run: cargo fmt -- --check
-    - name: Docs
-      run: cargo doc --all-features
+
   test:
     strategy:
       matrix:
@@ -33,3 +31,12 @@ jobs:
       run: cargo test --all-features
     - name: Run clippy
       run: cargo clippy --all-targets --all-features -- --deny warnings
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: rustup toolchain install nightly
+    - name: Build Docs
+      run: cargo +nightly doc --all-features
+      env:
+        RUSTDOCFLAGS: -Dwarnings --cfg docsrs
