@@ -40,8 +40,14 @@ jobs:
       if: matrix.rust-version != 'stable'
     - name: Build
       run: cargo build --all-features
-    - name: Docs
-      run: cargo doc --all-features
+  docs:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup override set nightly
+    - name: Build Docs
+      run: ./docs.sh
   lint:
     runs-on: ubuntu-latest
     name: Lint
