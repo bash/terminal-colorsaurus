@@ -18,7 +18,7 @@ cfg-if = "1.0.0"
 
 [target.'cfg(unix)'.dependencies]
 memchr = "2.7.1"
-mio = { version = "0.8.11", features = ["os-ext"], default-features = false }
+mio = { version = "1", features = ["os-ext"], default-features = false }
 terminal-trx = "0.2.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
