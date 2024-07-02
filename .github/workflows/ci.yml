@@ -59,6 +59,7 @@ jobs:
         run: cargo fmt -- --check
       - name: Run clippy
         run: cargo clippy --all-targets --all-features -- --deny warnings
+      - uses: EmbarkStudios/cargo-deny-action@v1
   test:
     name: Test
     strategy:
