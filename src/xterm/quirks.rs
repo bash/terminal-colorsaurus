@@ -20,6 +20,9 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
         Ok(term) if term == "dumb" => Unsupported,
         // Why is GNU Screen unsupported?
         //
+        // Note: The following only applies if screen was compiled with `--enable-rxvt_osc`.
+        //       Homebrew is a notable packager who doesn't enable this feature.
+        //
         // 1. Screen only supports `OSC 11` (background) and not `OSC 10` (foreground)
         //
         // 2. Screen replies to queries in the incorrect order.
