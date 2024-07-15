@@ -35,9 +35,6 @@ jobs:
     - name: Use Rust ${{matrix.rust-version}}
       if: matrix.rust-version != 'stable'
       run: rustup override set '${{matrix.rust-version}}'
-    - name: Ensure rustfmt is installed
-      run: rustup component add rustfmt
-      if: matrix.rust-version != 'stable'
     - name: Build
       run: cargo build --all-features
   docs:
