@@ -1,4 +1,8 @@
 # Changelog
+## 0.4.4
+* Bump `mio` dependency to 1.0.
+* ✨ Add helpful aliases to the docs.
+
 ## 0.4.3
 * Remove private `docs` crate feature.
 * 🐛 Fix broken link in docs.

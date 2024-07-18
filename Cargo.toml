@@ -6,10 +6,10 @@ repository = "https://github.com/bash/terminal-colorsaurus"
 categories = ["command-line-interface"]
 keywords = ["terminal", "light", "dark", "color-scheme", "cli"]
 license = "MIT OR Apache-2.0"
-version = "0.4.3"
+version = "0.4.4"
 edition = "2021"
 rust-version = "1.70.0" # Search for `FIXME(msrv)` when bumping.
-exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*"]
+exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*", "doc/issues.md"]
 
 [dependencies]
 rgb = { version = "0.8.37", optional = true }

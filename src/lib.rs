@@ -150,8 +150,12 @@ pub struct ColorPalette {
 }
 
 /// The color scheme of the terminal.
+///
+/// The easiest way to retrieve the color scheme
+/// is by calling [`color_scheme`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 #[allow(clippy::exhaustive_enums)]
+#[doc(alias = "Theme")]
 pub enum ColorScheme {
     /// The terminal uses a dark background with light text.
     #[default]
@@ -207,6 +211,7 @@ impl Default for QueryOptions {
 
 /// Detects if the terminal is dark or light.
 #[doc = include_str!("../doc/caveats.md")]
+#[doc(alias = "theme")]
 pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
     color_palette(options).map(|p| p.color_scheme())
 }
