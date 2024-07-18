@@ -10,7 +10,7 @@ impl fmt::Display for CaretNotation<'_> {
             if c.is_control() {
                 write!(f, "{}", EscapeCaret(c))?;
             } else {
-                write!(f, "{}", c)?;
+                write!(f, "{c}")?;
             }
         }
         Ok(())
@@ -22,7 +22,7 @@ struct EscapeCaret(char);
 impl fmt::Display for EscapeCaret {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(escaped) = char::from_u32(u32::from(self.0) ^ 0x40) {
-            write!(f, "^{}", escaped)
+            write!(f, "^{escaped}")
         } else {
             write!(f, "{}", self.0)
         }

@@ -29,11 +29,13 @@ missing_debug_implementations = "warn"
 missing_docs = "warn"
 
 [lints.clippy]
-unimplemented = "warn"
-undocumented_unsafe_blocks = "deny"
 dbg_macro = "warn"
 exhaustive_enums = "warn"
 exhaustive_structs = "warn"
+undocumented_unsafe_blocks = "deny"
+unimplemented = "warn"
+uninlined_format_args = "warn"
+unnested_or_patterns = "warn"
 unwrap_used = "deny"
 use_debug = "warn"
 

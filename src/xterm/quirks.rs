@@ -14,7 +14,7 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
     match env::var("TERM") {
         // Something is very wrong if we don't have a TERM env var
         // or if it's not valid unicode.
-        Err(env::VarError::NotPresent) | Err(env::VarError::NotUnicode(_)) => Unsupported,
+        Err(env::VarError::NotPresent | env::VarError::NotUnicode(_)) => Unsupported,
         // `TERM=dumb` indicates that the terminal supports very little features.
         // We don't want to send any escape sequences to those terminals.
         Ok(term) if term == "dumb" => Unsupported,
@@ -61,11 +61,11 @@ pub(super) enum TerminalQuirks {
 }
 
 impl TerminalQuirks {
-    pub(super) fn is_known_unsupported(&self) -> bool {
+    pub(super) fn is_known_unsupported(self) -> bool {
         matches!(self, TerminalQuirks::Unsupported)
     }
 
-    pub(super) fn string_terminator(&self) -> &[u8] {
+    pub(super) fn string_terminator(self) -> &'static [u8] {
         const ST: &[u8] = b"\x1b\\";
         const BEL: u8 = 0x07;
 
@@ -79,11 +79,11 @@ impl TerminalQuirks {
         }
     }
 
-    pub(super) fn write_all(&self, w: &mut dyn Write, bytes: &[u8]) -> io::Result<()> {
+    pub(super) fn write_all(self, w: &mut dyn Write, bytes: &[u8]) -> io::Result<()> {
         w.write_all(bytes)
     }
 
-    pub(super) fn write_string_terminator(&self, writer: &mut dyn Write) -> io::Result<()> {
+    pub(super) fn write_string_terminator(self, writer: &mut dyn Write) -> io::Result<()> {
         self.write_all(writer, self.string_terminator())
     }
 }
