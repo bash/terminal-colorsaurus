@@ -5,8 +5,6 @@
 //!
 //! This crate helps answer the question *"Is this terminal dark or light?"*.
 //!
-//! Windows is [not supported][windows_unsupported].
-//!
 //! ## Features
 //! * Background and foreground color detection.
 //! * Uses a timeout (for situations with high latency such as an SSH connection).
@@ -118,10 +116,6 @@ cfg_if! {
         #[doc(cfg(docsrs))]
         #[doc = include_str!("../doc/terminal-survey.md")]
         pub mod terminal_survey {}
-
-        #[doc(cfg(docsrs))]
-        #[doc = include_str!("../doc/windows.md")]
-        pub mod windows_unsupported {}
 
         #[doc(cfg(docsrs))]
         #[doc = include_str!("../doc/latency-rustdoc.md")]
