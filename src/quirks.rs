@@ -14,7 +14,13 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
     match env::var("TERM") {
         // Something is very wrong if we don't have a TERM env var
         // or if it's not valid unicode.
-        Err(env::VarError::NotPresent | env::VarError::NotUnicode(_)) => Unsupported,
+        Err(env::VarError::NotUnicode(_)) => Unsupported,
+        // Something is very wrong if we don't have a TERM env var.
+        #[cfg(unix)]
+        Err(env::VarError::NotPresent) => Unsupported,
+        // On Windows the TERM convention is not universally followed.
+        #[cfg(not(unix))]
+        Err(env::VarError::NotPresent) => None,
         // `TERM=dumb` indicates that the terminal supports very little features.
         // We don't want to send any escape sequences to those terminals.
         Ok(term) if term == "dumb" => Unsupported,
