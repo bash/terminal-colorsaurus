@@ -40,7 +40,7 @@ unwrap_used = "deny"
 use_debug = "warn"
 
 [package.metadata.docs.rs]
-features = ["rgb", "anstyle"]
+all-features = true
 
 [workspace]
 members = ["examples/*"]
