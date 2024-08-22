@@ -9,7 +9,7 @@ license = "MIT OR Apache-2.0"
 version = "0.4.4"
 edition = "2021"
 rust-version = "1.70.0" # Search for `FIXME(msrv)` when bumping.
-exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*", "doc/issues.md"]
+exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*", "doc/issues.md", "deny.toml"]
 
 [dependencies]
 rgb = { version = "0.8.37", optional = true }
