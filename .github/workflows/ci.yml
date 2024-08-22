@@ -43,8 +43,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: rustup override set nightly
+    - uses: dtolnay/install@cargo-docs-rs
     - name: Build Docs
-      run: ./docs.sh
+      run: cargo docs-rs
       env:
         RUSTDOCFLAGS: -Dwarnings
   lint:
