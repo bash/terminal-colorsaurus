@@ -14,6 +14,9 @@ confidence-threshold = 1.0
 [bans]
 multiple-versions = "deny"
 wildcards = "deny"
+skip = [
+    { crate = "windows-sys", reason = "an old version is used by mio, see https://github.com/tokio-rs/mio/pull/1820 for updating it" },
+]
 
 [sources]
 unknown-registry = "deny"
