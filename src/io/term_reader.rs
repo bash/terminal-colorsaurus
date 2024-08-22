@@ -1,7 +1,7 @@
 use super::poll_read;
 use std::io;
-use std::os::fd::AsFd;
 use std::time::{Duration, Instant};
+use terminal_trx::Transceive;
 
 #[derive(Debug)]
 pub(crate) struct TermReader<R> {
@@ -12,11 +12,11 @@ pub(crate) struct TermReader<R> {
 
 impl<R> io::Read for TermReader<R>
 where
-    R: io::Read + AsFd,
+    R: Transceive,
 {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         let timeout = self.remaining_timeout();
-        poll_read(self.inner.as_fd(), timeout)?;
+        poll_read(&self.inner, timeout)?;
         self.inner.read(buf)
     }
 }

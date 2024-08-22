@@ -2,10 +2,10 @@ use super::super::read_timed_out;
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
 use std::io;
-use std::os::fd::{AsRawFd as _, BorrowedFd};
 use std::time::Duration;
+use terminal_trx::Transceive;
 
-pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<()> {
+pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> io::Result<()> {
     if timeout.is_zero() {
         return Err(read_timed_out());
     }
