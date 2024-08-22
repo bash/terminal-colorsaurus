@@ -20,8 +20,9 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [Termux]                   | yes                   | yes   | 0.118.0                            |
 | VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
+| Windows Terminal (conhost) | yes                   | yes   | [`b3f4162`][conhost-commit]        |
 | [xterm]                    | yes                   | yes   | 385                                |
-| [zed]                      | yes                   | yes   | [`9245015`][zed-version]|
+| [zed]                      | yes                   | yes   | [`9245015`][zed-commit]|
 | anyterm                    | no                    | *no*  | 1.2.3                              |
 | ConEmu / Cmder             | no                    | yes   | 230724 stable                      |
 | cool-retro-term            | no                    | yes   | 1.2.0                              |
@@ -35,7 +36,6 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | shellinabox                | no                    | *no*  | 2.20                               |
 | QMLKonsole                 | no                    | yes   | 23.08.5                            |
 | [QTerminal]                | no                    | yes   | 1.3.0                              |
-| Windows Terminal (conhost) | no                    | yes   | 1.18.3181.0                        |
 
 <br>
 
@@ -54,6 +54,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 
 [Alacritty]: https://alacritty.org/
 [anyterm]: https://anyterm.org/
+[conhost-commit]: https://github.com/microsoft/terminal/commit/b3f41626b4d212da8ca7c08077b12c289f918c86
 [Console]: https://apps.gnome.org/en-GB/Console/
 [Contour]: https://contour-terminal.org/
 [cool-retro-term]: https://github.com/Swordfish90/cool-retro-term
@@ -78,5 +79,5 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [WezTerm]: https://wezfurlong.org/wezterm/
 [xterm.js]: https://xtermjs.org/
 [xterm]: https://invisible-island.net/xterm/
+[zed-commit]: https://github.com/zed-industries/zed/commit/9245015d1a005611801d7393e4d7e3cdf5fbca0c
 [zed]: https://zed.dev/
-[zed-version]: https://github.com/zed-industries/zed/commit/9245015d1a005611801d7393e4d7e3cdf5fbca0c

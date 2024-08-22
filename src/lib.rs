@@ -12,6 +12,7 @@
 //! * Works even if all of stderr, stdout and stdin are redirected.
 //! * Safely restores the terminal from raw mode even if the library errors or panicks.
 //! * Does not send any escape sequences if `TERM=dumb`.
+//! * Works on Windows (*soon*).
 //!
 //! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
@@ -58,7 +59,9 @@
 //! * urxvt (rxvt-unicode)
 //! * VSCode (xterm.js)
 //! * WezTerm
+//! * Windows Terminal (in an upcoming version)
 //! * xterm
+//! * [Zed](https://zed.dev)
 //!
 //! </details>
 //!
