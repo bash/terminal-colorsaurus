@@ -21,6 +21,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
 | [xterm]                    | yes                   | yes   | 385                                |
+| [zed]                      | yes                   | yes   | [`9245015`][zed-version]|
 | anyterm                    | no                    | *no*  | 1.2.3                              |
 | ConEmu / Cmder             | no                    | yes   | 230724 stable                      |
 | cool-retro-term            | no                    | yes   | 1.2.0                              |
@@ -75,3 +76,5 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [WezTerm]: https://wezfurlong.org/wezterm/
 [xterm.js]: https://xtermjs.org/
 [xterm]: https://invisible-island.net/xterm/
+[zed]: https://zed.dev/
+[zed-version]: https://github.com/zed-industries/zed/commit/9245015d1a005611801d7393e4d7e3cdf5fbca0c
