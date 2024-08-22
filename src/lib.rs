@@ -99,10 +99,11 @@ use std::time::Duration;
 mod color;
 mod error;
 mod fmt;
-mod os;
 
 cfg_if! {
     if #[cfg(unix)] {
+        mod io;
+        mod quirks;
         mod xparsecolor;
         mod xterm;
         use xterm as imp;

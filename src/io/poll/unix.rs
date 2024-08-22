@@ -1,4 +1,4 @@
-use crate::os::unix_common::timed_out;
+use super::super::read_timed_out;
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
 use std::io;
@@ -7,7 +7,7 @@ use std::time::Duration;
 
 pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<()> {
     if timeout.is_zero() {
-        return Err(timed_out());
+        return Err(read_timed_out());
     }
 
     let mut poll = Poll::new()?;
@@ -24,5 +24,5 @@ pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<(
             return Ok(());
         }
     }
-    Err(timed_out())
+    Err(read_timed_out())
 }

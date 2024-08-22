@@ -1,13 +1,10 @@
-use self::io_utils::{read_until2, TermReader};
-use self::quirks::{terminal_quirks_from_env, TerminalQuirks};
+use crate::io::{read_until2, TermReader};
+use crate::quirks::{terminal_quirks_from_env, TerminalQuirks};
 use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
-
-mod io_utils;
-mod quirks;
 
 const QUERY_FG: &[u8] = b"\x1b]10;?";
 const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";

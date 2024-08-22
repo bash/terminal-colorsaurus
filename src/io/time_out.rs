@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::{fmt, io};
 
-pub(crate) fn timed_out() -> io::Error {
+pub(crate) fn read_timed_out() -> io::Error {
     io::Error::new(io::ErrorKind::TimedOut, PollReadTimedOutError)
 }
 

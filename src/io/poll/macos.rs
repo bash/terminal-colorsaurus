@@ -1,4 +1,4 @@
-use crate::os::unix_common::timed_out;
+use super::super::read_timed_out;
 use libc::{c_int, pselect, time_t, timespec, FD_ISSET, FD_SET};
 use std::io;
 use std::mem::zeroed;
@@ -10,7 +10,7 @@ use std::time::Duration;
 // resort to pselect/select. See https://nathancraddock.com/blog/macos-dev-tty-polling/.
 pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<()> {
     if timeout.is_zero() {
-        return Err(timed_out());
+        return Err(read_timed_out());
     }
 
     let fd = terminal.as_raw_fd();
@@ -32,7 +32,7 @@ pub(crate) fn poll_read(terminal: BorrowedFd, timeout: Duration) -> io::Result<(
         if FD_ISSET(fd, &readfds) {
             Ok(())
         } else {
-            Err(timed_out())
+            Err(read_timed_out())
         }
     }
 }
