@@ -101,7 +101,7 @@ mod error;
 mod fmt;
 
 cfg_if! {
-    if #[cfg(unix)] {
+    if #[cfg(any(unix, windows))] {
         mod io;
         mod quirks;
         mod xparsecolor;
