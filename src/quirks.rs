@@ -2,7 +2,7 @@ use std::env;
 use std::io::{self, Write};
 use std::sync::OnceLock;
 
-pub(super) fn terminal_quirks_from_env() -> TerminalQuirks {
+pub(crate) fn terminal_quirks_from_env() -> TerminalQuirks {
     // This OnceLock is not here for efficiency, it's here so that
     // we have consistent results in case a consumer uses `set_var`.
     static TERMINAL_QUIRK: OnceLock<TerminalQuirks> = OnceLock::new();
@@ -14,7 +14,13 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
     match env::var("TERM") {
         // Something is very wrong if we don't have a TERM env var
         // or if it's not valid unicode.
-        Err(env::VarError::NotPresent | env::VarError::NotUnicode(_)) => Unsupported,
+        Err(env::VarError::NotUnicode(_)) => Unsupported,
+        // Something is very wrong if we don't have a TERM env var.
+        #[cfg(unix)]
+        Err(env::VarError::NotPresent) => Unsupported,
+        // On Windows the TERM convention is not universally followed.
+        #[cfg(not(unix))]
+        Err(env::VarError::NotPresent) => None,
         // `TERM=dumb` indicates that the terminal supports very little features.
         // We don't want to send any escape sequences to those terminals.
         Ok(term) if term == "dumb" => Unsupported,
@@ -54,18 +60,18 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub(super) enum TerminalQuirks {
+pub(crate) enum TerminalQuirks {
     None,
     Unsupported,
     Urxvt,
 }
 
 impl TerminalQuirks {
-    pub(super) fn is_known_unsupported(self) -> bool {
+    pub(crate) fn is_known_unsupported(self) -> bool {
         matches!(self, TerminalQuirks::Unsupported)
     }
 
-    pub(super) fn string_terminator(self) -> &'static [u8] {
+    pub(crate) fn string_terminator(self) -> &'static [u8] {
         const ST: &[u8] = b"\x1b\\";
         const BEL: u8 = 0x07;
 
@@ -79,11 +85,11 @@ impl TerminalQuirks {
         }
     }
 
-    pub(super) fn write_all(self, w: &mut dyn Write, bytes: &[u8]) -> io::Result<()> {
+    pub(crate) fn write_all(self, w: &mut dyn Write, bytes: &[u8]) -> io::Result<()> {
         w.write_all(bytes)
     }
 
-    pub(super) fn write_string_terminator(self, writer: &mut dyn Write) -> io::Result<()> {
+    pub(crate) fn write_string_terminator(self, writer: &mut dyn Write) -> io::Result<()> {
         self.write_all(writer, self.string_terminator())
     }
 }

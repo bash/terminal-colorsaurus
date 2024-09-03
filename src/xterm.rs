@@ -1,13 +1,10 @@
-use self::io_utils::{read_until2, TermReader};
-use self::quirks::{terminal_quirks_from_env, TerminalQuirks};
+use crate::io::{read_until2, TermReader};
+use crate::quirks::{terminal_quirks_from_env, TerminalQuirks};
 use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
-
-mod io_utils;
-mod quirks;
 
 const QUERY_FG: &[u8] = b"\x1b]10;?";
 const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
@@ -81,6 +78,8 @@ fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
         .ok_or_else(|| Error::Parse(response))
 }
 
+type Reader<'a> = BufReader<TermReader<RawModeGuard<'a>>>;
+
 // We detect terminals that don't support the color query in quite a smart way:
 // First, we send the color query and then a query that we know is well-supported (DA1).
 // Since queries are answered sequentially, if a terminal answers to DA1 first, we know that
@@ -91,7 +90,7 @@ fn query<T>(
     options: &QueryOptions,
     quirks: TerminalQuirks,
     write_query: impl FnOnce(&mut dyn io::Write) -> io::Result<()>,
-    read_response: impl FnOnce(&mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<T>,
+    read_response: impl FnOnce(&mut Reader<'_>) -> Result<T>,
 ) -> Result<T> {
     if quirks.is_known_unsupported() {
         return Err(Error::UnsupportedTerminal);
@@ -109,14 +108,14 @@ fn query<T>(
 
     let response = read_response(&mut reader)?;
 
-    // We still need to consume the reponse to DA1
+    // We still need to consume the response to DA1
     // Let's ignore errors, they are not that important.
     _ = consume_da1_response(&mut reader, true);
 
     Ok(response)
 }
 
-fn read_color_response(r: &mut BufReader<TermReader<RawModeGuard<'_>>>) -> Result<Vec<u8>> {
+fn read_color_response(r: &mut Reader<'_>) -> Result<Vec<u8>> {
     let mut buf = Vec::new();
     r.read_until(ESC, &mut buf)?; // Both responses start with ESC
 

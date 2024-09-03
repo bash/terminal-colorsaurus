@@ -37,6 +37,10 @@ jobs:
       run: rustup override set '${{matrix.rust-version}}'
     - name: Build
       run: cargo build --workspace --all-features
+    - name: Check fallback implementation
+      run: cargo check --workspace
+      env:
+        RUSTFLAGS: --cfg terminal_colorsaurus_test_unsupported -Dwarnings
   docs:
     name: Docs
     runs-on: ubuntu-latest
@@ -58,6 +62,8 @@ jobs:
       - name: Run clippy
         run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
       - uses: EmbarkStudios/cargo-deny-action@v1
+      - name: Check spelling
+        uses: crate-ci/typos@v1.24.4
   test:
     name: Test
     strategy:
