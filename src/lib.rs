@@ -102,7 +102,7 @@ mod error;
 mod fmt;
 
 cfg_if! {
-    if #[cfg(any(unix, windows))] {
+    if #[cfg(all(any(unix, windows), not(terminal_colorsaurus_test_unsupported)))] {
         mod io;
         mod quirks;
         mod xparsecolor;

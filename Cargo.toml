@@ -32,6 +32,7 @@ windows-sys = { version = "0.59.0", features = ["Win32_System_Threading"] } # Ke
 [lints.rust]
 missing_debug_implementations = "warn"
 missing_docs = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(terminal_colorsaurus_test_unsupported)"] }
 
 [lints.clippy]
 dbg_macro = "warn"
