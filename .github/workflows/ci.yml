@@ -36,7 +36,7 @@ jobs:
       if: matrix.rust-version != 'stable'
       run: rustup override set '${{matrix.rust-version}}'
     - name: Build
-      run: cargo build --all-features
+      run: cargo build --workspace --all-features
   docs:
     name: Docs
     runs-on: ubuntu-latest
@@ -56,7 +56,7 @@ jobs:
       - name: Check format
         run: cargo fmt -- --check
       - name: Run clippy
-        run: cargo clippy --all-targets --all-features -- --deny warnings
+        run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
       - uses: EmbarkStudios/cargo-deny-action@v1
   test:
     name: Test
@@ -67,13 +67,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Run tests
-      run: cargo test --all-features
+      run: cargo test --workspace --all-features
   test_package:
     name: Test Package
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [terminal-colorsaurus, termtheme]
     steps:
     - uses: actions/checkout@v4
     - name: Package
-      run: cargo package -p terminal-colorsaurus
+      run: cargo package -p ${{matrix.package}}
     - name: Test Package
-      run: (cd target/package/terminal-colorsaurus-*/ && cargo test)
+      run: (cd target/package/${{matrix.package}}-*/ && cargo test)

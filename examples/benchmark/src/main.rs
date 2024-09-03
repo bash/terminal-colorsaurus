@@ -34,7 +34,6 @@ fn main() -> Result<()> {
         .with_style(ProgressStyle::default_bar().progress_chars("██░"));
 
     let measurements = (0..args.iterations)
-        .into_iter()
         .map(|_| bench())
         .inspect(|_| bar.inc(1))
         .collect::<Result<Vec<_>>>()?;

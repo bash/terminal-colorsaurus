@@ -43,4 +43,5 @@ use_debug = "warn"
 all-features = true
 
 [workspace]
-members = ["examples/*"]
+members = ["crates/*","examples/*"]
+resolver = "2"
