@@ -108,7 +108,7 @@ fn query<T>(
 
     let response = read_response(&mut reader)?;
 
-    // We still need to consume the reponse to DA1
+    // We still need to consume the response to DA1
     // Let's ignore errors, they are not that important.
     _ = consume_da1_response(&mut reader, true);
 
