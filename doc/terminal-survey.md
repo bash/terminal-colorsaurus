@@ -28,6 +28,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | Eterm                      | no                    | *no*  | 0.9.6                              |
 | [iSH] (hterm)              | no                    | yes   | 1.3.2 (Build 494) (iOS)            |
 | Jetbrains Fleet            | no                    | yes   | build 1.29.213 (macOS)             |
+| [Lapce]                    | no                    | yes   | 0.4.2 (macOS)                      |
 | Linux console              | no                    | yes   | -                                  |
 | mrxvt                      | no                    | yes   | 0.5.3                              |
 | [PuTTY]                    | no                    | yes   | 0.80                               |
@@ -63,6 +64,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [JediTerm]: https://github.com/JetBrains/jediterm
 [kitty]: https://sw.kovidgoyal.net/kitty/
 [Konsole]: https://konsole.kde.org/
+[Lapce]: https://lapce.dev/
 [mintty]: https://mintty.github.io/
 [PuTTY]: https://www.chiark.greenend.org.uk/~sgtatham/putty/
 [QTerminal]: https://github.com/lxqt/qterminal
