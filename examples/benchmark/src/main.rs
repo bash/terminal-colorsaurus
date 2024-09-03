@@ -1,5 +1,5 @@
+use anstyle::Style;
 use clap::Parser;
-use console::style;
 use indicatif::{ProgressBar, ProgressStyle};
 use std::fs::OpenOptions;
 use std::hint::black_box;
@@ -20,14 +20,15 @@ fn main() -> Result<()> {
 
     #[cfg(debug_assertions)]
     eprintln!(
-        "{}{}",
-        style("warning").yellow().bold(),
-        style(": you should run this example in release mode").bold()
+        "{label_style}warning{label_style:#}{style}: you should run this example in release mode{style:#}",
+        label_style = Style::new().bold().fg_color(Some(anstyle::AnsiColor::Yellow.into())),
+        style = Style::new().bold()
     );
 
     eprintln!(
-        "Running benchmark with {} iterations",
-        style(args.iterations).bold()
+        "{style}Running benchmark with {iterations} iterations{style:#}",
+        style = Style::new().bold(),
+        iterations = args.iterations
     );
 
     let bar = ProgressBar::new(args.iterations as u64)

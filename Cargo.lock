@@ -55,8 +55,8 @@ dependencies = [
 name = "benchmark"
 version = "1.0.0"
 dependencies = [
+ "anstyle",
  "clap",
- "console",
  "indicatif",
  "terminal-colorsaurus",
 ]
