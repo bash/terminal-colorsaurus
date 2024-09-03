@@ -184,6 +184,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub use error::Error;
 
 /// Options to be used with [`foreground_color`] and [`background_color`].
+/// You should almost always use the unchanged [`QueryOptions::default`] value.
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct QueryOptions {
@@ -223,6 +224,7 @@ pub fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
 /// Queries the terminal for it's foreground color. \
 /// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
 #[doc = include_str!("../doc/caveats.md")]
+#[doc(alias = "fg")]
 pub fn foreground_color(options: QueryOptions) -> Result<Color> {
     imp::foreground_color(options)
 }
@@ -230,6 +232,7 @@ pub fn foreground_color(options: QueryOptions) -> Result<Color> {
 /// Queries the terminal for it's background color. \
 /// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
 #[doc = include_str!("../doc/caveats.md")]
+#[doc(alias = "bg")]
 pub fn background_color(options: QueryOptions) -> Result<Color> {
     imp::background_color(options)
 }
