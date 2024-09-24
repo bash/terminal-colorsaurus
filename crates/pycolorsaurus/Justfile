@@ -1,0 +1,3 @@
+run:
+    maturin develop --uv
+    uv run --no-sync python -i -c 'import colorsaurus'
