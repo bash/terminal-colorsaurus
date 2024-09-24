@@ -2,15 +2,32 @@ use pyo3::{
     create_exception,
     exceptions::{PyException, PyIndexError, PyValueError},
     prelude::*,
+    types::PyString,
+    PyTypeInfo,
 };
-use std::{time::Duration, u16};
+use std::time::Duration;
 use terminal_colorsaurus as imp;
 
+/// A Python module implemented in Rust.
+#[pymodule]
+fn colorsaurus(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(color_scheme, m)?)?;
+    m.add_function(wrap_pyfunction!(foreground_color, m)?)?;
+    m.add_function(wrap_pyfunction!(background_color, m)?)?;
+    m.add_function(wrap_pyfunction!(color_palette, m)?)?;
+    m.add("ColorsaurusError", py.get_type_bound::<ColorsaurusError>())?;
+    m.add("ColorScheme", py.get_type_bound::<ColorScheme>())?;
+    m.add("ColorPalette", py.get_type_bound::<ColorPalette>())?;
+    m.add("Color", py.get_type_bound::<Color>())?;
+    Ok(())
+}
+
+// TODO: more fine-grained exceptions.
 create_exception!(colorsaurus, ColorsaurusError, PyException);
 
 /// Detects if the terminal is dark or light.
 #[pyfunction]
-#[pyo3(signature = (timeout=None))]
+#[pyo3(signature = (*, timeout=None))]
 fn color_scheme(timeout: Option<Timeout>) -> PyResult<ColorScheme> {
     imp::color_scheme(query_options(timeout))
         .map(ColorScheme::from)
@@ -18,7 +35,7 @@ fn color_scheme(timeout: Option<Timeout>) -> PyResult<ColorScheme> {
 }
 
 #[pyfunction]
-#[pyo3(signature = (timeout=None))]
+#[pyo3(signature = (*, timeout=None))]
 fn color_palette(timeout: Option<Timeout>) -> PyResult<ColorPalette> {
     imp::color_palette(query_options(timeout))
         .map(ColorPalette)
@@ -26,9 +43,17 @@ fn color_palette(timeout: Option<Timeout>) -> PyResult<ColorPalette> {
 }
 
 #[pyfunction]
-#[pyo3(signature = (timeout=None))]
+#[pyo3(signature = (*, timeout=None))]
 fn foreground_color(timeout: Option<Timeout>) -> PyResult<Color> {
     imp::foreground_color(query_options(timeout))
+        .map(Color)
+        .map_err(to_py_error)
+}
+
+#[pyfunction]
+#[pyo3(signature = (*, timeout=None))]
+fn background_color(timeout: Option<Timeout>) -> PyResult<Color> {
+    imp::background_color(query_options(timeout))
         .map(Color)
         .map_err(to_py_error)
 }
@@ -58,12 +83,17 @@ impl<'py> FromPyObject<'py> for Timeout {
     }
 }
 
-#[pyclass(eq, eq_int, frozen, hash)]
+#[pyclass(
+    eq,
+    eq_int,
+    frozen,
+    hash,
+    module = "colorsaurus",
+    rename_all = "SCREAMING_SNAKE_CASE"
+)]
 #[derive(PartialEq, Eq, Hash)]
 enum ColorScheme {
-    #[pyo3(name = "DARK")]
     Dark,
-    #[pyo3(name = "LIGHT")]
     Light,
 }
 
@@ -78,7 +108,7 @@ impl From<imp::ColorScheme> for ColorScheme {
 
 /// The color palette i.e. foreground and background colors of the terminal.
 /// Retrieved by calling [`color_palette`].
-#[pyclass(eq, frozen)]
+#[pyclass(eq, frozen, module = "colorsaurus")]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ColorPalette(imp::ColorPalette);
 
@@ -93,19 +123,28 @@ impl ColorPalette {
     fn background(&self) -> Color {
         Color(self.0.background.clone())
     }
+
+    #[getter]
+    fn color_scheme(&self) -> ColorScheme {
+        self.0.color_scheme().into()
+    }
+
+    #[pyo3(name = "__repr__")]
+    fn repr(&self, python: Python<'_>) -> PyResult<String> {
+        let ty = type_name::<Self>(&python)?;
+        Ok(format!(
+            "<{ty} foreground={fg}, background={bg}>",
+            fg = self.foreground().repr(python)?,
+            bg = self.background().repr(python)?
+        ))
+    }
 }
 
 /// An RGB color with 16 bits per channel.
 /// You can use [`Color::scale_to_8bit`] to convert to an 8bit RGB color.
 #[derive(Debug, Clone, Eq, PartialEq)]
-#[pyclass(eq, frozen)]
+#[pyclass(eq, frozen, module = "colorsaurus")]
 pub struct Color(imp::Color);
-
-impl From<imp::Color> for Color {
-    fn from(value: imp::Color) -> Self {
-        Self(value)
-    }
-}
 
 #[pymethods]
 impl Color {
@@ -116,27 +155,31 @@ impl Color {
     }
 
     #[new]
-    fn new(red: u16, green: u16, blue: u16) -> Self {
+    fn new(red: u8, green: u8, blue: u8) -> Self {
         Self(imp::Color {
-            r: red,
-            g: green,
-            b: blue,
+            r: scale_to_u16(red),
+            g: scale_to_u16(green),
+            b: scale_to_u16(blue),
         })
     }
 
     #[getter]
-    fn red(&self) -> u16 {
-        self.0.r
+    fn red(&self) -> u8 {
+        self.0.scale_to_8bit().0
     }
 
     #[getter]
-    fn green(&self) -> u16 {
-        self.0.g
+    fn green(&self) -> u8 {
+        self.0.scale_to_8bit().1
     }
 
     #[getter]
-    fn blue(&self) -> u16 {
-        self.0.b
+    fn blue(&self) -> u8 {
+        self.0.scale_to_8bit().2
+    }
+
+    fn perceived_lightness(&self) -> u8 {
+        self.0.perceived_lightness()
     }
 
     #[pyo3(name = "__len__")]
@@ -144,12 +187,8 @@ impl Color {
         3
     }
 
-    fn scale_to_8bit(&self) -> (u8, u8, u8) {
-        self.0.scale_to_8bit()
-    }
-
     #[pyo3(name = "__getitem__")]
-    fn get_item(&self, n: usize) -> PyResult<u16> {
+    fn get_item(&self, n: usize) -> PyResult<u8> {
         match n {
             0 => Ok(self.red()),
             1 => Ok(self.green()),
@@ -159,21 +198,17 @@ impl Color {
     }
 
     #[pyo3(name = "__repr__")]
-    fn repr(&self) -> String {
+    fn repr(&self, python: Python<'_>) -> PyResult<String> {
         let (r, g, b) = self.0.scale_to_8bit();
-        format!("Color(#{r:02x}{g:02x}{b:02x})")
+        let ty = type_name::<Self>(&python)?;
+        Ok(format!("<{ty} #{r:02x}{g:02x}{b:02x}>"))
     }
 }
 
-/// A Python module implemented in Rust.
-#[pymodule]
-fn colorsaurus(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(color_scheme, m)?)?;
-    m.add_function(wrap_pyfunction!(foreground_color, m)?)?;
-    m.add_function(wrap_pyfunction!(color_palette, m)?)?;
-    m.add("ColorsaurusError", py.get_type_bound::<ColorsaurusError>())?;
-    m.add("ColorScheme", py.get_type_bound::<ColorScheme>())?;
-    m.add("ColorPalette", py.get_type_bound::<ColorPalette>())?;
-    m.add("Color", py.get_type_bound::<Color>())?;
-    Ok(())
+fn scale_to_u16(channel: u8) -> u16 {
+    (channel as u32 * (u16::MAX as u32) / (u8::MAX as u32)) as u16
+}
+
+fn type_name<'py, T: PyTypeInfo>(python: &Python<'py>) -> PyResult<Bound<'py, PyString>> {
+    python.get_type_bound::<T>().name()
 }
