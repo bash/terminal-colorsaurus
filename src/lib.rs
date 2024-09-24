@@ -1,7 +1,7 @@
 #![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
 
 //! Determines the background and foreground color of the terminal
-//! using the `OSC 10` and `OSC 11` terminal sequence. \
+//! using the `OSC 10` and `OSC 11` terminal sequence.
 //!
 //! This crate helps answer the question *"Is this terminal dark or light?"*.
 //!
