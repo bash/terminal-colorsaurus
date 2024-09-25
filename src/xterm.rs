@@ -121,7 +121,7 @@ fn read_color_response(r: &mut Reader<'_>) -> Result<Vec<u8>> {
 
     // If we get the response for DA1 back first, then we know that
     // the terminal does not recocgnize the color query.
-    if !r.buffer().starts_with(&[b']']) {
+    if !r.buffer().starts_with(b"]") {
         _ = consume_da1_response(r, false);
         return Err(Error::UnsupportedTerminal);
     }
