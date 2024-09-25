@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - '*'
+      - 'pycolorsaurus-*'
   pull_request:
   workflow_dispatch:
 
@@ -150,7 +150,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: "startsWith(github.ref, 'refs/tags/')"
+    if: "startsWith(github.ref, 'refs/tags/pycolorsaurus-')"
     needs: [linux, musllinux, windows, macos, sdist]
     environment: PyPi
     concurrency: PyPi
