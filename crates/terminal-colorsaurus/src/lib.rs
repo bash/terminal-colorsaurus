@@ -21,17 +21,17 @@
 //!
 //! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
-//! use terminal_colorsaurus::{color_scheme, QueryOptions, ColorScheme};
+//! use terminal_colorsaurus::{color_scheme, ColorScheme};
 //!
-//! let color_scheme = color_scheme(QueryOptions::default()).unwrap();
+//! let color_scheme = color_scheme().unwrap();
 //! dbg!(color_scheme == ColorScheme::Dark);
 //! ```
 //!
 //! ## Example 2: Get the Terminal's Foreground Color
 //! ```no_run
-//! use terminal_colorsaurus::{foreground_color, QueryOptions};
+//! use terminal_colorsaurus::foreground_color;
 //!
-//! let fg = foreground_color(QueryOptions::default()).unwrap();
+//! let fg = foreground_color().unwrap();
 //! println!("rgb({}, {}, {})", fg.r, fg.g, fg.b);
 //! ```
 //!
@@ -132,7 +132,7 @@ impl ColorPalette {
 pub type Result<T> = std::result::Result<T, Error>;
 pub use error::Error;
 
-/// Options to be used with [`foreground_color`] and [`background_color`].
+/// Options to be used with [`foreground_color_with_options`] and [`background_color_with_options`].
 /// You should almost always use the unchanged [`QueryOptions::default`] value.
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
@@ -157,33 +157,61 @@ impl Default for QueryOptions {
     }
 }
 
-/// Detects if the terminal is dark or light.
-#[doc = include_str!("../doc/caveats.md")]
-#[doc(alias = "theme")]
-pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
-    color_palette(options).map(|p| p.color_scheme())
+macro_rules! impl_query_fn {
+    ($(#[$($meta:meta)*])* $vis:vis fn $name:ident() -> $ret:ty; $vis_opt:vis fn $name_opt:ident($opt:ident : $opt_ty:ty) -> $ret_opt:ty $impl:block) => {
+        $(#[$($meta)*])*
+        #[doc = concat!("\n\nUse [`", stringify!($name_opt), "`] instead, if you want to provide custom query options.")]
+        $vis fn $name() -> $ret {
+            $name_opt(Default::default())
+        }
+
+        $(#[$($meta)*])* $vis_opt fn $name_opt($opt:$opt_ty) -> $ret_opt $impl
+    };
 }
 
-/// Queries the terminal for it's color scheme (foreground and background color).
-#[doc = include_str!("../doc/caveats.md")]
-pub fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
-    imp::color_palette(options)
+impl_query_fn! {
+    /// Detects if the terminal is dark or light.
+    #[doc = include_str!("../doc/caveats.md")]
+    #[doc(alias = "theme")]
+    pub fn color_scheme() -> Result<ColorScheme>;
+
+    pub fn color_scheme_with_options(options: QueryOptions) -> Result<ColorScheme> {
+        color_palette_with_options(options).map(|p| p.color_scheme())
+    }
 }
 
-/// Queries the terminal for it's foreground color. \
-/// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
-#[doc = include_str!("../doc/caveats.md")]
-#[doc(alias = "fg")]
-pub fn foreground_color(options: QueryOptions) -> Result<Color> {
-    imp::foreground_color(options)
+impl_query_fn! {
+    /// Queries the terminal for it's color scheme (foreground and background color).
+    #[doc = include_str!("../doc/caveats.md")]
+    pub fn color_palette() -> Result<ColorPalette>;
+
+    pub fn color_palette_with_options(options: QueryOptions) -> Result<ColorPalette> {
+        imp::color_palette(options)
+    }
 }
 
-/// Queries the terminal for it's background color. \
-/// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
-#[doc = include_str!("../doc/caveats.md")]
-#[doc(alias = "bg")]
-pub fn background_color(options: QueryOptions) -> Result<Color> {
-    imp::background_color(options)
+impl_query_fn! {
+    /// Queries the terminal for it's foreground color. \
+    /// If you also need the background color it is more efficient to use [`color_palette`] instead.
+    #[doc = include_str!("../doc/caveats.md")]
+    #[doc(alias = "fg")]
+    pub fn foreground_color() -> Result<Color>;
+
+    pub fn foreground_color_with_options(options: QueryOptions) -> Result<Color> {
+        imp::foreground_color(options)
+    }
+}
+
+impl_query_fn! {
+    /// Queries the terminal for it's background color. \
+    /// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
+    #[doc = include_str!("../doc/caveats.md")]
+    #[doc(alias = "fg")]
+    pub fn background_color() -> Result<Color>;
+
+    pub fn background_color_with_options(options: QueryOptions) -> Result<Color> {
+        imp::background_color(options)
+    }
 }
 
 #[cfg(test)]

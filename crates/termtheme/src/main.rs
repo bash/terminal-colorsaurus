@@ -5,7 +5,7 @@ use std::{
     io::{self, stdout, IsTerminal},
     process::exit,
 };
-use terminal_colorsaurus::{color_scheme, ColorScheme, QueryOptions};
+use terminal_colorsaurus::{color_scheme, ColorScheme};
 
 fn main() {
     let args = Args::parse();
@@ -16,7 +16,7 @@ fn main() {
         );
         exit(1);
     }
-    match color_scheme(QueryOptions::default()) {
+    match color_scheme() {
         Ok(s) => display_theme(s, !args.no_newline),
         Err(e) => {
             display_error(e);
