@@ -108,7 +108,7 @@ impl io::Write for Terminal {
 }
 
 impl Terminal {
-    /// Locks access to this terminal, returing a guard that is readable and writable.
+    /// Locks access to this terminal, returning a guard that is readable and writable.
     ///
     /// Until the returned [`TerminalLock`] is dropped, all standard I/O streams
     /// that refer to the same terminal will be locked.
