@@ -12,3 +12,6 @@ test-package name *args:
 # Updates the lockfile using the MSRV-aware resolver
 update-cargo-lock:
     CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +nightly -Zmsrv-policy generate-lockfile
+
+doc:
+    cargo +nightly docs-rs -p terminal-colorsaurus
