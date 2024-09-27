@@ -98,12 +98,11 @@ pub struct ColorPalette {
 ///
 /// The easiest way to retrieve the color scheme
 /// is by calling [`color_scheme`].
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[allow(clippy::exhaustive_enums)]
 #[doc(alias = "Theme")]
 pub enum ColorScheme {
     /// The terminal uses a dark background with light text.
-    #[default]
     Dark,
     /// The terminal uses a light background with dark text.
     Light,
