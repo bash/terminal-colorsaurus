@@ -77,12 +77,10 @@ jobs:
   test_package:
     name: Test Package
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package: [terminal-colorsaurus, termtheme]
     steps:
     - uses: actions/checkout@v4
-    - name: Package
-      run: cargo package -p ${{matrix.package}}
-    - name: Test Package
-      run: (cd target/package/${{matrix.package}}-*/ && cargo test)
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
+    - run: just test-package terminal-colorsaurus
+    - run: just test-package termtheme
