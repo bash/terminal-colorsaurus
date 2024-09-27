@@ -1,5 +1,6 @@
 use crate::fmt::CaretNotation;
 use core::fmt;
+use std::marker::PhantomData;
 use std::time::Duration;
 use std::{error, io};
 
@@ -16,13 +17,19 @@ pub enum Error {
     /// or the terminal has a lot of latency (e.g. when connected via SSH).
     Timeout(Duration),
     /// The terminal does not support querying for the foreground or background color.
-    UnsupportedTerminal,
+    UnsupportedTerminal(UnsupportedTerminalError),
 }
+
+// Note: the private field is here for forwards-compatibility
+// in case we want to introduce detailed reasons.
+#[derive(Debug)]
+pub struct UnsupportedTerminalError(PhantomData<()>);
 
 impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Error::Io(source) => Some(source),
+            Error::UnsupportedTerminal(source) => Some(source),
             _ => None,
         }
     }
@@ -42,10 +49,22 @@ impl fmt::Display for Error {
             Error::Timeout(timeout) => {
                 write!(f, "operation did not complete within {timeout:?}")
             }
-            Error::UnsupportedTerminal {} => {
-                write!(f, "the terminal does not support querying for its colors")
-            }
+            Error::UnsupportedTerminal(e) => e.fmt(f),
         }
+    }
+}
+
+impl Error {
+    pub(crate) fn unsupported() -> Self {
+        Error::UnsupportedTerminal(UnsupportedTerminalError(PhantomData))
+    }
+}
+
+impl error::Error for UnsupportedTerminalError {}
+
+impl fmt::Display for UnsupportedTerminalError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("the terminal does not support querying for its colors")
     }
 }
 

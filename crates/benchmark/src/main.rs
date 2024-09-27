@@ -42,7 +42,7 @@ fn main() -> Result<()> {
 
     let supported = match color_palette() {
         Ok(_) => true,
-        Err(Error::UnsupportedTerminal) => false,
+        Err(Error::UnsupportedTerminal(_)) => false,
         Err(e) => return Err(e),
     };
 
@@ -54,7 +54,7 @@ fn main() -> Result<()> {
 fn bench() -> Result<Duration> {
     let start = Instant::now();
     match black_box(color_palette()) {
-        Ok(_) | Err(Error::UnsupportedTerminal) => Ok(start.elapsed()),
+        Ok(_) | Err(Error::UnsupportedTerminal(_)) => Ok(start.elapsed()),
         Err(err) => Err(err),
     }
 }

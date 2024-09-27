@@ -93,7 +93,7 @@ fn query<T>(
     read_response: impl FnOnce(&mut Reader<'_>) -> Result<T>,
 ) -> Result<T> {
     if quirks.is_known_unsupported() {
-        return Err(Error::UnsupportedTerminal);
+        return Err(Error::unsupported());
     }
 
     let mut tty = terminal()?;
@@ -123,7 +123,7 @@ fn read_color_response(r: &mut Reader<'_>) -> Result<Vec<u8>> {
     // the terminal does not recocgnize the color query.
     if !r.buffer().starts_with(b"]") {
         _ = consume_da1_response(r, false);
-        return Err(Error::UnsupportedTerminal);
+        return Err(Error::unsupported());
     }
 
     // Some terminals always respond with BEL (see terminal survey).
