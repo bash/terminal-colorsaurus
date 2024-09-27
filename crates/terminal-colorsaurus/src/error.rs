@@ -20,7 +20,7 @@ pub enum Error {
     UnsupportedTerminal(UnsupportedTerminalError),
 }
 
-// Note: the private field is here for fowards-compatibility
+// Note: the private field is here for forwards-compatibility
 // in case we want to introduce detailed reasons.
 #[derive(Debug)]
 pub struct UnsupportedTerminalError(PhantomData<()>);
