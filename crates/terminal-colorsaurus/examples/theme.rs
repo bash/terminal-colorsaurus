@@ -1,18 +1,16 @@
 //! This example shows how to detect if the terminal uses
 //! a dark-on-light or a light-on-dark theme.
 
-use terminal_colorsaurus::{color_palette, ColorScheme, Error};
+#![allow(clippy::use_debug)]
+
+use terminal_colorsaurus::{color_palette, Error};
 
 fn main() -> Result<(), display::DisplayAsDebug<Error>> {
     let colors = color_palette()?;
-
-    let theme = match colors.color_scheme() {
-        ColorScheme::Dark => "dark",
-        ColorScheme::Light => "light",
-    };
+    let theme = colors.color_scheme();
 
     println!(
-        "{theme}, fg: {}, bg: {}",
+        "{theme:?}, fg: {}, bg: {}",
         colors.foreground.perceived_lightness(),
         colors.background.perceived_lightness()
     );
