@@ -97,7 +97,7 @@ pub(crate) struct Terminal {
 }
 
 impl Terminal {
-    pub(crate) fn lock_stdio(&self) -> StdioLocks {
+    pub(super) fn lock_stdio(&self) -> StdioLocks {
         StdioLocks {
             stdin_lock: self.same_as_stdin.then(|| stdin().lock()),
             stdout_lock: self.same_as_stdout.then(|| stdout().lock()),
