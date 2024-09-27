@@ -9,4 +9,4 @@ rust-version = "1.70.0" # Search for `FIXME(msrv)` when bumping.
 anstyle = "1.0.8"
 anstyle-query = "1.1.1"
 clap = { version = "4.4", features = ["derive"] }
-terminal-colorsaurus = { version = "0.4.4", path = "../../" }
+terminal-colorsaurus.workspace = true

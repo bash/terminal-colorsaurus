@@ -131,7 +131,8 @@ cfg_if! {
 }
 
 #[cfg(doctest)]
-#[doc = include_str!("../readme.md")]
+#[cfg_attr(terminal_colorsaurus_in_tree, doc = include_str!("../../../readme.md"))]
+#[cfg_attr(not(terminal_colorsaurus_in_tree), doc = include_str!("../readme.md"))]
 pub mod readme_doctests {}
 
 pub use color::*;
