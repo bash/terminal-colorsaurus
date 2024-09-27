@@ -1,3 +1,0 @@
-[build]
-rustflags = ["--cfg", "terminal_colorsaurus_in_tree"]
-rustdocflags = ["--cfg", "terminal_colorsaurus_in_tree"]

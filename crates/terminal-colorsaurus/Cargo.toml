@@ -1,7 +1,7 @@
 [package]
 name = "terminal-colorsaurus"
 description = "Determines the background and foreground color of the terminal"
-readme = "../../readme.md"
+readme = "readme.md"
 repository = "https://github.com/bash/terminal-colorsaurus"
 categories = ["command-line-interface"]
 keywords = ["terminal", "light", "dark", "color-scheme", "cli"]
