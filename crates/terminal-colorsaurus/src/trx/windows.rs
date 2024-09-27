@@ -1,5 +1,5 @@
 use self::console_mode::{get_console_mode, set_console_mode};
-use crate::{ConsoleHandles, StdioLocks};
+use crate::trx::{ConsoleHandles, StdioLocks};
 use core::fmt;
 use msys::msys_tty_on;
 use std::error;

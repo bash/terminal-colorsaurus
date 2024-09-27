@@ -1,4 +1,4 @@
-use crate::StdioLocks;
+use crate::trx::StdioLocks;
 use core::fmt;
 use std::error;
 use std::{io, marker::PhantomData};
