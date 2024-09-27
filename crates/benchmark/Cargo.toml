@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
-clap = { version = "4.5", features = ["derive"] }
+clap = { version = "4.4", features = ["derive"] }
 anstyle = "1.0.8"
 indicatif = "0.17.7"
 terminal-colorsaurus.workspace = true
