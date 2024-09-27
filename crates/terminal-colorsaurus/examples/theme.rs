@@ -1,6 +1,8 @@
 //! This example shows how to detect if the terminal uses
 //! a dark-on-light or a light-on-dark theme.
 
+#![allow(clippy::use_debug)]
+
 use terminal_colorsaurus::{color_palette, Error};
 
 fn main() -> Result<(), display::DisplayAsDebug<Error>> {
