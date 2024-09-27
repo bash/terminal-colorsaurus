@@ -70,6 +70,7 @@ pub trait ConsoleHandles {
     fn input_buffer_handle(&self) -> std::os::windows::io::BorrowedHandle<'_>;
 
     /// Returns a handle to the consoles's screen buffer `CONOUT$`.
+    #[allow(unused)]
     fn screen_buffer_handle(&self) -> std::os::windows::io::BorrowedHandle<'_>;
 }
 
