@@ -1,3 +1,38 @@
+The following terminals have known support or non-support for
+querying for the background/foreground colors and have been tested
+with `terminal-colorsaurus`:
+
+## Supported
+* Alacritty
+* Contour
+* foot
+* GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (elementary) Terminal, LXTerminal
+* Hyper
+* The builtin terminal of JetBrains IDEs (i.e. IntelliJ IDEA, …)
+* iTerm2
+* kitty
+* Konsole
+* macOS Terminal
+* Rio
+* st
+* Terminology
+* Termux
+* tmux (next-3.4)
+* urxvt (rxvt-unicode)
+* VSCode (xterm.js)
+* WezTerm
+* Windows Terminal (in an upcoming version)
+* xterm
+* [Zed](https://zed.dev)
+
+## Unsupported
+* linux
+* Jetbrains Fleet
+* iSH
+* GNU Screen
+
+## Details
+
 A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1` (= `CSI c`).
 
 | Terminal                   | `OSC 10` and `OSC 11` | `DA1` | Version Tested                     |

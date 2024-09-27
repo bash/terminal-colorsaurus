@@ -7,12 +7,17 @@
 //!
 //! ## Features
 //! * Background and foreground color detection.
-//! * Uses a timeout (for situations with high latency such as an SSH connection).
+//! * Uses a fast and reliable heuristic to detect if the terminal supports color querying.
 //! * *Correct* perceived lightness calculation.
-//! * Works even if all of stderr, stdout and stdin are redirected.
+//! * Works on Windows (*soon*).
 //! * Safely restores the terminal from raw mode even if the library errors or panicks.
 //! * Does not send any escape sequences if `TERM=dumb`.
-//! * Works on Windows (*soon*).
+//! * Works even if all of stderr, stdout and stdin are redirected.
+//! * Supports a timeout (for situations with high latency such as an SSH connection).
+//!
+//! ## Terminal Support
+//! `terminal-colorsaurus` works with most modern terminals and has been [tested extensively](`terminal_survey`).
+//! It's also really good at [detecting](`feature_detection`) when querying for the terminal's colors is not supported.
 //!
 //! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
@@ -22,7 +27,7 @@
 //! dbg!(color_scheme == ColorScheme::Dark);
 //! ```
 //!
-//! ## Example 2: Query for the Terminal's Foreground Color
+//! ## Example 2: Get the Terminal's Foreground Color
 //! ```no_run
 //! use terminal_colorsaurus::{foreground_color, QueryOptions};
 //!
@@ -30,69 +35,9 @@
 //! println!("rgb({}, {}, {})", fg.r, fg.g, fg.b);
 //! ```
 //!
-//! ## Terminals
-//! The following terminals have known support or non-support for
-//! querying for the background/foreground colors.
-//!
-//! Note that terminals that support the relevant terminal
-//! sequences automatically work with this library even if they
-//! are not explicitly listed below.
-//!
-//! <details>
-//! <summary><strong>Supported</strong></summary>
-//!
-//! * Alacritty
-//! * Contour
-//! * foot
-//! * GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (elementary) Terminal, LXTerminal
-//! * Hyper
-//! * The builtin terminal of JetBrains IDEs (i.e. IntelliJ IDEA, …)
-//! * iTerm2
-//! * kitty
-//! * Konsole
-//! * macOS Terminal
-//! * Rio
-//! * st
-//! * Terminology
-//! * Termux
-//! * tmux (next-3.4)
-//! * urxvt (rxvt-unicode)
-//! * VSCode (xterm.js)
-//! * WezTerm
-//! * Windows Terminal (in an upcoming version)
-//! * xterm
-//! * [Zed](https://zed.dev)
-//!
-//! </details>
-//!
-//! <details>
-//! <summary><strong>Unsupported</strong></summary>
-//!
-//! * linux
-//! * Jetbrains Fleet
-//! * iSH
-//! * GNU Screen
-//!
-//! </details>
-//!
 //! ## Optional Dependencies
 //! * [`rgb`] — Enable this feature to convert between [`Color`] and [`rgb::RGB16`] / [`rgb::RGB8`].
 //! * [`anstyle`] — Enable this feature to convert [`Color`] to [`anstyle::RgbColor`].
-//!
-//! ## Comparison with Other Crates
-//! ### [termbg]
-//! * Is hardcoded to use stdin/stderr for communicating with the terminal. \
-//!   This means that it does not work if some or all of these streams are redirected.
-//! * Pulls in an async runtime for the timeout.
-//! * Does not calculate the perceived lightness, but another metric.
-//!
-//! ### [terminal-light]
-//! * Is hardcoded to use stdin/stdout for communicating with the terminal.
-//! * Does not report the colors, only the color's luma.
-//! * Does not calculate the perceived lightness, but another metric.
-//!
-//! [termbg]: https://docs.rs/termbg
-//! [terminal-light]: https://docs.rs/terminal-light
 
 use cfg_if::cfg_if;
 use std::time::Duration;
@@ -127,6 +72,10 @@ cfg_if! {
         #[doc(cfg(docsrs))]
         #[doc = include_str!("../doc/feature-detection.md")]
         pub mod feature_detection {}
+
+        #[doc(cfg(docsrs))]
+        #[doc = include_str!("../doc/comparison.md")]
+        pub mod comparison {}
     }
 }
 
