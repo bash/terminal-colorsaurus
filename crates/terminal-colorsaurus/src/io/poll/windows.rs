@@ -1,8 +1,8 @@
 use super::super::read_timed_out;
+use crate::trx::Transceive;
 use std::io;
 use std::os::windows::io::AsRawHandle as _;
 use std::time::Duration;
-use terminal_trx::Transceive;
 use windows_sys::Win32::Foundation::{WAIT_ABANDONED, WAIT_OBJECT_0, WAIT_TIMEOUT};
 use windows_sys::Win32::System::Threading::WaitForSingleObject;
 

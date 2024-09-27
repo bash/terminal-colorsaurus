@@ -1,7 +1,7 @@
 use super::poll_read;
+use crate::trx::Transceive;
 use std::io;
 use std::time::{Duration, Instant};
-use terminal_trx::Transceive;
 
 #[derive(Debug)]
 pub(crate) struct TermReader<R> {

@@ -53,6 +53,7 @@ cfg_if! {
         mod xparsecolor;
         mod xterm;
         use xterm as imp;
+        mod trx;
     } else {
         mod unsupported;
         use unsupported as imp;

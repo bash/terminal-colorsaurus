@@ -1,10 +1,10 @@
 use crate::io::{read_until2, TermReader};
 use crate::quirks::{terminal_quirks_from_env, TerminalQuirks};
+use crate::trx::{terminal, RawModeGuard};
 use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::time::Duration;
-use terminal_trx::{terminal, RawModeGuard};
 
 const QUERY_FG: &[u8] = b"\x1b]10;?";
 const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";

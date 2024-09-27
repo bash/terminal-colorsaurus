@@ -1,9 +1,9 @@
 use super::super::read_timed_out;
+use crate::trx::Transceive;
 use mio::unix::SourceFd;
 use mio::{Events, Interest, Poll, Token};
 use std::io;
 use std::time::Duration;
-use terminal_trx::Transceive;
 
 pub(crate) fn poll_read(terminal: &dyn Transceive, timeout: Duration) -> io::Result<()> {
     if timeout.is_zero() {
