@@ -3,26 +3,28 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | Terminal                   | `OSC 10` and `OSC 11` | `DA1` | Version Tested                     |
 |----------------------------|-----------------------|-------|------------------------------------|
 | [Alacritty]                | yes                   | yes   | Version 0.13.1 (1) (macOS)         |
-| (GNOME) [Console] [^1]     | yes                   | yes   | 3.50.1                             |
 | [Contour]                  | yes                   | yes   | 0.4.1.6292 (macOS)                 |
 | [foot]                     | yes                   | yes   | 1.16.1                             |
 | [Hyper]                    | yes                   | yes   | 3.4.1 (macOS)                      |
-| IntelliJ IDEA ([JediTerm]) | yes                   | yes   | PyCharm 2023.3.2 (macOS)           |
 | [iTerm2]                   | yes                   | yes   | Build 3.5.0beta18                  |
 | [kitty]                    | yes                   | yes   | 0.31.0                             |
+| (GNOME) [Console] [^1]     | yes                   | yes   | 3.50.1                             |
 | [Konsole]                  | yes                   | yes   | 23.08.4                            |
 | [mintty]                   | yes                   | yes   | 3.6.1                              |
-| macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
+| [mlterm]                   | yes                   | yes   | [`f3474e1`][mlterm-commit]         |
 | [Rio]                      | yes                   | yes   | 0.0.36 (wayland)                   |
 | [rxvt-unicode]             | yes [^2]              | yes   | 9.31                               |
 | [st]                       | yes [^3]              | yes   | 0.9                                |
 | [Terminology]              | yes [^4]              | yes   | 1.13.0                             |
 | [Termux]                   | yes                   | yes   | 0.118.0                            |
-| VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
-| Windows Terminal (conhost) | yes                   | yes   | [`b3f4162`][conhost-commit]        |
+| [xst] (fork of st)         | yes                   | yes   | 0.9.0                              |
 | [xterm]                    | yes                   | yes   | 385                                |
-| [zed]                      | yes                   | yes   | [`9245015`][zed-commit]|
+| [zed]                      | yes                   | yes   | [`9245015`][zed-commit]            |
+| IntelliJ IDEA ([JediTerm]) | yes                   | yes   | PyCharm 2023.3.2 (macOS)           |
+| macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
+| VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
+| Windows Terminal (conhost) | yes                   | yes   | [`b3f4162`][conhost-commit]        |
 | anyterm                    | no                    | *no*  | 1.2.3                              |
 | ConEmu / Cmder             | no                    | yes   | 230724 stable                      |
 | cool-retro-term            | no                    | yes   | 1.2.0                              |
@@ -36,6 +38,8 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | shellinabox                | no                    | *no*  | 2.20                               |
 | QMLKonsole                 | no                    | yes   | 23.08.5                            |
 | [QTerminal]                | no                    | yes   | 1.3.0                              |
+| [mosh]                     | no                    | yes   | 1.4.0                              |
+| [pangoterm]                | no                    | yes   | [revision 634][pangoterm-rev]      |
 
 <br>
 
@@ -67,6 +71,11 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [Konsole]: https://konsole.kde.org/
 [Lapce]: https://lapce.dev/
 [mintty]: https://mintty.github.io/
+[mlterm-commit]: https://github.com/arakiken/mlterm/commit/f3474e1eb6a97239b38869f0fba78ce3e6a8ad87
+[mlterm]: https://mlterm.sourceforge.net/
+[mosh]: https://mosh.org
+[pangoterm-rev]: https://bazaar.launchpad.net/~leonerd/pangoterm/trunk/revision/634
+[pangoterm]: http://www.leonerd.org.uk/code/pangoterm/
 [PuTTY]: https://www.chiark.greenend.org.uk/~sgtatham/putty/
 [QTerminal]: https://github.com/lxqt/qterminal
 [Rio Terminal]: https://raphamorim.io/rio/
@@ -77,6 +86,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [Terminology]: http://www.enlightenment.org/
 [Termux]: https://termux.dev/en/
 [WezTerm]: https://wezfurlong.org/wezterm/
+[xst]: https://github.com/gnotclub/xst
 [xterm.js]: https://xtermjs.org/
 [xterm]: https://invisible-island.net/xterm/
 [zed-commit]: https://github.com/zed-industries/zed/commit/9245015d1a005611801d7393e4d7e3cdf5fbca0c
