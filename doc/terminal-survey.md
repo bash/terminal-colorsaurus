@@ -58,6 +58,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [st]                       | yes [^3]              | yes   | 0.9                                |
 | [Terminology]              | yes [^4]              | yes   | 1.13.0                             |
 | [Termux]                   | yes                   | yes   | 0.118.0                            |
+| [Therm]                    | yes                   | yes   | 0.6.4                              |
 | Warp                       | yes                   | yes   | v0.2024.12.18.08.02.stable\_04     |
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
 | [xst] (fork of st)         | yes                   | yes   | 0.9.0                              |
@@ -129,6 +130,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [st]: https://st.suckless.org/
 [Terminology]: http://www.enlightenment.org/
 [Termux]: https://termux.dev/en/
+[Therm]: https://github.com/trufae/Therm
 [WezTerm]: https://wezfurlong.org/wezterm/
 [xst]: https://github.com/gnotclub/xst
 [xterm.js]: https://xtermjs.org/
