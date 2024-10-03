@@ -7,7 +7,7 @@ Comparison with other crates in the ecosystem.
 * Does not calculate the perceived lightness, but another metric.
 
 ### [terminal-light]
-* Is hardcoded to use stdin/stdout for communicating with the terminal.
+* Is hardcoded to use stdout for communicating with the terminal.
 * Does not report the colors, only the color's luma.
 * Does not calculate the perceived lightness, but another metric.
 
