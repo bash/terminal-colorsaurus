@@ -13,11 +13,12 @@ Windows is unfortunately [not supported](./doc/windows.md).
 
 ## Example
 ```rust,no_run
-use terminal_colorsaurus::{color_scheme, QueryOptions, ColorScheme};
+use terminal_colorsaurus::{color_scheme, ColorScheme};
 
-match color_scheme(QueryOptions::default()).unwrap() {
-    ColorScheme::Dark => { /* ... */ },
-    ColorScheme::Light => { /* ... */ },
+match color_scheme() {
+    Ok(ColorScheme::Dark) => { /* ... */ },
+    Ok(ColorScheme::Light) => { /* ... */ },
+    Err(_e) => { /* something went wrong, fallback to something else */ },
 }
 ```
 

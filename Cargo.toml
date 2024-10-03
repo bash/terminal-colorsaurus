@@ -1,53 +1,6 @@
-[package]
-name = "terminal-colorsaurus"
-description = "Determines the background and foreground color of the terminal"
-readme = "readme.md"
-repository = "https://github.com/bash/terminal-colorsaurus"
-categories = ["command-line-interface"]
-keywords = ["terminal", "light", "dark", "color-scheme", "cli"]
-license = "MIT OR Apache-2.0"
-version = "0.4.4"
-edition = "2021"
-rust-version = "1.70.0" # Search for `FIXME(msrv)` when bumping.
-exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*", "doc/issues.md", "deny.toml"]
-
-[dependencies]
-rgb = { version = "0.8.37", optional = true }
-anstyle = { version = "1.0.7", optional = true }
-cfg-if = "1.0.0"
-
-[target.'cfg(unix)'.dependencies]
-memchr = "2.7.1"
-mio = { version = "1", features = ["os-ext"], default-features = false }
-terminal-trx = "0.2.3"
-
-[target.'cfg(target_os = "macos")'.dependencies]
-libc = "0.2.151"
-
-[target.'cfg(windows)'.dependencies]
-memchr = "2.7.1"
-terminal-trx = "0.2.3"
-windows-sys = { version = "0.59.0", features = ["Win32_System_Threading"] } # Keep this in sync with terminal-trx's version to avoid duplicate deps.
-
-[lints.rust]
-missing_debug_implementations = "warn"
-missing_docs = "warn"
-unexpected_cfgs = { level = "warn", check-cfg = ["cfg(terminal_colorsaurus_test_unsupported)"] }
-
-[lints.clippy]
-dbg_macro = "warn"
-exhaustive_enums = "warn"
-exhaustive_structs = "warn"
-undocumented_unsafe_blocks = "deny"
-unimplemented = "warn"
-uninlined_format_args = "warn"
-unnested_or_patterns = "warn"
-unwrap_used = "deny"
-use_debug = "warn"
-
-[package.metadata.docs.rs]
-all-features = true
-
 [workspace]
-members = ["crates/*","examples/*"]
+members = ["crates/*"]
 resolver = "2"
+
+[workspace.dependencies]
+terminal-colorsaurus = { path = "crates/terminal-colorsaurus" }
