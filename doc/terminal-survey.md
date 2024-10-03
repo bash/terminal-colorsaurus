@@ -73,7 +73,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | cool-retro-term            | no                    | yes   | 1.2.0                              |
 | Eterm                      | no                    | *no*  | 0.9.6                              |
 | [iSH] (hterm)              | no                    | yes   | 1.3.2 (Build 494) (iOS)            |
-| Jetbrains Fleet            | no                    | yes   | build 1.29.213 (macOS)             |
+| Jetbrains Fleet            | no                    | yes   | build 1.40.87 (macOS)              |
 | [Lapce]                    | no                    | yes   | 0.4.2 (macOS)                      |
 | Linux console              | no                    | yes   | -                                  |
 | mrxvt                      | no                    | yes   | 0.5.3                              |
