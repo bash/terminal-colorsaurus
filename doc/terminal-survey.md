@@ -76,6 +76,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | Jetbrains Fleet            | no                    | yes   | build 1.40.87 (macOS)              |
 | [Lapce]                    | no                    | yes   | 0.4.2 (macOS)                      |
 | Linux console              | no                    | yes   | -                                  |
+| MobaXterm                  | no                    | yes   | v24.2                              |
 | mrxvt                      | no                    | yes   | 0.5.3                              |
 | [PuTTY]                    | no                    | yes   | 0.80                               |
 | shellinabox                | no                    | *no*  | 2.20                               |
