@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = "0.23.0"
-terminal-colorsaurus = { path = "../.." }
+terminal-colorsaurus.workspace = true

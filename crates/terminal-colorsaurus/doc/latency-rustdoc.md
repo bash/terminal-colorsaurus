@@ -1,0 +1,1 @@
+../../../doc/latency-rustdoc.md

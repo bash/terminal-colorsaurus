@@ -49,7 +49,7 @@ jobs:
     - run: rustup override set nightly
     - uses: dtolnay/install@cargo-docs-rs
     - name: Build Docs
-      run: cargo docs-rs
+      run: just doc
       env:
         RUSTDOCFLAGS: -Dwarnings
   lint:
