@@ -32,15 +32,16 @@ jobs:
         rust-version: ['${{needs.pre-build.outputs.rust-version}}', stable, nightly]
     steps:
     - uses: actions/checkout@v4
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
     - name: Use Rust ${{matrix.rust-version}}
       if: matrix.rust-version != 'stable'
       run: rustup override set '${{matrix.rust-version}}'
     - name: Build
       run: cargo build --workspace --all-features
     - name: Check fallback implementation
-      run: cargo check --workspace
-      env:
-        RUSTFLAGS: --cfg terminal_colorsaurus_test_unsupported -Dwarnings
+      run: just check-unsupported
   docs:
     name: Docs
     runs-on: ubuntu-latest

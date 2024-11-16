@@ -9,5 +9,8 @@ test-package name *args:
     cargo package -p "{{name}}" {{args}}
     (cd $CARGO_TARGET_DIR/package/{{name}}-*/ && cargo test)
 
+check-unsupported:
+    RUSTFLAGS='--cfg terminal_colorsaurus_test_unsupported -Dwarnings' cargo check --workspace
+
 doc:
     cargo +nightly docs-rs -p terminal-colorsaurus
