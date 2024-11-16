@@ -2,6 +2,7 @@
 name = "benchmark"
 edition = "2021"
 version = "1.0.0"
+publish = false
 
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }

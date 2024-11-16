@@ -1,5 +1,6 @@
 [graph]
 all-features = true
+exclude = ["benchmark"]
 
 [output]
 feature-depth = 1
@@ -8,6 +9,8 @@ feature-depth = 1
 allow = [
     "MIT",
     "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "Unicode-DFS-2016",
 ]
 confidence-threshold = 1.0
 
@@ -16,6 +19,7 @@ multiple-versions = "deny"
 wildcards = "deny"
 skip = [
     { crate = "windows-sys", reason = "an old version is used by mio, see https://github.com/tokio-rs/mio/pull/1820 for updating it" },
+    { crate = "heck@0.4", reason = "depended on by clap. updated in a newer clap version, but we can't update because that would require an MSRV bump)" }
 ]
 
 [sources]
