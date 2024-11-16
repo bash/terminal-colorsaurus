@@ -18,10 +18,10 @@ fn colorsaurus(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(foreground_color, m)?)?;
     m.add_function(wrap_pyfunction!(background_color, m)?)?;
     m.add_function(wrap_pyfunction!(color_palette, m)?)?;
-    m.add("ColorsaurusError", py.get_type_bound::<ColorsaurusError>())?;
-    m.add("ColorScheme", py.get_type_bound::<ColorScheme>())?;
-    m.add("ColorPalette", py.get_type_bound::<ColorPalette>())?;
-    m.add("Color", py.get_type_bound::<Color>())?;
+    m.add("ColorsaurusError", py.get_type::<ColorsaurusError>())?;
+    m.add("ColorScheme", py.get_type::<ColorScheme>())?;
+    m.add("ColorPalette", py.get_type::<ColorPalette>())?;
+    m.add("Color", py.get_type::<Color>())?;
     Ok(())
 }
 
@@ -221,5 +221,5 @@ fn scale_to_u16(channel: u8) -> u16 {
 }
 
 fn type_name<'py, T: PyTypeInfo>(python: &Python<'py>) -> PyResult<Bound<'py, PyString>> {
-    python.get_type_bound::<T>().name()
+    python.get_type::<T>().name()
 }
