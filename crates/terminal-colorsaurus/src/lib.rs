@@ -19,6 +19,13 @@
 //! `terminal-colorsaurus` works with most modern terminals and has been [tested extensively](`terminal_survey`).
 //! It's also really good at [detecting](`feature_detection`) when querying for the terminal's colors is not supported.
 //!
+//! ## Caveats
+//! Extra care needs to be taken on Unix if your program might share
+//! the terminal with another program. This might be the case
+//! if you expect your output to be used with a pager e.g. `your_program` | `less`.
+//! In that case, a race condition exists because the pager will also set the terminal to raw mode.
+//! The `pager` example shows a heuristic to deal with this issue.
+//!
 //! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
 //! use terminal_colorsaurus::{color_scheme, ColorScheme};
@@ -171,7 +178,6 @@ macro_rules! impl_query_fn {
 
 impl_query_fn! {
     /// Detects if the terminal is dark or light.
-    #[doc = include_str!("../doc/caveats.md")]
     #[doc(alias = "theme")]
     pub fn color_scheme() -> Result<ColorScheme>;
 
@@ -182,7 +188,6 @@ impl_query_fn! {
 
 impl_query_fn! {
     /// Queries the terminal for it's color scheme (foreground and background color).
-    #[doc = include_str!("../doc/caveats.md")]
     pub fn color_palette() -> Result<ColorPalette>;
 
     pub fn color_palette_with_options(options: QueryOptions) -> Result<ColorPalette> {
@@ -193,7 +198,6 @@ impl_query_fn! {
 impl_query_fn! {
     /// Queries the terminal for it's foreground color. \
     /// If you also need the background color it is more efficient to use [`color_palette`] instead.
-    #[doc = include_str!("../doc/caveats.md")]
     #[doc(alias = "fg")]
     pub fn foreground_color() -> Result<Color>;
 
@@ -205,7 +209,6 @@ impl_query_fn! {
 impl_query_fn! {
     /// Queries the terminal for it's background color. \
     /// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
-    #[doc = include_str!("../doc/caveats.md")]
     #[doc(alias = "fg")]
     pub fn background_color() -> Result<Color>;
 
