@@ -46,6 +46,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
     - run: rustup override set nightly
     - uses: dtolnay/install@cargo-docs-rs
     - name: Build Docs
