@@ -3,13 +3,12 @@
 [![Docs](https://img.shields.io/docsrs/terminal-colorsaurus/latest)](https://docs.rs/terminal-colorsaurus)
 [![Crate Version](https://img.shields.io/crates/v/terminal-colorsaurus)](https://crates.io/crates/terminal-colorsaurus)
 
-
 Determines the background and foreground color of the terminal
 using the `OSC 10` and `OSC 11` escape codes.
 
 This library helps answer the question *«Is this terminal dark or light?»*.
 
-Windows is unfortunately [not supported](./doc/windows.md).
+Works in all major terminals including Windows Terminal (starting with v1.22).
 
 ## Example
 ```rust,no_run

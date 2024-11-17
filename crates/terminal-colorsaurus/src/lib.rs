@@ -9,7 +9,7 @@
 //! * Background and foreground color detection.
 //! * Uses a fast and reliable heuristic to detect if the terminal supports color querying.
 //! * *Correct* perceived lightness calculation.
-//! * Works on Windows (*soon*).
+//! * Works on Windows (starting with Windows Terminal v1.22).
 //! * Safely restores the terminal from raw mode even if the library errors or panicks.
 //! * Does not send any escape sequences if `TERM=dumb`.
 //! * Works even if all of stderr, stdout and stdin are redirected.
