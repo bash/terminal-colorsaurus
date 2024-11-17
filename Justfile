@@ -14,3 +14,6 @@ check-unsupported:
 
 doc:
     cargo +nightly docs-rs -p terminal-colorsaurus
+
+update-locked-deps:
+    CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +nightly -Zmsrv-policy generate-lockfile
