@@ -11,6 +11,7 @@ atm so most issues were reported there:
 * <https://github.com/dandavison/delta/issues/1664>
 * <https://github.com/dandavison/delta/issues/1707>
 * <https://github.com/dandavison/delta/issues/1735>
+* <https://github.com/dandavison/delta/issues/1897> (not sure if colorsaurus is the culprit)
 
 ## Indirect
 Issues reported in other projects.
