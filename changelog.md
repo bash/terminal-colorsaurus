@@ -1,4 +1,10 @@
 # Changelog
+## 0.4.5
+* ✨ Added support for Windows (starting with Windows Terminal v1.22, in preview at the time of writing).
+### Docs
+* Included more terminals in terminal survey.
+* The top level crate docs have been reduced to improve readability.
+
 ## 0.4.4
 * Bump `mio` dependency to 1.0.
 * ✨ Add helpful aliases to the docs.

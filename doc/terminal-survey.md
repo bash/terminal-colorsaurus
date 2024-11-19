@@ -21,7 +21,7 @@ with `terminal-colorsaurus`:
 * urxvt (rxvt-unicode)
 * VSCode (xterm.js)
 * WezTerm
-* Windows Terminal (in an upcoming version)
+* Windows Terminal (>= v1.22)
 * xterm
 * [Zed](https://zed.dev)
 
