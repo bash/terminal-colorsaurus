@@ -54,7 +54,6 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
         //        => since there's no way to know that we need to expect multiple responses
         //           some of them are not consumed by us and end up on the user's screen :/
         Ok(term) if term == "screen" || term.starts_with("screen.") => Unsupported,
-        Ok(term) if term == "rxvt-unicode" || term.starts_with("rxvt-unicode-") => Urxvt,
         Ok(_) => None,
     }
 }
@@ -63,7 +62,6 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
 pub(crate) enum TerminalQuirks {
     None,
     Unsupported,
-    Urxvt,
 }
 
 impl TerminalQuirks {
@@ -72,17 +70,19 @@ impl TerminalQuirks {
     }
 
     pub(crate) fn string_terminator(self) -> &'static [u8] {
-        const ST: &[u8] = b"\x1b\\";
+        // The currently released version of rxvt-unicode (urxvt) has a bug where it terminates the response with `ESC` instead of `ST` (`ESC \`).
+        // This causes us to run into the timeout because we get stuck waiting for a `\` that never arrives.
+        // Fixed by revision [1.600](http://cvs.schmorp.de/rxvt-unicode/src/command.C?revision=1.600&view=markup).
+        // The bug can be worked around by sending a query with `BEL` which will result in a `BEL`-terminated response.
+        //
+        // Originally, we used `BEL` only for urxvt. However, after a discussion in delta [1],
+        // I noticed that there are quite a few people who use urxvt with a different `TERM`
+        // env var (e.g. `urxvt`, `xterm`, or even `screen`) [2].
+        //
+        // [1]: https://github.com/dandavison/delta/issues/1897
+        // [2]: https://github.com/search?q=URxvt*termName&type=code
         const BEL: u8 = 0x07;
-
-        if let TerminalQuirks::Urxvt = self {
-            // The currently released version has a bug where it terminates the response with `ESC` instead of `ST`.
-            // Fixed by revision [1.600](http://cvs.schmorp.de/rxvt-unicode/src/command.C?revision=1.600&view=markup).
-            // The bug can be worked around by sending a query with `BEL` which will result in a `BEL`-terminated response.
-            &[BEL]
-        } else {
-            ST
-        }
+        &[BEL]
     }
 
     pub(crate) fn write_all(self, w: &mut dyn Write, bytes: &[u8]) -> io::Result<()> {
