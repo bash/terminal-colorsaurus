@@ -13,6 +13,7 @@ with `terminal-colorsaurus`:
 * kitty
 * Konsole
 * macOS Terminal
+* neovim's built-in [terminal][nvim-terminal]
 * Rio
 * st
 * Terminology
@@ -48,6 +49,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [Konsole]                  | yes                   | yes   | 23.08.4                            |
 | [mintty]                   | yes                   | yes   | 3.6.1                              |
 | macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
+| [neovim][nvim-terminal]    | yes                   | yes   | v0.10.2                            |
 | [Rio]                      | yes                   | yes   | 0.0.36 (wayland)                   |
 | [rxvt-unicode]             | yes [^2]              | yes   | 9.31                               |
 | [st]                       | yes [^3]              | yes   | 0.9                                |
@@ -102,6 +104,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [Konsole]: https://konsole.kde.org/
 [Lapce]: https://lapce.dev/
 [mintty]: https://mintty.github.io/
+[nvim-terminal]: http://neovim.io/doc/user/terminal.html
 [PuTTY]: https://www.chiark.greenend.org.uk/~sgtatham/putty/
 [QTerminal]: https://github.com/lxqt/qterminal
 [Rio Terminal]: https://raphamorim.io/rio/
