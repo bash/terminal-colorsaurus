@@ -1,4 +1,9 @@
 # Changelog
+## 0.4.6
+* 🐛 Switch the string terminator back to `BEL` to work around
+     and issue in urxvt. Previously this was done only when urxvt
+     was detected. Unfortunately this detection was not reliable.
+
 ## 0.4.5
 * ✨ Added support for Windows (starting with Windows Terminal v1.22, in preview at the time of writing).
 ### Docs
