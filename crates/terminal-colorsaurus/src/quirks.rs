@@ -54,6 +54,8 @@ fn terminal_quirk_from_env_eager() -> TerminalQuirks {
         //        => since there's no way to know that we need to expect multiple responses
         //           some of them are not consumed by us and end up on the user's screen :/
         Ok(term) if term == "screen" || term.starts_with("screen.") => Unsupported,
+        // Eterm doesn't even support `DA1`, so we list it here to avoid running into the timeout.
+        Ok(term) if term == "Eterm" => Unsupported,
         Ok(_) => None,
     }
 }
