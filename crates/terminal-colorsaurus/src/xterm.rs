@@ -1,10 +1,10 @@
 use crate::io::{read_until2, TermReader};
 use crate::quirks::{terminal_quirks_from_env, TerminalQuirks};
+use crate::trx::{terminal, RawModeGuard};
 use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::time::Duration;
-use terminal_trx::{terminal, RawModeGuard};
 
 const QUERY_FG: &[u8] = b"\x1b]10;?";
 const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
@@ -93,7 +93,7 @@ fn query<T>(
     read_response: impl FnOnce(&mut Reader<'_>) -> Result<T>,
 ) -> Result<T> {
     if quirks.is_known_unsupported() {
-        return Err(Error::UnsupportedTerminal);
+        return Err(Error::unsupported());
     }
 
     let mut tty = terminal()?;
@@ -123,7 +123,7 @@ fn read_color_response(r: &mut Reader<'_>) -> Result<Vec<u8>> {
     // the terminal does not recocgnize the color query.
     if !r.buffer().starts_with(b"]") {
         _ = consume_da1_response(r, false);
-        return Err(Error::UnsupportedTerminal);
+        return Err(Error::unsupported());
     }
 
     // Some terminals always respond with BEL (see terminal survey).

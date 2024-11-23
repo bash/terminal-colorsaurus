@@ -364,6 +364,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "static_assertions"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
+
+[[package]]
 name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -396,18 +402,7 @@ dependencies = [
  "memchr",
  "mio",
  "rgb",
- "terminal-trx",
- "windows-sys 0.59.0",
-]
-
-[[package]]
-name = "terminal-trx"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57a5b836e7f4f81afe61b5cd399eee774f25edcfd47009a76e29f53bb6487833"
-dependencies = [
- "cfg-if",
- "libc",
+ "static_assertions",
  "windows-sys 0.59.0",
 ]
 

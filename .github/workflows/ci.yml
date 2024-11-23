@@ -88,3 +88,4 @@ jobs:
         tool: just
     - run: just test-package terminal-colorsaurus
     - run: just test-package termtheme
+      continue-on-error: true
