@@ -2,6 +2,7 @@
 ## 0.4.7
 * 🐛 Re-add missing license texts to the published crate
      (this was a regression introduced in `0.4.5`).
+* ✨ Recognize `Eterm` as unsupported.
 
 ## 0.4.6
 * 🐛 Switch the string terminator back to `BEL` to work around
