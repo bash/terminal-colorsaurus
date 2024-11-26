@@ -1,4 +1,8 @@
 # Changelog
+## 0.4.7
+* 🐛 Re-add missing license texts to the published crate
+     (this was a regression introduced in `0.4.5`).
+
 ## 0.4.6
 * 🐛 Switch the string terminator back to `BEL` to work around
      and issue in urxvt. Previously this was done only when urxvt
