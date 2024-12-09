@@ -1,7 +1,8 @@
+use crate::error::NotATerminalError;
 use crate::io::{read_until2, TermReader};
 use crate::quirks::{terminal_quirks_from_env, TerminalQuirks};
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
-use std::io::{self, BufRead, BufReader, Write as _};
+use std::io::{self, BufRead, BufReader, IsTerminal, Write as _};
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
 
@@ -101,6 +102,8 @@ fn query<T>(
     write_query: impl FnOnce(&mut dyn io::Write) -> io::Result<()>,
     read_response: impl FnOnce(&mut Reader<'_>) -> Result<T>,
 ) -> Result<T> {
+    ensure_is_terminal(options.require_terminal_on_stdout)?;
+
     if quirks.is_known_unsupported() {
         return Err(Error::UnsupportedTerminal);
     }
@@ -122,6 +125,14 @@ fn query<T>(
     _ = consume_da1_response(&mut reader, true);
 
     Ok(response)
+}
+
+fn ensure_is_terminal(require_terminal_on_stdout: bool) -> Result<()> {
+    if require_terminal_on_stdout && !io::stdout().is_terminal() {
+        Err(Error::NotATerminal(NotATerminalError))
+    } else {
+        Ok(())
+    }
 }
 
 fn read_color_response(r: &mut Reader<'_>) -> Result<Vec<u8>> {
