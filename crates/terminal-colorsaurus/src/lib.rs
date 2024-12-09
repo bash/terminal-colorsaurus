@@ -143,12 +143,26 @@ pub struct QueryOptions {
     ///
     /// See [Feature Detection](`feature_detection`) for details on how this works.
     pub timeout: std::time::Duration,
+
+    /// Only query the terminal for its colors if stdout is a terminal.
+    ///
+    /// This is used to heuristically avoid race-conditions with pagers.
+    pub require_terminal_on_stdout: bool,
+}
+
+impl QueryOptions {
+    /// Sets [`Self::require_terminal_on_stdout`].
+    pub fn with_require_terminal_on_stdout(mut self, require_terminal_on_stdout: bool) -> Self {
+        self.require_terminal_on_stdout = require_terminal_on_stdout;
+        self
+    }
 }
 
 impl Default for QueryOptions {
     fn default() -> Self {
         Self {
             timeout: std::time::Duration::from_secs(1),
+            require_terminal_on_stdout: false,
         }
     }
 }

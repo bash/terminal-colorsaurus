@@ -15,6 +15,8 @@ pub enum Error {
     /// either the terminal does not support querying for colors \
     /// or the terminal has a lot of latency (e.g. when connected via SSH).
     Timeout(Duration),
+    /// Stdout is not connected to a terminal, but [`QueryOptions::require_terminal_on_stdout`] was set.
+    NotATerminal(NotATerminalError),
     /// The terminal does not support querying for the foreground or background color.
     UnsupportedTerminal,
 }
@@ -23,6 +25,7 @@ impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Error::Io(source) => Some(source),
+            Error::NotATerminal(source) => Some(source),
             _ => None,
         }
     }
@@ -42,6 +45,7 @@ impl fmt::Display for Error {
             Error::Timeout(timeout) => {
                 write!(f, "operation did not complete within {timeout:?}")
             }
+            Error::NotATerminal(e) => fmt::Display::fmt(e, f),
             Error::UnsupportedTerminal {} => {
                 write!(f, "the terminal does not support querying for its colors")
             }
@@ -52,5 +56,17 @@ impl fmt::Display for Error {
 impl From<io::Error> for Error {
     fn from(source: io::Error) -> Self {
         Error::Io(source)
+    }
+}
+
+#[derive(Debug)]
+#[non_exhaustive]
+pub struct NotATerminalError;
+
+impl error::Error for NotATerminalError {}
+
+impl fmt::Display for NotATerminalError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "stdout is not connected to a terminal")
     }
 }
