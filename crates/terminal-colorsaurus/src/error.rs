@@ -1,4 +1,5 @@
 use crate::fmt::CaretNotation;
+use crate::Stdio;
 use core::fmt;
 use std::time::Duration;
 use std::{error, io};
@@ -15,6 +16,9 @@ pub enum Error {
     /// either the terminal does not support querying for colors \
     /// or the terminal has a lot of latency (e.g. when connected via SSH).
     Timeout(Duration),
+    /// The query options expected a terminal on the given standard I/O stream,
+    /// but it was not connected to a terminal.
+    NotATerminal(NotATerminalError),
     /// The terminal does not support querying for the foreground or background color.
     UnsupportedTerminal,
 }
@@ -23,6 +27,7 @@ impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Error::Io(source) => Some(source),
+            Error::NotATerminal(source) => Some(source),
             _ => None,
         }
     }
@@ -42,6 +47,7 @@ impl fmt::Display for Error {
             Error::Timeout(timeout) => {
                 write!(f, "operation did not complete within {timeout:?}")
             }
+            Error::NotATerminal(e) => fmt::Display::fmt(e, f),
             Error::UnsupportedTerminal {} => {
                 write!(f, "the terminal does not support querying for its colors")
             }
@@ -52,5 +58,28 @@ impl fmt::Display for Error {
 impl From<io::Error> for Error {
     fn from(source: io::Error) -> Self {
         Error::Io(source)
+    }
+}
+
+#[derive(Debug)]
+#[non_exhaustive]
+pub struct NotATerminalError(pub(crate) Stdio);
+
+impl error::Error for NotATerminalError {}
+
+impl fmt::Display for NotATerminalError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.0 {
+            s if s == Stdio::STDIN => {
+                write!(f, "stdin is not connected to a terminal")
+            }
+            s if s == Stdio::STDOUT => {
+                write!(f, "stdout is not connected to a terminal")
+            }
+            s if s == Stdio::STDERR => {
+                write!(f, "stderr is not connected to a terminal")
+            }
+            _ => unreachable!("the first failing standard i/o stream generates an error"),
+        }
     }
 }

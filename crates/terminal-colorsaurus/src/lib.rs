@@ -131,6 +131,7 @@ impl ColorPalette {
 /// Result used by this library.
 pub type Result<T> = std::result::Result<T, Error>;
 pub use error::Error;
+use std::ops::BitOr;
 
 /// Options to be used with [`foreground_color`] and [`background_color`].
 /// You should almost always use the unchanged [`QueryOptions::default`] value.
@@ -147,13 +148,56 @@ pub struct QueryOptions {
     ///
     /// See [Feature Detection](`feature_detection`) for details on how this works.
     pub timeout: Duration,
+
+    /// Only query the terminal for its colors if all of the
+    /// provided standard I/O streams are a terminal.
+    ///
+    /// This is used to heuristically avoid race-conditions with pagers.
+    pub require_terminal_on: Stdio,
+}
+
+impl QueryOptions {
+    /// Sets [`Self::require_terminal_on`].
+    pub fn with_require_terminal_on(mut self, require_terminal_on: Stdio) -> Self {
+        self.require_terminal_on = require_terminal_on;
+        self
+    }
 }
 
 impl Default for QueryOptions {
     fn default() -> Self {
         Self {
             timeout: Duration::from_secs(1),
+            require_terminal_on: Stdio::default(),
         }
+    }
+}
+
+/// A bitset representing zero or more standard I/O streams.
+///
+/// Two [`Stdio`]s can be `or`ed together to represent a combination.
+/// For example, `Stdio::STDOUT | Stdio::STDERR` represents a set containing both stdout and stderr.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct Stdio(u8);
+
+impl Stdio {
+    /// The standard input stream. See [`std::io::stdin`].
+    pub const STDIN: Self = Self(1 << 0);
+    /// The standard output stream. See [`std::io::stdout`].
+    pub const STDOUT: Self = Self(1 << 1);
+    /// The standard error stream. See [`std::io::stderr`].
+    pub const STDERR: Self = Self(1 << 2);
+
+    pub(crate) fn is(self, other: Self) -> bool {
+        self.0 & other.0 == other.0
+    }
+}
+
+impl BitOr for Stdio {
+    type Output = Stdio;
+
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self(self.0 | rhs.0)
     }
 }
 
