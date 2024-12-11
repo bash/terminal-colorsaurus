@@ -38,6 +38,9 @@ jobs:
     - name: Use Rust ${{matrix.rust-version}}
       if: matrix.rust-version != 'stable'
       run: rustup override set '${{matrix.rust-version}}'
+    - name: Install Components
+      if: matrix.rust-version != 'stable'
+      run: rustup component add clippy
     - name: Build
       run: cargo build --workspace --all-features
     - name: Check
