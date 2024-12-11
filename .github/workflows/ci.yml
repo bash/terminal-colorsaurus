@@ -40,8 +40,8 @@ jobs:
       run: rustup override set '${{matrix.rust-version}}'
     - name: Build
       run: cargo build --workspace --all-features
-    - name: Check fallback implementation
-      run: just check-unsupported
+    - name: Check
+      run: just check
   docs:
     name: Docs
     runs-on: ubuntu-latest
