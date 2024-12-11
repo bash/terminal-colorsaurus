@@ -1,15 +1,13 @@
 use crate::io::{read_until2, TermReader};
 use crate::quirks::{terminal_quirks_from_env, TerminalQuirks};
-use crate::xparsecolor::xparsecolor;
+use crate::xterm_parse::{parse_bg_color_response, parse_fg_color_response};
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::time::Duration;
 use terminal_trx::{terminal, RawModeGuard};
 
 const QUERY_FG: &[u8] = b"\x1b]10;?";
-const FG_RESPONSE_PREFIX: &[u8] = b"\x1b]10;";
 const QUERY_BG: &[u8] = b"\x1b]11;?";
-const BG_RESPONSE_PREFIX: &[u8] = b"\x1b]11;";
 
 pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
     let quirks = terminal_quirks_from_env();
@@ -44,8 +42,8 @@ pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
     )
     .map_err(map_timed_out_err(options.timeout))?;
-    let foreground = parse_response(&fg_response, FG_RESPONSE_PREFIX)?;
-    let background = parse_response(&bg_response, BG_RESPONSE_PREFIX)?;
+    let foreground = parse_fg_color_response(&fg_response)?;
+    let background = parse_bg_color_response(&bg_response)?;
     Ok(ColorPalette {
         foreground,
         background,
@@ -65,32 +63,9 @@ fn map_timed_out_err(timeout: Duration) -> impl Fn(Error) -> Error {
     }
 }
 
-const ST: &[u8] = b"\x1b\\";
 const DA1: &[u8] = b"\x1b[c";
 const ESC: u8 = 0x1b;
 const BEL: u8 = 0x07;
-
-/// Parses a response to an `OSC 10` (foreground color) query.
-///
-/// The response may be terminated with either `ST` or `BEL`.
-pub fn parse_fg_color_response(response: &[u8]) -> Result<Color> {
-    parse_response(response, FG_RESPONSE_PREFIX)
-}
-
-/// Parses a response to an `OSC 11` (background color) query.
-///
-/// The response may be terminated with either `ST` or `BEL`.
-pub fn parse_bg_color_response(response: &[u8]) -> Result<Color> {
-    parse_response(response, BG_RESPONSE_PREFIX)
-}
-
-fn parse_response(response: &[u8], prefix: &[u8]) -> Result<Color> {
-    response
-        .strip_prefix(prefix)
-        .and_then(|r| r.strip_suffix(ST).or(r.strip_suffix(&[BEL])))
-        .and_then(xparsecolor)
-        .ok_or_else(|| Error::Parse(response.to_owned()))
-}
 
 type Reader<'a> = BufReader<TermReader<RawModeGuard<'a>>>;
 
