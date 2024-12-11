@@ -1,10 +1,10 @@
 use super::super::read_timed_out;
+use crate::trx::Transceive;
 use libc::{c_int, pselect, time_t, timespec, FD_ISSET, FD_SET};
 use std::io;
 use std::mem::zeroed;
 use std::ptr::{null, null_mut};
 use std::time::Duration;
-use terminal_trx::Transceive;
 
 // macOS does not support polling /dev/tty using kqueue, so we have to
 // resort to pselect/select. See https://nathancraddock.com/blog/macos-dev-tty-polling/.
