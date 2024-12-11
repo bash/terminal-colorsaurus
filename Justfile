@@ -17,3 +17,7 @@ doc:
 
 update-locked-deps:
     CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +nightly -Zmsrv-policy generate-lockfile
+
+update-python-ci:
+    (cd crates/pycolorsaurus && maturin generate-ci github > ../../.github/workflows/python.yml)
+    git apply .github/workflows/python.yml.patch
