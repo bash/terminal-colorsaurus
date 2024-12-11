@@ -20,7 +20,7 @@ pub(crate) fn foreground_color(options: QueryOptions) -> Result<Color> {
         read_color_response,
     )
     .map_err(map_timed_out_err(options.timeout))?;
-    parse_response(response, FG_RESPONSE_PREFIX)
+    parse_fg_color_response(&response)
 }
 
 pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
@@ -32,7 +32,7 @@ pub(crate) fn background_color(options: QueryOptions) -> Result<Color> {
         read_color_response,
     )
     .map_err(map_timed_out_err(options.timeout))?;
-    parse_response(response, BG_RESPONSE_PREFIX)
+    parse_bg_color_response(&response)
 }
 
 pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
@@ -44,8 +44,8 @@ pub(crate) fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
         |r| Ok((read_color_response(r)?, read_color_response(r)?)),
     )
     .map_err(map_timed_out_err(options.timeout))?;
-    let foreground = parse_response(fg_response, FG_RESPONSE_PREFIX)?;
-    let background = parse_response(bg_response, BG_RESPONSE_PREFIX)?;
+    let foreground = parse_response(&fg_response, FG_RESPONSE_PREFIX)?;
+    let background = parse_response(&bg_response, BG_RESPONSE_PREFIX)?;
     Ok(ColorPalette {
         foreground,
         background,
@@ -70,12 +70,26 @@ const DA1: &[u8] = b"\x1b[c";
 const ESC: u8 = 0x1b;
 const BEL: u8 = 0x07;
 
-fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
+/// Parses a response to an `OSC 10` (foreground color) query.
+///
+/// The response may be terminated with either `ST` or `BEL`.
+pub fn parse_fg_color_response(response: &[u8]) -> Result<Color> {
+    parse_response(response, FG_RESPONSE_PREFIX)
+}
+
+/// Parses a response to an `OSC 11` (background color) query.
+///
+/// The response may be terminated with either `ST` or `BEL`.
+pub fn parse_bg_color_response(response: &[u8]) -> Result<Color> {
+    parse_response(response, BG_RESPONSE_PREFIX)
+}
+
+fn parse_response(response: &[u8], prefix: &[u8]) -> Result<Color> {
     response
         .strip_prefix(prefix)
         .and_then(|r| r.strip_suffix(ST).or(r.strip_suffix(&[BEL])))
         .and_then(xparsecolor)
-        .ok_or(Error::Parse(response))
+        .ok_or_else(|| Error::Parse(response.to_owned()))
 }
 
 type Reader<'a> = BufReader<TermReader<RawModeGuard<'a>>>;
