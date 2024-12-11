@@ -9,8 +9,16 @@ test-package name *args:
     cargo package -p "{{name}}" {{args}}
     (cd $CARGO_TARGET_DIR/package/{{name}}-*/ && cargo test)
 
+check: clippy check-no-default-features check-unsupported
+
+clippy:
+    cargo clippy --workspace --tests --all-features --all-targets
+
+check-no-default-features:
+    cargo clippy -p terminal-colorsaurus --no-default-features
+
 check-unsupported:
-    RUSTFLAGS='--cfg terminal_colorsaurus_test_unsupported -Dwarnings' cargo check --workspace
+    RUSTFLAGS='--cfg terminal_colorsaurus_test_unsupported -Dwarnings' cargo clippy --workspace
 
 doc:
     cargo +nightly docs-rs -p terminal-colorsaurus
