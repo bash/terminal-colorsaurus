@@ -75,7 +75,7 @@ fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
         .strip_prefix(prefix)
         .and_then(|r| r.strip_suffix(ST).or(r.strip_suffix(&[BEL])))
         .and_then(xparsecolor)
-        .ok_or_else(|| Error::Parse(response))
+        .ok_or(Error::Parse(response))
 }
 
 type Reader<'a> = BufReader<TermReader<RawModeGuard<'a>>>;
