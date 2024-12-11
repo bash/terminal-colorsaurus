@@ -1,6 +1,6 @@
 [package]
 name = "terminal-colorsaurus"
-description = "Determines the background and foreground color of the terminal"
+description = "A cross-platform library for determining the terminal's background and foreground color. It answers the question «Is this terminal dark or light?»."
 readme = "readme.md"
 repository = "https://github.com/bash/terminal-colorsaurus"
 categories = ["command-line-interface"]
