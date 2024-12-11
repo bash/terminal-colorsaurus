@@ -46,6 +46,14 @@ mod error;
 mod fmt;
 
 /// Low-level utilities for parsing responses to `OSC 10` / `OSC 11` queries.
+///
+/// **Hint:** If you are only using this module, then you should probably disable
+/// the default features to avoid unnecessary dependencies:
+///
+/// ```toml
+/// [dependencies]
+/// terminal-colorsaurus = { version = "...", default-features = false }
+/// ```
 pub mod parse {
     pub use crate::xparsecolor::xparsecolor;
 }
