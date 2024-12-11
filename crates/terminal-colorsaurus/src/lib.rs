@@ -46,6 +46,11 @@ mod color;
 mod error;
 mod fmt;
 
+/// Low-level utilities for parsing responses to `OSC 10` / `OSC 11` queries.
+pub mod parse {
+    pub use crate::xparsecolor::xparsecolor;
+}
+
 cfg_if! {
     if #[cfg(all(any(unix, windows), not(terminal_colorsaurus_test_unsupported)))] {
         mod io;

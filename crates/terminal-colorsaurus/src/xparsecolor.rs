@@ -1,14 +1,16 @@
 use crate::Color;
 use std::str::from_utf8;
 
-/// Parses a color value that follows the `XParseColor` format.
-/// See <https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings>
-/// for a reference of what `XParseColor` supports.
+/// Parses the subset of X11 [Color Strings](https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings)
+/// emitted by terminals in response to `OSC 10` / `OSC 11` queries.
 ///
-/// Not all formats are supported, just the ones that are returned
-/// by the tested terminals. Feel free to open a PR if you encounter
-/// a terminal that returns a different format.
-pub(crate) fn xparsecolor(input: &[u8]) -> Option<Color> {
+/// ## Accepted Formats
+/// * `#<red><green><blue>`
+/// * `rgb:<red>/<green>/<blue>`
+/// * `rgba:<red>/<green>/<blue>/<alpha>` (rxvt-unicode extension)
+///
+/// where `<red>`, `<green>` and `<blue` are hexadecimal numbers with 1-4 digits.
+pub fn xparsecolor(input: &[u8]) -> Option<Color> {
     if let Some(stripped) = input.strip_prefix(b"#") {
         parse_sharp(from_utf8(stripped).ok()?)
     } else if let Some(stripped) = input.strip_prefix(b"rgb:") {
