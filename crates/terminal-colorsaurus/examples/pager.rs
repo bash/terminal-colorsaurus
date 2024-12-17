@@ -19,19 +19,11 @@
 //! 3. `cargo run --example pager | cat`—should not print the color scheme. This is a false negatives.
 //! 4. `cargo run --example pager 2>&1 >/dev/tty | less`—should print the color scheme (or error). This is a false positive.
 
-use std::io::{stdout, IsTerminal as _};
 use terminal_colorsaurus::{color_palette, Error, QueryOptions};
 
 fn main() -> Result<(), display::DisplayAsDebug<Error>> {
-    if stdout().is_terminal() {
-        eprintln!(
-            "Here's the color scheme: {:#?}",
-            color_palette(QueryOptions::default())?
-        );
-    } else {
-        eprintln!("No color scheme for you today :/");
-    }
-
+    let options = QueryOptions::default().with_require_terminal_on_stdout(true);
+    eprintln!("Here's the color palette: {:#?}", color_palette(options)?);
     Ok(())
 }
 
