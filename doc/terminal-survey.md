@@ -6,6 +6,7 @@ with `terminal-colorsaurus`:
 * Alacritty
 * Contour
 * foot
+* [Ghostty]
 * GNOME Terminal, (GNOME) Console, MATE Terminal, XFCE Terminal, (elementary) Terminal, LXTerminal
 * Hyper
 * The builtin terminal of JetBrains IDEs (i.e. IntelliJ IDEA, …)
@@ -42,6 +43,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | (GNOME) [Console] [^1]     | yes                   | yes   | 3.50.1                             |
 | [Contour]                  | yes                   | yes   | 0.4.1.6292 (macOS)                 |
 | [foot]                     | yes                   | yes   | 1.16.1                             |
+| [Ghostty]                  | yes                   | yes   | 1.0.0 (macOS)                      |
 | [Hyper]                    | yes                   | yes   | 3.4.1 (macOS)                      |
 | IntelliJ IDEA ([JediTerm]) | yes                   | yes   | PyCharm 2023.3.2 (macOS)           |
 | [iTerm2]                   | yes                   | yes   | Build 3.5.0beta18                  |
@@ -95,6 +97,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [Console]: https://apps.gnome.org/en-GB/Console/
 [Contour]: https://contour-terminal.org/
 [cool-retro-term]: https://github.com/Swordfish90/cool-retro-term
+[Ghostty]: https://ghostty.org
 [foot]: https://codeberg.org/dnkl/foot
 [Hyper]: https://hyper.is/
 [iSH]: https://ish.app/
