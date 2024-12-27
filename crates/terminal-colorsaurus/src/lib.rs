@@ -53,6 +53,7 @@ cfg_if! {
         mod xparsecolor;
         mod xterm;
         use xterm as imp;
+        mod cli_theme;
     } else {
         mod unsupported;
         use unsupported as imp;
@@ -130,6 +131,7 @@ impl ColorPalette {
 
 /// Result used by this library.
 pub type Result<T> = std::result::Result<T, Error>;
+use cli_theme::CliThemePreference;
 pub use error::Error;
 
 /// Options to be used with [`foreground_color`] and [`background_color`].
@@ -172,10 +174,19 @@ impl Default for QueryOptions {
 }
 
 /// Detects if the terminal is dark or light.
+///
+/// This function supports the [`CLITHEME`] environment variable
+/// and skips detection if it is set to either **dark** or **light**.
+///
+/// [`CLITHEME`]: https://wiki.tau.garden/cli-theme/
 #[doc = include_str!("../doc/caveats.md")]
 #[doc(alias = "theme")]
 pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
-    color_palette(options).map(|p| p.color_scheme())
+    match cli_theme::cli_theme().map(|t| t.preference) {
+        Some(CliThemePreference::Dark) => Ok(ColorScheme::Dark),
+        Some(CliThemePreference::Light) => Ok(ColorScheme::Light),
+        _ => color_palette(options).map(|p| p.color_scheme()),
+    }
 }
 
 /// Queries the terminal for it's color scheme (foreground and background color).
