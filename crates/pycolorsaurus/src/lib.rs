@@ -29,42 +29,49 @@ create_exception!(colorsaurus, ColorsaurusError, PyException);
 
 /// Detects if the terminal is dark or light.
 #[pyfunction]
-#[pyo3(signature = (*, timeout=None))]
-fn color_scheme(timeout: Option<Timeout>) -> PyResult<ColorScheme> {
-    imp::color_scheme(query_options(timeout))
+#[pyo3(signature = (*, timeout=None, require_terminal_on_stdout=false))]
+fn color_scheme(
+    timeout: Option<Timeout>,
+    require_terminal_on_stdout: bool,
+) -> PyResult<ColorScheme> {
+    imp::color_scheme(query_options(timeout, require_terminal_on_stdout))
         .map(ColorScheme::from)
         .map_err(to_py_error)
 }
 
 /// Queries the terminal for it's foreground and background color.
 #[pyfunction]
-#[pyo3(signature = (*, timeout=None))]
-fn color_palette(timeout: Option<Timeout>) -> PyResult<ColorPalette> {
-    imp::color_palette(query_options(timeout))
+#[pyo3(signature = (*, timeout=None, require_terminal_on_stdout=false))]
+fn color_palette(
+    timeout: Option<Timeout>,
+    require_terminal_on_stdout: bool,
+) -> PyResult<ColorPalette> {
+    imp::color_palette(query_options(timeout, require_terminal_on_stdout))
         .map(ColorPalette)
         .map_err(to_py_error)
 }
 
 /// Queries the terminal for it's foreground color.
 #[pyfunction]
-#[pyo3(signature = (*, timeout=None))]
-fn foreground_color(timeout: Option<Timeout>) -> PyResult<Color> {
-    imp::foreground_color(query_options(timeout))
+#[pyo3(signature = (*, timeout=None, require_terminal_on_stdout=false))]
+fn foreground_color(timeout: Option<Timeout>, require_terminal_on_stdout: bool) -> PyResult<Color> {
+    imp::foreground_color(query_options(timeout, require_terminal_on_stdout))
         .map(Color)
         .map_err(to_py_error)
 }
 
 /// Queries the terminal for it's background color.
 #[pyfunction]
-#[pyo3(signature = (*, timeout=None))]
-fn background_color(timeout: Option<Timeout>) -> PyResult<Color> {
-    imp::background_color(query_options(timeout))
+#[pyo3(signature = (*, timeout=None, require_terminal_on_stdout=false))]
+fn background_color(timeout: Option<Timeout>, require_terminal_on_stdout: bool) -> PyResult<Color> {
+    imp::background_color(query_options(timeout, require_terminal_on_stdout))
         .map(Color)
         .map_err(to_py_error)
 }
 
-fn query_options(timeout: Option<Timeout>) -> imp::QueryOptions {
-    let mut options = imp::QueryOptions::default();
+fn query_options(timeout: Option<Timeout>, require_terminal_on_stdout: bool) -> imp::QueryOptions {
+    let mut options =
+        imp::QueryOptions::default().with_require_terminal_on_stdout(require_terminal_on_stdout);
     options.timeout = timeout.map(|t| t.0).unwrap_or(options.timeout);
     options
 }
