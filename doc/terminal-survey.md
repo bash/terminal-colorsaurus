@@ -22,6 +22,7 @@ with `terminal-colorsaurus`:
 * tmux (next-3.4)
 * urxvt (rxvt-unicode)
 * VSCode (xterm.js)
+* Warp
 * WezTerm
 * Windows Terminal (>= v1.22)
 * xterm
@@ -58,6 +59,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [Terminology]              | yes [^4]              | yes   | 1.13.0                             |
 | [Termux]                   | yes                   | yes   | 0.118.0                            |
 | VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
+| Warp                       | yes                   | yes   | v0.2024.12.18.08.02.stable\_04     |
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
 | Windows Terminal (conhost) | yes                   | yes   | [`b3f4162`][conhost-commit]        |
 | [xterm]                    | yes                   | yes   | 385                                |
