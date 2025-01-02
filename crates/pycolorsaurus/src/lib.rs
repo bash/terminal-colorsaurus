@@ -31,7 +31,7 @@ create_exception!(colorsaurus, ColorsaurusError, PyException);
 #[pyfunction]
 #[pyo3(signature = (*, timeout=None))]
 fn color_scheme(timeout: Option<Timeout>) -> PyResult<ColorScheme> {
-    imp::color_scheme(query_options(timeout))
+    imp::color_scheme_with_options(query_options(timeout))
         .map(ColorScheme::from)
         .map_err(to_py_error)
 }
@@ -40,7 +40,7 @@ fn color_scheme(timeout: Option<Timeout>) -> PyResult<ColorScheme> {
 #[pyfunction]
 #[pyo3(signature = (*, timeout=None))]
 fn color_palette(timeout: Option<Timeout>) -> PyResult<ColorPalette> {
-    imp::color_palette(query_options(timeout))
+    imp::color_palette_with_options(query_options(timeout))
         .map(ColorPalette)
         .map_err(to_py_error)
 }
@@ -49,7 +49,7 @@ fn color_palette(timeout: Option<Timeout>) -> PyResult<ColorPalette> {
 #[pyfunction]
 #[pyo3(signature = (*, timeout=None))]
 fn foreground_color(timeout: Option<Timeout>) -> PyResult<Color> {
-    imp::foreground_color(query_options(timeout))
+    imp::foreground_color_with_options(query_options(timeout))
         .map(Color)
         .map_err(to_py_error)
 }
@@ -58,7 +58,7 @@ fn foreground_color(timeout: Option<Timeout>) -> PyResult<Color> {
 #[pyfunction]
 #[pyo3(signature = (*, timeout=None))]
 fn background_color(timeout: Option<Timeout>) -> PyResult<Color> {
-    imp::background_color(query_options(timeout))
+    imp::background_color_with_options(query_options(timeout))
         .map(Color)
         .map_err(to_py_error)
 }
