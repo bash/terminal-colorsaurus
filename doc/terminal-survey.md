@@ -66,6 +66,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [xterm]                    | yes                   | yes   | 385                                |
 | [Yakuake]                  | yes                   | yes   | 24.12.0                            |
 | [zed]                      | yes                   | yes   | 0.167.1 (flatpak)                  |
+| [zutty]                    | yes                   | yes   | `050bf2b`                          |
 | IntelliJ IDEA ([JediTerm]) | yes                   | yes   | PyCharm 2023.3.2 (macOS)           |
 | macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
 | VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
@@ -144,3 +145,4 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [xterm]: https://invisible-island.net/xterm/
 [Yakuake]: https://apps.kde.org/en-gb/yakuake/
 [zed]: https://zed.dev/
+[zutty]: https://tomscii.sig7.se/zutty/
