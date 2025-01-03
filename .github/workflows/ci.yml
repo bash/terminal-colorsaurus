@@ -89,5 +89,6 @@ jobs:
     - uses: taiki-e/install-action@v2
       with:
         tool: just
+    - run: just test-package xterm-color
     - run: just test-package terminal-colorsaurus
     - run: just test-package termtheme
