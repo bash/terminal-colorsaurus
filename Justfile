@@ -20,8 +20,8 @@ check-no-default-features:
 check-unsupported:
     RUSTFLAGS='--cfg terminal_colorsaurus_test_unsupported -Dwarnings' cargo clippy --workspace
 
-doc:
-    cargo +nightly docs-rs -p terminal-colorsaurus
+doc name="terminal-colorsaurus":
+    cargo +nightly docs-rs -p {{name}}
 
 update-locked-deps:
     CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +nightly -Zmsrv-policy generate-lockfile
