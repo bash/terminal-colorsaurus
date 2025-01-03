@@ -45,22 +45,6 @@ mod color;
 mod error;
 mod fmt;
 
-/// Low-level utilities for parsing responses to `OSC 10` / `OSC 11` queries.
-///
-/// **Hint:** If you are only using this module, then you should probably disable
-/// the default features to avoid unnecessary dependencies:
-///
-/// ```toml
-/// [dependencies]
-/// terminal-colorsaurus = { version = "...", default-features = false }
-/// ```
-pub mod parse {
-    pub use crate::xparsecolor::xparsecolor;
-}
-
-mod xparsecolor;
-
-#[cfg(feature = "query")]
 cfg_if! {
     if #[cfg(all(any(unix, windows), not(terminal_colorsaurus_test_unsupported)))] {
         mod io;
@@ -101,7 +85,6 @@ pub use color::*;
 
 /// The color palette i.e. foreground and background colors of the terminal.
 /// Retrieved by calling [`color_palette`].
-#[cfg(feature = "query")]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct ColorPalette {
@@ -115,7 +98,6 @@ pub struct ColorPalette {
 ///
 /// The easiest way to retrieve the color scheme
 /// is by calling [`color_scheme`].
-#[cfg(feature = "query")]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 #[allow(clippy::exhaustive_enums)]
 #[doc(alias = "Theme")]
@@ -127,18 +109,14 @@ pub enum ColorScheme {
     Light,
 }
 
-#[cfg(feature = "query")]
-const PERCEPTUAL_MIDDLE_GRAY: u8 = 50;
-
-#[cfg(feature = "query")]
 impl ColorPalette {
     /// Determines if the terminal uses a dark or light background.
     pub fn color_scheme(&self) -> ColorScheme {
-        let fg = self.foreground.perceived_lightness();
-        let bg = self.background.perceived_lightness();
+        let fg = self.foreground.perceived_lightness_f32();
+        let bg = self.background.perceived_lightness_f32();
         if bg < fg {
             ColorScheme::Dark
-        } else if bg > fg || bg > PERCEPTUAL_MIDDLE_GRAY {
+        } else if bg > fg || bg > 0.5 {
             ColorScheme::Light
         } else {
             ColorScheme::Dark
@@ -152,7 +130,6 @@ pub use error::Error;
 
 /// Options to be used with [`foreground_color`] and [`background_color`].
 /// You should almost always use the unchanged [`QueryOptions::default`] value.
-#[cfg(feature = "query")]
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct QueryOptions {
@@ -168,7 +145,6 @@ pub struct QueryOptions {
     pub timeout: std::time::Duration,
 }
 
-#[cfg(feature = "query")]
 impl Default for QueryOptions {
     fn default() -> Self {
         Self {
@@ -178,7 +154,6 @@ impl Default for QueryOptions {
 }
 
 /// Detects if the terminal is dark or light.
-#[cfg(feature = "query")]
 #[doc = include_str!("../doc/caveats.md")]
 #[doc(alias = "theme")]
 pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
@@ -186,7 +161,6 @@ pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
 }
 
 /// Queries the terminal for it's color scheme (foreground and background color).
-#[cfg(feature = "query")]
 #[doc = include_str!("../doc/caveats.md")]
 pub fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     imp::color_palette(options)
@@ -194,7 +168,6 @@ pub fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
 
 /// Queries the terminal for it's foreground color. \
 /// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
-#[cfg(feature = "query")]
 #[doc = include_str!("../doc/caveats.md")]
 #[doc(alias = "fg")]
 pub fn foreground_color(options: QueryOptions) -> Result<Color> {
@@ -203,7 +176,6 @@ pub fn foreground_color(options: QueryOptions) -> Result<Color> {
 
 /// Queries the terminal for it's background color. \
 /// If you also need the foreground color it is more efficient to use [`color_palette`] instead.
-#[cfg(feature = "query")]
 #[doc = include_str!("../doc/caveats.md")]
 #[doc(alias = "bg")]
 pub fn background_color(options: QueryOptions) -> Result<Color> {

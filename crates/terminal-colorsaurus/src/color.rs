@@ -21,7 +21,7 @@ impl Color {
     /// let is_dark = color.perceived_lightness() <= 50;
     /// ```
     pub fn perceived_lightness(&self) -> u8 {
-        luminance_to_perceived_lightness(luminance(self))
+        (self.perceived_lightness_f32() * 100.) as u8
     }
 
     /// Converts the color to 8 bit precision per channel by scaling each channel.
@@ -40,6 +40,11 @@ impl Color {
             scale_to_u8(self.g),
             scale_to_u8(self.b),
         )
+    }
+
+    pub(crate) fn perceived_lightness_f32(&self) -> f32 {
+        let color = xterm_color::Color::rgb(self.r, self.g, self.b);
+        color.perceived_lightness()
     }
 }
 
@@ -82,34 +87,6 @@ impl From<Color> for anstyle::RgbColor {
     fn from(value: Color) -> Self {
         let (r, g, b) = value.scale_to_8bit();
         anstyle::RgbColor(r, g, b)
-    }
-}
-
-// Implementation of determining the perceived lightness
-// follows this excellent answer: https://stackoverflow.com/a/56678483
-
-fn srgb_to_lin(channel: f64) -> f64 {
-    if channel < 0.04045 {
-        channel / 12.92
-    } else {
-        ((channel + 0.055) / 1.055).powf(2.4)
-    }
-}
-
-// Luminance (Y)
-fn luminance(color: &Color) -> f64 {
-    let r = f64::from(color.r) / f64::from(u16::MAX);
-    let g = f64::from(color.g) / f64::from(u16::MAX);
-    let b = f64::from(color.b) / f64::from(u16::MAX);
-    0.2126 * srgb_to_lin(r) + 0.7152 * srgb_to_lin(g) + 0.0722 * srgb_to_lin(b)
-}
-
-// Perceptual lightness (L*)
-fn luminance_to_perceived_lightness(luminance: f64) -> u8 {
-    if luminance < 216. / 24389. {
-        (luminance * (24389. / 27.)) as u8
-    } else {
-        (luminance.powf(1. / 3.) * 116. - 16.) as u8
     }
 }
 

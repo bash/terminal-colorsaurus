@@ -54,9 +54,9 @@ mod dark {
     #[test]
     fn fg_and_bg_both_dark() {
         for (foreground, background) in [(DARK_GRAY, DARKER_GRAY), (DARKER_GRAY, BLACK)] {
-            assert!(foreground.perceived_lightness() < PERCEPTUAL_MIDDLE_GRAY);
-            assert!(background.perceived_lightness() < PERCEPTUAL_MIDDLE_GRAY);
-            assert!(foreground.perceived_lightness() != background.perceived_lightness());
+            assert!(foreground.perceived_lightness_f32() < 0.5);
+            assert!(background.perceived_lightness_f32() < 0.5);
+            assert!(foreground.perceived_lightness_f32() != background.perceived_lightness_f32());
 
             let palette = ColorPalette {
                 foreground,
@@ -93,9 +93,12 @@ mod light {
     #[test]
     fn fg_and_bg_both_light() {
         for (foreground, background) in [(LIGHT_GRAY, LIGHTER_GRAY), (LIGHTER_GRAY, WHITE)] {
-            assert!(foreground.perceived_lightness() > PERCEPTUAL_MIDDLE_GRAY);
-            assert!(background.perceived_lightness() > PERCEPTUAL_MIDDLE_GRAY);
-            assert!(foreground.perceived_lightness() != background.perceived_lightness());
+            assert!(foreground.perceived_lightness_f32() > 0.5);
+            assert!(background.perceived_lightness_f32() > 0.5);
+            assert!(
+                (foreground.perceived_lightness_f32() - background.perceived_lightness_f32()).abs()
+                    >= f32::EPSILON
+            );
 
             let palette = ColorPalette {
                 foreground,

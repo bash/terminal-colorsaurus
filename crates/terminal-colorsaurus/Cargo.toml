@@ -11,27 +11,24 @@ edition = "2021"
 rust-version = "1.70.0" # Search for `FIXME(msrv)` when bumping.
 exclude = [".github", ".gitignore", "*.sh", "benchmark/**/*", "doc/issues.md", "deny.toml"]
 
-[features]
-default = ["query"]
-query = ["dep:memchr", "dep:mio", "dep:terminal-trx", "dep:libc", "dep:windows-sys"]
-
 [dependencies]
 rgb = { version = "0.8.37", optional = true }
 anstyle = { version = "1.0.7", optional = true }
 cfg-if = "1.0.0"
+xterm-color = { path = "../xterm-color", version = "1.0" }
 
 [target.'cfg(any(unix, windows))'.dependencies]
-memchr = { version = "2.7.1", optional = true }
-terminal-trx = { version = "0.2.3", optional = true }
+memchr = "2.7.1"
+terminal-trx = "0.2.3"
 
 [target.'cfg(unix)'.dependencies]
-mio = { version = "1", features = ["os-ext"], default-features = false, optional = true }
+mio = { version = "1", features = ["os-ext"], default-features = false }
 
 [target.'cfg(target_os = "macos")'.dependencies]
-libc = { version = "0.2.151", optional = true }
+libc = "0.2.151"
 
 [target.'cfg(windows)'.dependencies]
-windows-sys = { version = "0.59.0", features = ["Win32_System_Threading"], optional = true } # Keep this in sync with terminal-trx's version to avoid duplicate deps.
+windows-sys = { version = "0.59.0", features = ["Win32_System_Threading"] } # Keep this in sync with terminal-trx's version to avoid duplicate deps.
 
 [lints]
 workspace = true

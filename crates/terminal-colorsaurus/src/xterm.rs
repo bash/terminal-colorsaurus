@@ -1,6 +1,5 @@
 use crate::io::{read_until2, TermReader};
 use crate::quirks::{terminal_quirks_from_env, TerminalQuirks};
-use crate::xparsecolor::xparsecolor;
 use crate::{Color, ColorPalette, Error, QueryOptions, Result};
 use std::io::{self, BufRead, BufReader, Write as _};
 use std::time::Duration;
@@ -76,6 +75,16 @@ fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
         .and_then(|r| r.strip_suffix(ST).or(r.strip_suffix(&[BEL])))
         .and_then(xparsecolor)
         .ok_or(Error::Parse(response))
+}
+
+fn xparsecolor(input: &[u8]) -> Option<Color> {
+    let xterm_color::Color {
+        red: r,
+        green: g,
+        blue: b,
+        ..
+    } = xterm_color::Color::parse(input).ok()?;
+    Some(Color { r, g, b })
 }
 
 type Reader<'a> = BufReader<TermReader<RawModeGuard<'a>>>;

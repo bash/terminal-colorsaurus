@@ -392,6 +392,7 @@ dependencies = [
  "rgb",
  "terminal-trx",
  "windows-sys 0.59.0",
+ "xterm-color",
 ]
 
 [[package]]
