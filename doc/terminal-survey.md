@@ -72,6 +72,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | ConEmu / Cmder             | no                    | yes   | 230724 stable                      |
 | cool-retro-term            | no                    | yes   | 1.2.0                              |
 | Eterm                      | no                    | *no*  | 0.9.6                              |
+| [Extraterm]                | no                    | yes   | 0.80.0                             |
 | [iSH] (hterm)              | no                    | yes   | 1.3.2 (Build 494) (iOS)            |
 | Jetbrains Fleet            | no                    | yes   | build 1.40.87 (macOS)              |
 | [Lapce]                    | no                    | yes   | 0.4.2 (macOS)                      |
@@ -107,6 +108,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [Contour]: https://contour-terminal.org/
 [cool-retro-term]: https://github.com/Swordfish90/cool-retro-term
 [Ghostty]: https://ghostty.org
+[Extraterm]: https://extraterm.org
 [foot]: https://codeberg.org/dnkl/foot
 [Hyper]: https://hyper.is/
 [iSH]: https://ish.app/
