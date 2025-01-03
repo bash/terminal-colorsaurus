@@ -63,7 +63,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
 | [xst] (fork of st)         | yes                   | yes   | 0.9.0                              |
 | [xterm]                    | yes                   | yes   | 385                                |
-| [zed]                      | yes                   | yes   | [`9245015`][zed-commit]|
+| [zed]                      | yes                   | yes   | 0.167.1 (flatpak)                  |
 | IntelliJ IDEA ([JediTerm]) | yes                   | yes   | PyCharm 2023.3.2 (macOS)           |
 | macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
 | VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
@@ -136,5 +136,4 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [xst]: https://github.com/gnotclub/xst
 [xterm.js]: https://xtermjs.org/
 [xterm]: https://invisible-island.net/xterm/
-[zed-commit]: https://github.com/zed-industries/zed/commit/9245015d1a005611801d7393e4d7e3cdf5fbca0c
 [zed]: https://zed.dev/
