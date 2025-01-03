@@ -1,0 +1,14 @@
+[package]
+name = "xterm-color"
+description = "Parses the subset of X11 Color Strings emitted by terminals in response to OSC color queries"
+readme = "readme.md"
+repository = "https://github.com/bash/terminal-colorsaurus"
+categories = ["command-line-interface"]
+keywords = ["x11", "xterm", "color"]
+license = "MIT OR Apache-2.0"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.70.0"
+
+[lints]
+workspace = true

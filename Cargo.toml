@@ -7,3 +7,19 @@ version = "0.4.7"
 
 [workspace.dependencies]
 terminal-colorsaurus = { path = "crates/terminal-colorsaurus", version = "0.4.4" }
+
+[workspace.lints.rust]
+missing_debug_implementations = "warn"
+missing_docs = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(terminal_colorsaurus_test_unsupported)"] }
+
+[workspace.lints.clippy]
+dbg_macro = "warn"
+exhaustive_enums = "warn"
+exhaustive_structs = "warn"
+undocumented_unsafe_blocks = "deny"
+unimplemented = "warn"
+uninlined_format_args = "warn"
+unnested_or_patterns = "warn"
+unwrap_used = "deny"
+use_debug = "warn"
