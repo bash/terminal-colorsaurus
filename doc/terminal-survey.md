@@ -68,7 +68,6 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [zed]                      | yes                   | yes   | 0.167.1 (flatpak)                  |
 | [zutty]                    | yes                   | yes   | `050bf2b`                          |
 | IntelliJ IDEA ([JediTerm]) | yes                   | yes   | PyCharm 2023.3.2 (macOS)           |
-| macOS Terminal             | yes [^3]              | yes   | Version 2.13 (447)                 |
 | VSCode ([xterm.js])        | yes                   | yes   | 1.85.1 (macOS)                     |
 | Windows Terminal (conhost) | yes                   | yes   | [`b3f4162`][conhost-commit]        |
 | anyterm                    | no                    | *no*  | 1.2.3                              |
