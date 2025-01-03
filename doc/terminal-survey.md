@@ -78,6 +78,7 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [iSH] (hterm)              | no                    | yes   | 1.3.2 (Build 494) (iOS)            |
 | Jetbrains Fleet            | no                    | yes   | build 1.40.87 (macOS)              |
 | [Lapce]                    | no                    | yes   | 0.4.2 (macOS)                      |
+| [La Terminal]              | no                    | yes   | 1.9.1                              |
 | Linux console              | no                    | yes   | -                                  |
 | MobaXterm                  | no                    | yes   | v24.2                              |
 | mrxvt                      | no                    | yes   | 0.5.3                              |
@@ -119,6 +120,7 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [kitty]: https://sw.kovidgoyal.net/kitty/
 [Konsole]: https://konsole.kde.org/
 [Lapce]: https://lapce.dev/
+[La Terminal]: https://la-terminal.net/
 [mintty]: https://mintty.github.io/
 [nvim-terminal]: http://neovim.io/doc/user/terminal.html
 [mlterm-commit]: https://github.com/arakiken/mlterm/commit/f3474e1eb6a97239b38869f0fba78ce3e6a8ad87
