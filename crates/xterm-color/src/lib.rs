@@ -11,6 +11,7 @@
 //!    Color::rgb(0x1111, 0xaaaa, 0xffff)
 //! );
 //! ```
+
 use core::fmt;
 use std::error;
 use std::marker::PhantomData;
@@ -47,12 +48,15 @@ impl Color {
     /// Parses the subset of X11 [Color Strings](https://www.x.org/releases/current/doc/libX11/libX11/libX11.html#Color_Strings)
     /// emitted by terminals in response to `OSC` color queries (`OSC 10`, `OSC 11`, ...).
     ///
+    /// This function is a rough analogue to `XParseColor`.
+    ///
     /// ## Accepted Formats
     /// * `#<red><green><blue>`
     /// * `rgb:<red>/<green>/<blue>`
     /// * `rgba:<red>/<green>/<blue>/<alpha>` (rxvt-unicode extension)
     ///
     /// where `<red>`, `<green>` and `<blue>` are hexadecimal numbers with 1-4 digits.
+    #[doc(alias = "XParseColor")]
     pub fn parse(input: &[u8]) -> Result<Color, ColorParseError> {
         xparsecolor(input).ok_or(ColorParseError(PhantomData))
     }
