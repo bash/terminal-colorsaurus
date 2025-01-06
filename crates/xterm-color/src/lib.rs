@@ -52,7 +52,7 @@ impl Color {
     /// * `rgb:<red>/<green>/<blue>`
     /// * `rgba:<red>/<green>/<blue>/<alpha>` (rxvt-unicode extension)
     ///
-    /// where `<red>`, `<green>` and `<blue` are hexadecimal numbers with 1-4 digits.
+    /// where `<red>`, `<green>` and `<blue>` are hexadecimal numbers with 1-4 digits.
     pub fn parse(input: &[u8]) -> Result<Color, ColorParseError> {
         xparsecolor(input).ok_or(ColorParseError(PhantomData))
     }
