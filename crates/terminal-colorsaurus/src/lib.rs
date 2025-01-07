@@ -85,7 +85,7 @@ pub use color::*;
 
 /// The color palette i.e. foreground and background colors of the terminal.
 /// Retrieved by calling [`color_palette`].
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[non_exhaustive]
 pub struct ColorPalette {
     /// The foreground color of the terminal.
@@ -98,7 +98,7 @@ pub struct ColorPalette {
 ///
 /// The easiest way to retrieve the color scheme
 /// is by calling [`color_scheme`].
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[allow(clippy::exhaustive_enums)]
 #[doc(alias = "Theme")]
 pub enum ColorScheme {
