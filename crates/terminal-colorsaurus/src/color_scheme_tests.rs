@@ -1,32 +1,12 @@
 use super::*;
 use ColorScheme::*;
 
-const BLACK: Color = Color { r: 0, g: 0, b: 0 };
-const WHITE: Color = Color {
-    r: u16::MAX,
-    g: u16::MAX,
-    b: u16::MAX,
-};
-const DARK_GRAY: Color = Color {
-    r: 0x44ff,
-    g: 0x44ff,
-    b: 0x44ff,
-};
-const DARKER_GRAY: Color = Color {
-    r: 0x22ff,
-    g: 0x22ff,
-    b: 0x22ff,
-};
-const LIGHT_GRAY: Color = Color {
-    r: 0xccff,
-    g: 0xccff,
-    b: 0xccff,
-};
-const LIGHTER_GRAY: Color = Color {
-    r: 0xeeff,
-    g: 0xeeff,
-    b: 0xeeff,
-};
+const BLACK: Color = Color::rgb(0, 0, 0);
+const WHITE: Color = Color::rgb(u16::MAX, u16::MAX, u16::MAX);
+const DARK_GRAY: Color = Color::rgb(0x44ff, 0x44ff, 0x44ff);
+const DARKER_GRAY: Color = Color::rgb(0x22ff, 0x22ff, 0x22ff);
+const LIGHT_GRAY: Color = Color::rgb(0xccff, 0xccff, 0xccff);
+const LIGHTER_GRAY: Color = Color::rgb(0xeeff, 0xeeff, 0xeeff);
 
 mod dark {
     use super::*;

@@ -79,13 +79,13 @@ fn parse_response(response: Vec<u8>, prefix: &[u8]) -> Result<Color> {
 }
 
 fn xparsecolor(input: &[u8]) -> Option<Color> {
-    let xterm_color::Color {
-        red: r,
-        green: g,
-        blue: b,
-        ..
-    } = xterm_color::Color::parse(input).ok()?;
-    Some(Color { r, g, b })
+    let color = xterm_color::Color::parse(input).ok()?;
+    Some(Color {
+        red: color.red,
+        green: color.green,
+        blue: color.blue,
+        alpha: color.alpha,
+    })
 }
 
 type Reader<'a> = BufReader<TermReader<RawModeGuard<'a>>>;
