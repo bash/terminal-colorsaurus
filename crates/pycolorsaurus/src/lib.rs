@@ -186,10 +186,7 @@ impl Color {
         self.0.scale_to_8bit().2
     }
 
-    /// The perceived lightness of the color
-    /// as a value between 0 (black) and 100 (white)
-    /// where 50 is the perceptual "middle grey".
-    fn perceived_lightness(&self) -> u8 {
+    fn perceived_lightness(&self) -> f32 {
         self.0.perceived_lightness()
     }
 

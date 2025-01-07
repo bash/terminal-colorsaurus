@@ -12,16 +12,18 @@ pub struct Color {
 }
 
 impl Color {
-    /// The perceived lightness of the color
-    /// as a value between `0` (black) and `100` (white)
-    /// where `50` is the perceptual "middle grey".
+    /// Perceptual lightness (L*) as a value between 0.0 (black) and 1.0 (white)
+    /// where 0.5 is the perceptual middle gray.
+    ///
+    /// Note that the color's alpha is ignored.
     /// ```
     /// # use terminal_colorsaurus::Color;
     /// # let color = Color::default();
-    /// let is_dark = color.perceived_lightness() <= 50;
+    /// let is_dark = color.perceived_lightness() <= 0.5;
     /// ```
-    pub fn perceived_lightness(&self) -> u8 {
-        (self.perceived_lightness_f32() * 100.) as u8
+    pub fn perceived_lightness(&self) -> f32 {
+        let color = xterm_color::Color::rgb(self.r, self.g, self.b);
+        color.perceived_lightness()
     }
 
     /// Converts the color to 8 bit precision per channel by scaling each channel.
@@ -40,11 +42,6 @@ impl Color {
             scale_to_u8(self.g),
             scale_to_u8(self.b),
         )
-    }
-
-    pub(crate) fn perceived_lightness_f32(&self) -> f32 {
-        let color = xterm_color::Color::rgb(self.r, self.g, self.b);
-        color.perceived_lightness()
     }
 }
 
@@ -97,7 +94,7 @@ mod tests {
     #[test]
     fn black_has_perceived_lightness_zero() {
         let black = Color::default();
-        assert_eq!(0, black.perceived_lightness())
+        assert_eq!(0.0, black.perceived_lightness())
     }
 
     #[test]
@@ -107,6 +104,6 @@ mod tests {
             g: u16::MAX,
             b: u16::MAX,
         };
-        assert_eq!(100, white.perceived_lightness())
+        assert_eq!(1.0, white.perceived_lightness())
     }
 }

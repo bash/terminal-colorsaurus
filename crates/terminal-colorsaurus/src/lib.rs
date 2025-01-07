@@ -111,8 +111,8 @@ pub enum ColorScheme {
 impl ColorPalette {
     /// Determines if the terminal uses a dark or light background.
     pub fn color_scheme(&self) -> ColorScheme {
-        let fg = self.foreground.perceived_lightness_f32();
-        let bg = self.background.perceived_lightness_f32();
+        let fg = self.foreground.perceived_lightness();
+        let bg = self.background.perceived_lightness();
         if bg < fg {
             ColorScheme::Dark
         } else if bg > fg || bg > 0.5 {
