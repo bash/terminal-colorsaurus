@@ -397,9 +397,9 @@ dependencies = [
 
 [[package]]
 name = "terminal-trx"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57a5b836e7f4f81afe61b5cd399eee774f25edcfd47009a76e29f53bb6487833"
+checksum = "975b4233aefa1b02456d5e53b22c61653c743e308c51cf4181191d8ce41753ab"
 dependencies = [
  "cfg-if",
  "libc",

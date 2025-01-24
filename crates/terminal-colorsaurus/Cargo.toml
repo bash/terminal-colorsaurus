@@ -19,7 +19,7 @@ xterm-color = { path = "../xterm-color", version = "1.0" }
 
 [target.'cfg(any(unix, windows))'.dependencies]
 memchr = "2.7.1"
-terminal-trx = "0.2.3"
+terminal-trx = "0.2.4"
 
 [target.'cfg(unix)'.dependencies]
 mio = { version = "1", features = ["os-ext"], default-features = false }
