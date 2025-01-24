@@ -3,7 +3,7 @@
 * 🐛 Fixed an error on windows where the query would not
   succeed when the standard input was redirected.
 * ⚡ The color parsing code has been extracted into its own crate
-  that terminal-colorsaurus now depends on: [`xterm-color](https://crates.io/crates/xterm-color).
+  that terminal-colorsaurus now depends on: [`xterm-color`](https://crates.io/crates/xterm-color).
 * 📝 The terminal survey has been extended and updated.
 
 ## 0.4.7
