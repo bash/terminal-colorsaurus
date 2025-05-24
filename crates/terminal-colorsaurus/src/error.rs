@@ -42,7 +42,7 @@ impl fmt::Display for Error {
             Error::Timeout(timeout) => {
                 write!(f, "operation did not complete within {timeout:?}")
             }
-            Error::UnsupportedTerminal {} => {
+            Error::UnsupportedTerminal => {
                 write!(f, "the terminal does not support querying for its colors")
             }
         }
