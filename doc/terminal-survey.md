@@ -16,7 +16,6 @@ with `terminal-colorsaurus`:
 * macOS Terminal
 * neovim's built-in [terminal][nvim-terminal]
 * Rio
-* st
 * Terminology
 * Termux
 * tmux (next-3.4)
@@ -55,14 +54,12 @@ A list of terminals that were tested for support of `OSC 10` / `OSC 11` and `DA1
 | [mlterm]                   | yes                   | yes   | [`f3474e1`][mlterm-commit]         |
 | [Rio]                      | yes                   | yes   | 0.0.36 (wayland)                   |
 | [rxvt-unicode]             | yes [^2]              | yes   | 9.31                               |
-| [st]                       | yes [^3]              | yes   | 0.9                                |
 | [Terminology]              | yes [^4]              | yes   | 1.13.0                             |
 | [Termux]                   | yes                   | yes   | 0.118.0                            |
 | [Therm]                    | yes                   | yes   | 0.6.4                              |
 | Warp                       | yes                   | yes   | v0.2024.12.18.08.02.stable\_04     |
 | [wayst]                    | yes                   | yes   | [`51773da`][wayst-commit]          |
 | [WezTerm]                  | yes                   | yes   | 20240203-110809-5046fc22 (flatpak) |
-| [xst] (fork of st)         | yes                   | yes   | 0.9.0                              |
 | [xterm]                    | yes                   | yes   | 385                                |
 | [Yakuake]                  | yes                   | yes   | 24.12.0                            |
 | [zed]                      | yes                   | yes   | 0.167.1 (flatpak)                  |
@@ -134,14 +131,12 @@ printf '\e]11;?\e\\' && cat -v # Tests for background color support. Example out
 [Rio]: https://raphamorim.io/rio/
 [rxvt-unicode]: http://software.schmorp.de/pkg/rxvt-unicode.html
 [shellinabox]: https://github.com/shellinabox/shellinabox
-[st]: https://st.suckless.org/
 [Terminology]: http://www.enlightenment.org/
 [Termux]: https://termux.dev/en/
 [Therm]: https://github.com/trufae/Therm
 [wayst]: https://github.com/91861/wayst
 [wayst-commit]: https://github.com/91861/wayst/commit/51773da1817abb14f2b90635daf30aac0f1536b6
 [WezTerm]: https://wezfurlong.org/wezterm/
-[xst]: https://github.com/gnotclub/xst
 [xterm.js]: https://xtermjs.org/
 [xterm]: https://invisible-island.net/xterm/
 [Yakuake]: https://apps.kde.org/en-gb/yakuake/
