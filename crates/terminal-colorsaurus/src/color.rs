@@ -37,10 +37,10 @@ impl Color {
     ///
     /// ```
     /// # use terminal_colorsaurus::Color;
-    /// let white = Color { r: u16::MAX, g: u16::MAX, b: u16::MAX };
+    /// let white = Color::rgb(u16::MAX, u16::MAX, u16::MAX);
     /// assert_eq!((u8::MAX, u8::MAX, u8::MAX), white.scale_to_8bit());
     ///
-    /// let black = Color { r: 0, g: 0, b: 0 };
+    /// let black = Color::rgb(0, 0, 0);
     /// assert_eq!((0, 0, 0), black.scale_to_8bit());
     /// ```
     pub fn scale_to_8bit(&self) -> (u8, u8, u8) {

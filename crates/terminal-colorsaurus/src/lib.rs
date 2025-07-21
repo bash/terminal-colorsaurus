@@ -21,10 +21,10 @@
 //!
 //! ## Example 1: Test If the Terminal Uses a Dark Background
 //! ```no_run
-//! use terminal_colorsaurus::{color_scheme, QueryOptions, ColorScheme};
+//! use terminal_colorsaurus::{theme_mode, ThemeMode, QueryOptions};
 //!
-//! let color_scheme = color_scheme(QueryOptions::default()).unwrap();
-//! dbg!(color_scheme == ColorScheme::Dark);
+//! let theme_mode = theme_mode(QueryOptions::default()).unwrap();
+//! dbg!(theme_mode == ThemeMode::Dark);
 //! ```
 //!
 //! ## Example 2: Get the Terminal's Foreground Color
