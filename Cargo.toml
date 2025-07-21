@@ -6,7 +6,7 @@ resolver = "2"
 version = "1.0.0"
 
 [workspace.dependencies]
-terminal-colorsaurus = { path = "crates/terminal-colorsaurus", version = "0.4.8" }
+terminal-colorsaurus.version = "0.4.8"
 
 [workspace.lints.rust]
 missing_debug_implementations = "warn"
