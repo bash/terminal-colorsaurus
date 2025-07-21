@@ -10,4 +10,4 @@ publish = false # Not ready yet
 anstyle = "1.0.8"
 anstyle-query = "1.1.1"
 clap = { version = "4.4", features = ["derive"] }
-terminal-colorsaurus.workspace = true
+terminal-colorsaurus.path = "../terminal-colorsaurus"
