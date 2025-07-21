@@ -1,6 +1,6 @@
 /// An RGB color with 16 bits per channel.
 /// You can use [`Color::scale_to_8bit`] to convert to an 8bit RGB color.
-#[derive(Debug, Clone, Default, Eq, PartialEq)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash)]
 #[non_exhaustive]
 pub struct Color {
     /// Red
