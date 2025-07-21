@@ -11,4 +11,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = "0.25.0"
-terminal-colorsaurus.workspace = true
+terminal-colorsaurus.path = "../terminal-colorsaurus"

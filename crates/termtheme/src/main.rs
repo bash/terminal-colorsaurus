@@ -5,7 +5,7 @@ use std::{
     io::{self, stdout, IsTerminal},
     process::exit,
 };
-use terminal_colorsaurus::{color_scheme, ColorScheme, QueryOptions};
+use terminal_colorsaurus::{theme_mode, QueryOptions, ThemeMode};
 
 fn main() {
     let args = Args::parse();
@@ -16,8 +16,8 @@ fn main() {
         );
         exit(1);
     }
-    match color_scheme(QueryOptions::default()) {
-        Ok(s) => display_theme(s, !args.no_newline),
+    match theme_mode(QueryOptions::default()) {
+        Ok(s) => display_theme_mode(s, !args.no_newline),
         Err(e) => {
             display_error(e);
             exit(1);
@@ -25,11 +25,11 @@ fn main() {
     }
 }
 
-fn display_theme(color_scheme: ColorScheme, newline: bool) {
+fn display_theme_mode(theme_mode: ThemeMode, newline: bool) {
     if newline {
-        println!("{}", DisplayName(color_scheme))
+        println!("{}", DisplayName(theme_mode))
     } else {
-        print!("{}", DisplayName(color_scheme))
+        print!("{}", DisplayName(theme_mode))
     }
 }
 
@@ -53,13 +53,13 @@ fn display_help(e: impl Display) {
     }
 }
 
-struct DisplayName(ColorScheme);
+struct DisplayName(ThemeMode);
 
 impl fmt::Display for DisplayName {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.0 {
-            ColorScheme::Dark => f.write_str("dark"),
-            ColorScheme::Light => f.write_str("light"),
+            ThemeMode::Dark => f.write_str("dark"),
+            ThemeMode::Light => f.write_str("light"),
         }
     }
 }

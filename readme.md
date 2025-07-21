@@ -10,15 +10,26 @@ Works in all major terminals including Windows Terminal (starting with v1.22).
 
 ## Example
 ```rust,no_run
-use terminal_colorsaurus::{color_scheme, QueryOptions, ColorScheme};
+use terminal_colorsaurus::{theme_mode, QueryOptions, ThemeMode};
 
-match color_scheme(QueryOptions::default()).unwrap() {
-    ColorScheme::Dark => { /* ... */ },
-    ColorScheme::Light => { /* ... */ },
+match theme_mode(QueryOptions::default()).unwrap() {
+    ThemeMode::Dark => { /* ... */ },
+    ThemeMode::Light => { /* ... */ },
 }
 ```
 
 ## [Docs](https://docs.rs/terminal-colorsaurus)
+
+## MSRV Policy
+
+This crate's Minimum Supported Rust Version (MSRV) is based
+on the MSRVs of downstream users such as [`delta`] and [`bat`].
+Changes to the MSRV will be accompanied by a minor version bump.
+
+The following formula determines the MSRV:
+```text
+min(msrv(bat), msrv(delta))
+```
 
 ## Inspiration
 This crate borrows ideas from many other projects. This list is by no means exhaustive.
@@ -49,3 +60,5 @@ dual licensed as above, without any additional terms or conditions.
 [termbg]: https://github.com/dalance/termbg
 [macos-dev-tty]: https://nathancraddock.com/blog/macos-dev-tty-polling/
 [perceived-lightness]: https://stackoverflow.com/a/56678483
+[`delta`]: https://github.com/dandavison/delta
+[`bat`]: https://github.com/sharkdp/bat

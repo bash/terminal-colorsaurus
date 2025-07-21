@@ -3,10 +3,7 @@ members = ["crates/*"]
 resolver = "2"
 
 [workspace.package]
-version = "0.4.8"
-
-[workspace.dependencies]
-terminal-colorsaurus = { path = "crates/terminal-colorsaurus", version = "0.4.7" }
+version = "1.0.0"
 
 [workspace.lints.rust]
 missing_debug_implementations = "warn"

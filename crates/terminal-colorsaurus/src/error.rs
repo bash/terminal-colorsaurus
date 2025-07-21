@@ -16,13 +16,14 @@ pub enum Error {
     /// or the terminal has a lot of latency (e.g. when connected via SSH).
     Timeout(Duration),
     /// The terminal does not support querying for the foreground or background color.
-    UnsupportedTerminal,
+    UnsupportedTerminal(UnsupportedTerminalError),
 }
 
 impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Error::Io(source) => Some(source),
+            Error::UnsupportedTerminal(source) => Some(source),
             _ => None,
         }
     }
@@ -35,16 +36,14 @@ impl fmt::Display for Error {
             Error::Parse(data) => write!(
                 f,
                 "failed to parse response: {0}",
-                // FIXME(msrv): Use `.utf8_chunks()` to avoid allocating.
+                // FIXME(msrv): [1.79.0] Use `.utf8_chunks()` to avoid allocating.
                 CaretNotation(String::from_utf8_lossy(data).as_ref()),
             ),
             #[allow(clippy::use_debug)]
             Error::Timeout(timeout) => {
                 write!(f, "operation did not complete within {timeout:?}")
             }
-            Error::UnsupportedTerminal => {
-                write!(f, "the terminal does not support querying for its colors")
-            }
+            Error::UnsupportedTerminal(e) => fmt::Display::fmt(e, f),
         }
     }
 }
@@ -52,5 +51,23 @@ impl fmt::Display for Error {
 impl From<io::Error> for Error {
     fn from(source: io::Error) -> Self {
         Error::Io(source)
+    }
+}
+
+impl Error {
+    pub(crate) fn unsupported() -> Self {
+        Error::UnsupportedTerminal(UnsupportedTerminalError)
+    }
+}
+
+#[derive(Debug)]
+#[non_exhaustive]
+pub struct UnsupportedTerminalError;
+
+impl error::Error for UnsupportedTerminalError {}
+
+impl fmt::Display for UnsupportedTerminalError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("the terminal does not support querying for its colors")
     }
 }

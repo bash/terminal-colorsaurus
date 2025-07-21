@@ -8,4 +8,4 @@ publish = false
 clap = { version = "4.4", features = ["derive"] }
 anstyle = "1.0.8"
 indicatif = "0.17.7"
-terminal-colorsaurus.workspace = true
+terminal-colorsaurus.path = "../terminal-colorsaurus"

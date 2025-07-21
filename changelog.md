@@ -1,4 +1,16 @@
 # Changelog
+## 1.0.0
+### Breaking
+* Renamed color scheme to theme mode.
+* Marked `Color` as `#[non_exhaustive]` to allow extension.
+* Future-proofed `Error::UnsupportedTerminal` by introducing an empty struct.
+* Changed the return type of `perceived_lightness` to be a float.
+* Removed the `Default` impl from `ColorScheme` (now theme mode).
+* Raised the minimum supported rust version (MSRV) to 1.74.0.
+
+### Features
+* All structs implement `Hash` now.
+
 ## 0.4.8
 * 🐛 Fixed an error on windows where the query would not
   succeed when the standard input was redirected.

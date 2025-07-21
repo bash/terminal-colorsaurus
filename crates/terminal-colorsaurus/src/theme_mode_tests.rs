@@ -1,5 +1,5 @@
 use super::*;
-use ColorScheme::*;
+use ThemeMode::*;
 
 const BLACK: Color = Color { r: 0, g: 0, b: 0 };
 const WHITE: Color = Color {
@@ -37,7 +37,7 @@ mod dark {
             foreground: WHITE,
             background: BLACK,
         };
-        assert_eq!(Dark, palette.color_scheme());
+        assert_eq!(Dark, palette.theme_mode());
     }
 
     #[test]
@@ -47,22 +47,22 @@ mod dark {
                 foreground: color.clone(),
                 background: color,
             };
-            assert_eq!(Dark, palette.color_scheme());
+            assert_eq!(Dark, palette.theme_mode());
         }
     }
 
     #[test]
     fn fg_and_bg_both_dark() {
         for (foreground, background) in [(DARK_GRAY, DARKER_GRAY), (DARKER_GRAY, BLACK)] {
-            assert!(foreground.perceived_lightness_f32() < 0.5);
-            assert!(background.perceived_lightness_f32() < 0.5);
-            assert!(foreground.perceived_lightness_f32() != background.perceived_lightness_f32());
+            assert!(foreground.perceived_lightness() < 0.5);
+            assert!(background.perceived_lightness() < 0.5);
+            assert!(foreground.perceived_lightness() != background.perceived_lightness());
 
             let palette = ColorPalette {
                 foreground,
                 background,
             };
-            assert_eq!(Dark, palette.color_scheme());
+            assert_eq!(Dark, palette.theme_mode());
         }
     }
 }
@@ -76,7 +76,7 @@ mod light {
             foreground: BLACK,
             background: WHITE,
         };
-        assert_eq!(Light, palette.color_scheme());
+        assert_eq!(Light, palette.theme_mode());
     }
 
     #[test]
@@ -86,17 +86,17 @@ mod light {
                 foreground: color.clone(),
                 background: color,
             };
-            assert_eq!(Light, palette.color_scheme());
+            assert_eq!(Light, palette.theme_mode());
         }
     }
 
     #[test]
     fn fg_and_bg_both_light() {
         for (foreground, background) in [(LIGHT_GRAY, LIGHTER_GRAY), (LIGHTER_GRAY, WHITE)] {
-            assert!(foreground.perceived_lightness_f32() > 0.5);
-            assert!(background.perceived_lightness_f32() > 0.5);
+            assert!(foreground.perceived_lightness() > 0.5);
+            assert!(background.perceived_lightness() > 0.5);
             assert!(
-                (foreground.perceived_lightness_f32() - background.perceived_lightness_f32()).abs()
+                (foreground.perceived_lightness() - background.perceived_lightness()).abs()
                     >= f32::EPSILON
             );
 
@@ -104,7 +104,7 @@ mod light {
                 foreground,
                 background,
             };
-            assert_eq!(Light, palette.color_scheme());
+            assert_eq!(Light, palette.theme_mode());
         }
     }
 }
