@@ -14,22 +14,22 @@
 //! allows users to override that heuristic (similar to --color=always/never/auto).
 //!
 //! Test this example as follows:
-//! 1. `cargo run --example pager`—should print the color scheme.
-//! 2. `cargo run --example pager | less`—should not print the color scheme.
-//! 3. `cargo run --example pager | cat`—should not print the color scheme. This is a false negatives.
-//! 4. `cargo run --example pager 2>&1 >/dev/tty | less`—should print the color scheme (or error). This is a false positive.
+//! 1. `cargo run --example pager`—should print the theme mode.
+//! 2. `cargo run --example pager | less`—should not print the theme mode.
+//! 3. `cargo run --example pager | cat`—should not print the theme mode. This is a false negatives.
+//! 4. `cargo run --example pager 2>&1 >/dev/tty | less`—should print the theme mode (or error). This is a false positive.
 
 use std::io::{stdout, IsTerminal as _};
-use terminal_colorsaurus::{color_palette, Error, QueryOptions};
+use terminal_colorsaurus::{theme_mode, Error, QueryOptions};
 
 fn main() -> Result<(), display::DisplayAsDebug<Error>> {
     if stdout().is_terminal() {
         eprintln!(
-            "Here's the color scheme: {:#?}",
-            color_palette(QueryOptions::default())?
+            "Here's the theme mode: {:#?}",
+            theme_mode(QueryOptions::default())?
         );
     } else {
-        eprintln!("No color scheme for you today :/");
+        eprintln!("No theme mode for you today :/");
     }
 
     Ok(())

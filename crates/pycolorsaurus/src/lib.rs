@@ -14,12 +14,12 @@ use terminal_colorsaurus as imp;
 /// This package helps answer the question "Is this terminal dark or light?".
 #[pymodule]
 fn colorsaurus(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(color_scheme, m)?)?;
+    m.add_function(wrap_pyfunction!(theme_mode, m)?)?;
     m.add_function(wrap_pyfunction!(foreground_color, m)?)?;
     m.add_function(wrap_pyfunction!(background_color, m)?)?;
     m.add_function(wrap_pyfunction!(color_palette, m)?)?;
     m.add("ColorsaurusError", py.get_type::<ColorsaurusError>())?;
-    m.add("ColorScheme", py.get_type::<ColorScheme>())?;
+    m.add("ColorScheme", py.get_type::<ThemeMode>())?;
     m.add("ColorPalette", py.get_type::<ColorPalette>())?;
     m.add("Color", py.get_type::<Color>())?;
     Ok(())
@@ -30,9 +30,9 @@ create_exception!(colorsaurus, ColorsaurusError, PyException);
 /// Detects if the terminal is dark or light.
 #[pyfunction]
 #[pyo3(signature = (*, timeout=None))]
-fn color_scheme(timeout: Option<Timeout>) -> PyResult<ColorScheme> {
-    imp::color_scheme(query_options(timeout))
-        .map(ColorScheme::from)
+fn theme_mode(timeout: Option<Timeout>) -> PyResult<ThemeMode> {
+    imp::theme_mode(query_options(timeout))
+        .map(ThemeMode::from)
         .map_err(to_py_error)
 }
 
@@ -88,7 +88,7 @@ impl<'py> FromPyObject<'py> for Timeout {
     }
 }
 
-/// The color scheme of the terminal.
+/// The terminal's theme mode (i.e. dark or light).
 /// This can be retrieved by calling the color_scheme function.
 #[pyclass(
     eq,
@@ -99,18 +99,18 @@ impl<'py> FromPyObject<'py> for Timeout {
     rename_all = "SCREAMING_SNAKE_CASE"
 )]
 #[derive(PartialEq, Eq, Hash)]
-enum ColorScheme {
+enum ThemeMode {
     /// The terminal uses a dark background with light text.
     Dark,
     /// The terminal uses a light background with dark text.
     Light,
 }
 
-impl From<imp::ColorScheme> for ColorScheme {
-    fn from(value: imp::ColorScheme) -> Self {
+impl From<imp::ThemeMode> for ThemeMode {
+    fn from(value: imp::ThemeMode) -> Self {
         match value {
-            imp::ColorScheme::Dark => Self::Dark,
-            imp::ColorScheme::Light => Self::Light,
+            imp::ThemeMode::Dark => Self::Dark,
+            imp::ThemeMode::Light => Self::Light,
         }
     }
 }
@@ -134,8 +134,8 @@ impl ColorPalette {
     }
 
     #[getter]
-    fn color_scheme(&self) -> ColorScheme {
-        self.0.color_scheme().into()
+    fn theme_mode(&self) -> ThemeMode {
+        self.0.theme_mode().into()
     }
 
     #[pyo3(name = "__repr__")]

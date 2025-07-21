@@ -84,7 +84,7 @@ pub mod readme_doctests {}
 pub use color::*;
 
 /// The subset of the terminal's color palette needed for
-/// deriving the [`ColorScheme`], namely: the foreground and background color.
+/// deriving the [`ThemeMode`], namely: the foreground and background color.
 /// Retrieved by calling [`color_palette`].
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[non_exhaustive]
@@ -95,14 +95,13 @@ pub struct ColorPalette {
     pub background: Color,
 }
 
-/// The color scheme of the terminal.
+/// The terminal's theme mode (i.e. dark or light).
 ///
-/// The easiest way to retrieve the color scheme
-/// is by calling [`color_scheme`].
+/// You can retrieve it using [`theme_mode`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[allow(clippy::exhaustive_enums)]
-#[doc(alias = "Theme")]
-pub enum ColorScheme {
+#[doc(alias = "color scheme")]
+pub enum ThemeMode {
     /// The terminal uses a dark background with light text.
     Dark,
     /// The terminal uses a light background with dark text.
@@ -111,15 +110,15 @@ pub enum ColorScheme {
 
 impl ColorPalette {
     /// Determines if the terminal uses a dark or light background.
-    pub fn color_scheme(&self) -> ColorScheme {
+    pub fn theme_mode(&self) -> ThemeMode {
         let fg = self.foreground.perceived_lightness();
         let bg = self.background.perceived_lightness();
         if bg < fg {
-            ColorScheme::Dark
+            ThemeMode::Dark
         } else if bg > fg || bg > 0.5 {
-            ColorScheme::Light
+            ThemeMode::Light
         } else {
-            ColorScheme::Dark
+            ThemeMode::Dark
         }
     }
 }
@@ -156,11 +155,11 @@ impl Default for QueryOptions {
 /// Detects if the terminal is dark or light.
 #[doc = include_str!("../doc/caveats.md")]
 #[doc(alias = "theme")]
-pub fn color_scheme(options: QueryOptions) -> Result<ColorScheme> {
-    color_palette(options).map(|p| p.color_scheme())
+pub fn theme_mode(options: QueryOptions) -> Result<ThemeMode> {
+    color_palette(options).map(|p| p.theme_mode())
 }
 
-/// Queries the terminal for it's color scheme (foreground and background color).
+/// Queries the terminal for it's color palette (foreground and background color).
 #[doc = include_str!("../doc/caveats.md")]
 pub fn color_palette(options: QueryOptions) -> Result<ColorPalette> {
     imp::color_palette(options)
@@ -183,5 +182,5 @@ pub fn background_color(options: QueryOptions) -> Result<Color> {
 }
 
 #[cfg(test)]
-#[path = "color_scheme_tests.rs"]
+#[path = "theme_mode_tests.rs"]
 mod tests;

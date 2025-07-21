@@ -10,11 +10,11 @@ Works in all major terminals including Windows Terminal (starting with v1.22).
 
 ## Example
 ```rust,no_run
-use terminal_colorsaurus::{color_scheme, QueryOptions, ColorScheme};
+use terminal_colorsaurus::{theme_mode, QueryOptions, ThemeMode};
 
-match color_scheme(QueryOptions::default()).unwrap() {
-    ColorScheme::Dark => { /* ... */ },
-    ColorScheme::Light => { /* ... */ },
+match theme_mode(QueryOptions::default()).unwrap() {
+    ThemeMode::Dark => { /* ... */ },
+    ThemeMode::Light => { /* ... */ },
 }
 ```
 

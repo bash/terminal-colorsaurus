@@ -1,5 +1,5 @@
 use super::*;
-use ColorScheme::*;
+use ThemeMode::*;
 
 const BLACK: Color = Color { r: 0, g: 0, b: 0 };
 const WHITE: Color = Color {
@@ -37,7 +37,7 @@ mod dark {
             foreground: WHITE,
             background: BLACK,
         };
-        assert_eq!(Dark, palette.color_scheme());
+        assert_eq!(Dark, palette.theme_mode());
     }
 
     #[test]
@@ -47,7 +47,7 @@ mod dark {
                 foreground: color.clone(),
                 background: color,
             };
-            assert_eq!(Dark, palette.color_scheme());
+            assert_eq!(Dark, palette.theme_mode());
         }
     }
 
@@ -62,7 +62,7 @@ mod dark {
                 foreground,
                 background,
             };
-            assert_eq!(Dark, palette.color_scheme());
+            assert_eq!(Dark, palette.theme_mode());
         }
     }
 }
@@ -76,7 +76,7 @@ mod light {
             foreground: BLACK,
             background: WHITE,
         };
-        assert_eq!(Light, palette.color_scheme());
+        assert_eq!(Light, palette.theme_mode());
     }
 
     #[test]
@@ -86,7 +86,7 @@ mod light {
                 foreground: color.clone(),
                 background: color,
             };
-            assert_eq!(Light, palette.color_scheme());
+            assert_eq!(Light, palette.theme_mode());
         }
     }
 
@@ -104,7 +104,7 @@ mod light {
                 foreground,
                 background,
             };
-            assert_eq!(Light, palette.color_scheme());
+            assert_eq!(Light, palette.theme_mode());
         }
     }
 }
