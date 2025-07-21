@@ -95,4 +95,3 @@ jobs:
         tool: just
     - run: just test-package xterm-color
     - run: just test-package terminal-colorsaurus
-    - run: just test-package termtheme
