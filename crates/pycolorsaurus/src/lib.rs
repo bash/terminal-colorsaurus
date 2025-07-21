@@ -164,11 +164,11 @@ impl Color {
 
     #[new]
     fn new(red: u8, green: u8, blue: u8) -> Self {
-        Self(imp::Color {
-            r: scale_to_u16(red),
-            g: scale_to_u16(green),
-            b: scale_to_u16(blue),
-        })
+        Self(imp::Color::rgb(
+            scale_to_u16(red),
+            scale_to_u16(green),
+            scale_to_u16(blue),
+        ))
     }
 
     #[getter]

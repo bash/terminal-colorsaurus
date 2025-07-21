@@ -1,7 +1,7 @@
 /// An RGB color with 16 bits per channel.
 /// You can use [`Color::scale_to_8bit`] to convert to an 8bit RGB color.
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
-#[allow(clippy::exhaustive_structs)]
+#[non_exhaustive]
 pub struct Color {
     /// Red
     pub r: u16,
@@ -9,9 +9,16 @@ pub struct Color {
     pub g: u16,
     /// Blue
     pub b: u16,
+    // Alpha field is omitted because only rxvt-unicode supports it.
+    // If you need it, open a PR. Thanks to #[non_exhaustive] this would be a non-breaking change.
 }
 
 impl Color {
+    /// Creates a RGB color from its three channels: Red, Green and Blue.
+    pub fn rgb(r: u16, g: u16, b: u16) -> Self {
+        Self { r, g, b }
+    }
+
     /// Perceptual lightness (L*) as a value between 0.0 (black) and 1.0 (white)
     /// where 0.5 is the perceptual middle gray.
     ///
