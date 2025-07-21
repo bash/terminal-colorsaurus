@@ -36,7 +36,7 @@ impl fmt::Display for Error {
             Error::Parse(data) => write!(
                 f,
                 "failed to parse response: {0}",
-                // FIXME(msrv): Use `.utf8_chunks()` to avoid allocating.
+                // FIXME(msrv): [1.79.0] Use `.utf8_chunks()` to avoid allocating.
                 CaretNotation(String::from_utf8_lossy(data).as_ref()),
             ),
             #[allow(clippy::use_debug)]
