@@ -18,7 +18,7 @@ confidence-threshold = 1.0
 multiple-versions = "deny"
 wildcards = "warn"
 skip = [
-    { crate = "heck@0.4", reason = "depended on by clap. updated in a newer clap version, but we can't update because that would require an MSRV bump)" },
+    { crate = "windows-sys@0.60.2", reason = "depended on by anstyle-query, only for example project" }
 ]
 
 [sources]
