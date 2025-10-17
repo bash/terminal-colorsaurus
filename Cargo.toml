@@ -3,7 +3,7 @@ members = ["crates/*"]
 resolver = "2"
 
 [workspace.package]
-version = "1.0.0"
+version = "1.0.1"
 
 [workspace.lints.rust]
 missing_debug_implementations = "warn"

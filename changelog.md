@@ -1,4 +1,7 @@
 # Changelog
+## 1.0.1
+* Updated `windows-sys` to 0.61.
+
 ## 1.0.0
 ### Breaking
 * Renamed color scheme to theme mode.
